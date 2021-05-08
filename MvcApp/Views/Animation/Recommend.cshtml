@@ -1,0 +1,159 @@
+﻿@model IEnumerable<Models.tempRecommendAnimation>
+
+@{
+    ViewBag.Title = "RecommendAnimation";
+}
+
+<link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Scripts/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-confirm.js"></script>
+<style>
+    .theBackGround {
+        border-radius: 5px;
+        width: 28.125rem;
+        background-color: #e6e6e6;
+        position: fixed;
+        right: 6rem;
+        top: auto;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+        display: flex;
+    }
+
+    .theChird {
+        margin-top: 1.25rem;
+        float: left;
+        width: 11.25rem;
+        height: auto;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .theRecommendPic {
+        width: 100%;
+        height: 100%;
+        vertical-align: middle;
+        border-style: none;
+    }
+
+    .Thetitle {
+        width: 90%;
+        margin-top: 0.625rem;
+        justify-content: space-around;
+    }
+
+    .Therate {
+        position: relative;
+        background-color: #171717bd;
+        display: block;
+        width: 2.3rem;
+        height: 1.7rem;
+        left: 9rem;
+        bottom: 15rem;
+        font-weight: 500;
+        /* font-size: 10px; */
+        margin-right: 5px;
+        color: white;
+    }
+
+    .theProtal {
+        float: left;
+        width: 11.25rem;
+        height: 17rem;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cover-wp {
+        height: 15rem;
+    }
+
+    .theTextValue {
+        width: 9.375rem;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-bottom: 0rem;
+    }
+
+    .secondChild {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .Theicon {
+        width: 4rem;
+        /* margin-left: 9.8rem; */
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="theBackGround">
+
+    @{ int i = 1;
+        foreach (var item in Model)
+        {
+            <div class="theChird" id="@i">
+                <a class="theProtal" target="_blank" href="https://localhost:44303/Animation/details?id=@item.Animationid">
+                    <div class="cover-wp">
+                        <img src="@item.AimagePic" alt="@item.Aname" class="theRecommendPic">
+                        <span class="Therate">@item.Score</span>
+                    </div>
+                    <p class="theTextValue">
+                        <span class="Thetitle">@item.Aname</span>
+                    </p>
+                </a>
+            </div>
+            i++;
+        }
+    }
+    <div class="secondChild">
+        <img id="theArrow" class="Theicon" src="~/public/static/uploads/img/箭头上.svg" alt="" onclick="hideRecommend()" />
+        <img id="theEllipsis" class="Theicon" src="~/public/static/uploads/img/省略号.svg" alt="" style="display:none" onclick="ShowRecommend()" />
+    </div>
+</div>
+
+<script>
+
+    document.onreadystatechange = function () {
+        hideRecommend();
+    }
+
+    function hideRecommend() {
+        $(".theBackGround").css('top', '23rem');
+        $("#5").hide();
+        $("#6").hide();
+        $("#7").hide();
+        $("#8").hide();
+        $("#theArrow").hide();
+        $("#theEllipsis").show();
+    }
+
+    function ShowRecommend() {
+        $(".theBackGround").css('top', 'auto');
+        $("#5").show();
+        $("#6").show();
+        $("#7").show();
+        $("#8").show();
+        $("#theArrow").show();
+        $("#theEllipsis").hide();
+    }
+
+    function Recommend() {
+        $.ajax({
+            type: "get",
+            url: "/Animation/Recommend"
+        })
+    }
+
+</script>

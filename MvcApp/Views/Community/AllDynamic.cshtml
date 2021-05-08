@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Models.tempCommunityDongtai>
+
+<style>
+    .fullsizeimg {
+        width: 90%;
+        height: auto;
+        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 7;
+    }
+</style>
+
+@foreach (var item in Model)
+{
+    <div class="post" id="@("theDongtai"+item.dongtaiid)">
+        <div class="post-heading">
+            <div class="post-avature">
+                <img src="@item.Portrait" alt="" onclick="location='https://localhost:44303/User/Center/@item.Userid'">
+            </div>
+            <div class="post-title">
+                <h4> @item.UserName </h4>
+                <p>
+                    <font> @item.Time </font>
+                </p>
+            </div>
+            <div class="post-btn-action">
+                <span class="icon-more uil-ellipsis-h" aria-expanded="false"></span>
+                <div class="mt-0 p-2 uk-dropdown" uk-dropdown="pos: top-right;mode:hover ">
+                    <ul class="uk-nav uk-dropdown-nav">
+                        @{
+                            if (Session["username"].ToString() == item.UserName)
+                            {
+                                <li onclick="deleteDongtai(@item.dongtaiid)">
+                                    <span href="#" class="text-danger">
+                                        <i class="uil-trash-alt mr-1"></i>
+                                        <font>删除</font>
+                                    </span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <span href="#" class="text-danger">
+                                        <i class="uil-trash-alt mr-1"></i>
+                                        <font>举报</font>
+                                    </span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="post-description">
+            <div class="fullsizeimg">
+                @item.Content
+            </div>
+
+            <div class="post-state-details">
+                <div> @item.Commentnum 评论</div>
+                <a href="@Url.Action("DynamicDetail","Community",new { id = item.dongtaiid })" style="float:right;">
+                    查看详情
+                </a>
+            </div>
+
+        </div>
+
+        <div class="post-state">
+            <div class="post-state-btns" onclick="addLike(@item.dongtaiid)">
+                <i class="uil-thumbs-up"></i>
+                <font id="@("like"+item.dongtaiid)"> @item.Likenum</font><span> 喜欢 </span>
+            </div>
+        </div>
+    </div>
+
+}

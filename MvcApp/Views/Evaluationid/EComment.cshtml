@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Models.EComment>
+
+<style>
+    .comment {
+        padding: 50px;
+    }
+</style>
+
+<div class="container d-flex flex-column">
+    @foreach (var item in Model)
+    {
+        <div class="row mb-2 comment">
+            <div class="col-md-1" style="margin-bottom:15px;">
+                <img style="width:100%" src="@item.Users.UsersInfo.Portrait" alt="Alternate Text" />
+                <label>@item.UserName</label>
+            </div>
+            <div class="col-md-10">
+                @item.content
+            </div>
+        </div>
+    }
+</div>
+

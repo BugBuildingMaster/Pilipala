@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Models.dongtaiCommentReply>
+
+@{
+    ViewBag.Title = "动态评论";
+    @*Layout = "~/Views/Shared/_Layout.cshtml";*@
+}
+
+@foreach (var item in Model)
+{
+    <div class="post-comments-single" style="margin-left:50px;">
+        <div class="post-comment-avatar">
+            <img src="@Html.Action("GetPortrait","Community",new { name=item.UserName })" alt="">
+        </div>
+        <div class="post-comment-text">
+            <div class="post-comment-text-inner">
+                <h6> @item.UserName </h6>
+                <p> @item.Content </p>
+            </div>
+            <div class="uk-text-small">
+                <span> @item.Time</span><!-- 发布时间 -->
+            </div>
+        </div>
+        <div class="post-btn-action">
+            <span class="icon-more uil-ellipsis-h" aria-expanded="false"></span>
+            <div class="mt-0 p-2 uk-dropdown" uk-dropdown="pos: top-right;mode:hover ">
+                <ul class="uk-nav uk-dropdown-nav">
+                    @*如果是用户自己的评论 可以删除 别人的可以举报*@
+                    @{
+                        if (Session["username"] != null)
+                        {
+                            if (Session["username"].ToString() == item.UserName)
+                            {
+                                <li onclick="deleteReply(@item.dongtaiCommentid)">
+                                    <span href="#" class="text-danger">
+                                        <i class="uil-trash-alt mr-1"></i>
+                                        <font>删除</font>
+                                    </span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <span href="#" class="text-danger">
+                                        <i class="uil-trash-alt mr-1"></i>
+                                        <font>举报</font>
+                                    </span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>
+                                <span href="#" class="text-danger">
+                                    <i class="uil-trash-alt mr-1"></i>
+                                    <font>举报</font>
+                                </span>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+}
+
+<script>
+    //删除评论回复函数
+    function deleteReply(id) {
+        var alarm = '确认删除？';
+        if (confirm(alarm) == true) {
+            $.ajax({
+                type: "post",
+                url: "/Community/DeleteReply",
+                data: {
+                    dtid: id,
+                },
+                success: function (res) {
+                    if (res == "Success") {
+                        alert('删除成功！')
+                        window.location.reload()
+                    }
+                    else if (res == "Fail") {
+                        alert('删除失败')
+                    }
+                    else {
+                        alert('靠，又出bug了')
+                    }
+                }
+            })
+        }
+        else {
+            return;
+        }
+    }
+</script>

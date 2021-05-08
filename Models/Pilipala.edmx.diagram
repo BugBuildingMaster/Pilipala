@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="91788d5bd21048eb87e3837af91c091b" Name="Diagram1">
+        <EntityTypeShape EntityType="PiliPalaModel.Animation" Width="1.5" PointX="3.75" PointY="19.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.AnimationPhoto" Width="1.5" PointX="6" PointY="20.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Buzzword" Width="1.5" PointX="5.75" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.BWdislike" Width="1.5" PointX="3" PointY="34" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.BWlike" Width="1.5" PointX="6" PointY="33" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Category" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.dongtai" Width="1.5" PointX="3" PointY="29.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.dongtaiComment" Width="1.5" PointX="5.25" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.dongtaiCommentlike" Width="1.5" PointX="10.5" PointY="35.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.dongtaiCommentReply" Width="1.5" PointX="10.5" PointY="28.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.dongtailike" Width="1.5" PointX="8.25" PointY="32.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.EClike" Width="1.5" PointX="5.25" PointY="40.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.EComment" Width="1.5" PointX="8.25" PointY="38.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.ECommentReply" Width="1.5" PointX="13.5" PointY="35.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Edislike" Width="1.5" PointX="8.25" PointY="43.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Elike" Width="1.5" PointX="5.25" PointY="44.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Evaluation" Width="1.5" PointX="3" PointY="46.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.ExamineShortcomment" Width="1.5" PointX="3" PointY="37.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Follow" Width="1.5" PointX="3" PointY="54.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Message" Width="1.5" PointX="8" PointY="28.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Mlike" Width="1.5" PointX="11.25" PointY="32.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.PublishDynamic" Width="1.5" PointX="5.25" PointY="36.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.PublishEvaluation" Width="1.5" PointX="3" PointY="60.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.ShortComment" Width="1.5" PointX="3" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.SLike" Width="1.5" PointX="8.25" PointY="25.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.UserLikeA" Width="1.5" PointX="6" PointY="25.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.UserLikeE" Width="1.5" PointX="8.25" PointY="35.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Users" Width="1.5" PointX="0.75" PointY="30.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.UsersInfo" Width="1.5" PointX="3" PointY="70.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.Watch" Width="1.5" PointX="3" PointY="74" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.AnimationCategory" Width="1.5" PointX="6" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempRecommendAnimation" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempCommunityDongtai" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempCommunityEvaluation" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempCommunityShortComment" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempEvaluationList" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempRankingList" Width="1.5" PointX="2.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempSearchAnimation" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempSearchEvaluation" Width="1.5" PointX="4.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempSearchUsers" Width="1.5" PointX="6.75" PointY="8.75" IsExpanded="true" />
+        <AssociationConnector Association="PiliPalaModel.FK__Animation__Anima__33D4B598" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Animation__Anima__398D8EEE" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__EComment__Animat__5165187F" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__ECommentR__Anima__39E294A9" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__ShortComm__Anima__6477ECF3" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__UserLikeA__Anima__3D5E1FD2" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__BWdislike__Buzzw__0B91BA14" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__BWlike__Buzzword__07C12930" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Message__Buzzwor__10566F31" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__BWdislike__UserN__0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__BWlike__UserName__06CD04F7" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtai__UserNam__6FE99F9F" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaiCo__dongt__44952D46" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaili__dongt__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__PublishDy__Dynam__6A9BA5F4" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaiCo__dongt__4865BE2A" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaiCo__dtCom__51EF2864" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaiCo__UserN__43A1090D" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaiCo__UserN__477199F1" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaiCo__UserN__50FB042B" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__dongtaili__UserN__787EE5A0" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__EClike__ECcommen__0EF836A4" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__EClike__Evaluati__0FEC5ADD" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__EClike__UserName__0E04126B" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__EComment__Evalua__52593CB8" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__EComment__UserNa__5070F446" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__ECommentR__EComm__3AD6B8E2" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__ECommentR__UserN__38EE7070" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Edislike__Evalua__59FA5E80" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Edislike__UserNa__59063A47" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Elike__Evaluatio__5629CD9C" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Elike__UserName__5535A963" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Evaluatio__UserN__46E78A0C" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__UserLikeE__Evalu__4BAC3F29" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__ExamineSh__Repor__65D6F0D7" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__ExamineSh__Scomm__64E2CC9E" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Follow__Follower__6C190EBB" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Follow__UserName__6B24EA82" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Message__UserNam__0F624AF8" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Mlike__Messageid__14270015" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Mlike__UserName__1332DBDC" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__PublishDy__Dynam__6B8FCA2D" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__PublishEv__Publi__2AEB3533" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__ShortComm__UserN__6383C8BA" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__SLike__Scommenti__68487DD7" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__SLike__SuserName__6754599E" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__UserLikeA__UserN__3C69FB99" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__UserLikeE__UserN__4AB81AF0" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__UsersInfo__UserN__489AC854" ManuallyRouted="false" />
+        <AssociationConnector Association="PiliPalaModel.FK__Watch__UserName__740F363E" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempDongtai" Width="1.5" PointX="13.375" PointY="4.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempEvaluation" Width="1.5" PointX="14.375" PointY="8.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempFans" Width="1.5" PointX="15.375" PointY="4.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempFollow" Width="1.5" PointX="15.375" PointY="12.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempShortComment" Width="1.5" PointX="16.375" PointY="0.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.BanSpeech" Width="1.5" PointX="3" PointY="42.375" />
+        <AssociationConnector Association="PiliPalaModel.FK__BanSpeech__BanNa__0862A9B3" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

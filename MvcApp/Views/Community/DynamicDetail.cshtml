@@ -1,0 +1,313 @@
+﻿@model Models.dongtai
+@{
+}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+    <title>社区论坛</title>
+    <link href="~/assets/css/Com.css" rel="stylesheet" />
+    <link href="~/assets/css/icons.css" rel="stylesheet" />
+    <link href="~/assets/css/uiukt.css" rel="stylesheet" />
+    <script src="~/assets/js/simplebar.js"></script>
+    <script src="~/assets/js/uikit.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <style>
+        .post .post-description .fullsizeimg, .post .post-description .fullsizevid {
+            max-height: 600px;
+            margin-left: 0;
+            width: calc(100%);
+            overflow: hidden;
+            margin-bottom: 5px;
+            margin-top: -10px;
+        }
+        /*导航*/
+        .nav ul li span a {
+            transition: all 0.3s ease 0s;
+        }
+
+        .nav-a {
+            margin-left: 8rem;
+            font-size: 1.3rem;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        .nav ul {
+            list-style: none;
+        }
+
+            .nav ul li {
+                position: relative;
+                float: left;
+                -webkit-perspective: 60px;
+                -moz-perspective: 60px;
+                -ms-perspective: 60px;
+                perspective: 60px;
+                -webkit-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+                list-style: none;
+                z-index: 999;
+                margin-right: 5rem;
+            }
+
+                .nav ul li span a:hover {
+                    background-color: #3399FF;
+                    color: #FFFFFF;
+                    font-weight: 500;
+                    font-size: 23px;
+                    border-radius: 10px;
+                }
+
+                .nav ul li span a {
+                    display: block;
+                    padding: 0 25px;
+                    cursor: pointer;
+                }
+
+                .nav ul li.on span a {
+                    font-weight: bold;
+                    color: #333;
+                }
+
+                    .nav ul li.on span a:hover {
+                        color: #FFFFFF;
+                        font-size: 23px;
+                    }
+
+                .nav ul li a:hover {
+                    text-decoration: none;
+                    color: #FFFFFF;
+                }
+
+        .search_input {
+            width: 35.5rem;
+            height: 2.5rem;
+            border-radius: 10px;
+            border: grey 2px solid;
+        }
+
+        .inp_sub {
+            background-color: rgb(0, 148, 255);
+            color: rgb(255, 255, 255);
+            border: hidden;
+            padding: 7px 10px 7px 10px;
+            border-radius: 10%;
+            background-color: #0094ff;
+            color: #fff;
+            border: hidden;
+            width: 4.8rem;
+            height: 2.8rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main_content">
+
+        <!-- header -->
+        <div class="main_header">
+            <header>
+                <div class="header-innr">
+                    <!-- 搜索-->
+                    <div class="head_search">
+                        <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
+                            <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
+                            <input type="hidden" name="sid" value="">
+                            <input class="inp_sub" type="submit" value="搜索" id="sub">
+                        </form>
+                        <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+                    </div>
+                    <!--导航栏-->
+                    <div class="nav nav-a fr">
+                        <ul>
+                            <li data-cid="0">
+                                <span> @Html.ActionLink("首页", "Index", "Animation")</span>
+                            </li>
+                            <li data-cid="19">
+                                <span> @Html.ActionLink("番剧", "Index", "Animation")</span>
+                            </li>
+                            <li data-cid="30">
+                                <span> @Html.ActionLink("排行榜", "Rankinglist", "RankingList")</span>
+                            </li>
+                            <li data-cid="36" class="on">
+                                <span> @Html.ActionLink("社区论坛", "index", "Community")</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 用户 -->
+                    <div class="head_user">
+                        <!-- 用户头像 -->
+                        <a class="opts_account" href="@Url.Action("Center","User",new { id=Session["userid"]})" aria-expanded="false">
+                            <img src="@Html.Action("ThePortrait","Community")" alt="">
+                        </a>
+                    </div>
+
+                </div>
+                <!-- 头部内容结束 -->
+            </header>
+
+        </div>
+
+        <div class="main_content_inner">
+            <div class="section-small">
+
+                <div uk-grid="" class="uk-grid">
+
+                    <div class="post">
+                        <div class="post-heading">
+                            <div class="post-avature">
+                                <a class="opts_account" href="/User/Center/@Model.Users.Userid" aria-expanded="false">
+                                    <img src="@Html.Action("GetPortrait","Community",new { name=Model.UserName })" alt="">
+                                </a>
+                            </div>
+                            <div class="post-title">
+                                <h4> @Model.UserName </h4>
+                                <p>
+                                    <font> @Model.Time </font>
+                                </p>
+                            </div>
+                            <div class="post-btn-action">
+                                <span class="icon-more uil-ellipsis-h" aria-expanded="false"></span>
+                                <div class="mt-0 p-2 uk-dropdown" uk-dropdown="pos: top-right;mode:hover ">
+                                    <ul class="uk-nav uk-dropdown-nav">
+                                        <li>
+                                            <span href="#" class="text-danger">
+                                                <i class="uil-trash-alt mr-1"></i>
+                                                <font>
+                                                    举报
+                                                </font>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-description">
+                            <div class="fullsizeimg">
+                                @*<p style="width:1000px">
+                                        如果说前面一集一个角色的剧情展开还算是配角铺垫的阶段，那么第九集转入主线之后，仍然没有什么变化的剧情节奏就成了最致命的问题。铃木少年在网络世界中的拟真化演出，男主角突如其来的告白，都很难让观众产生共鸣，更遑论这当中还夹杂着许多逻辑上的违和感。
+                                    </p>
+                                    <img src="~/public/static/uploads/shouyepicture2/海贼王.jpg" alt="动态图片">*@
+                                @Model.Content
+                            </div>
+
+                            <div class="post-state-details">
+                                <p id="comNum"> @Model.Commentnum 评论</p>
+                            </div>
+
+                        </div>
+
+                        <div class="post-state">
+                            <div class="post-state-btns" onclick="addLike(@Model.dongtaiid)">
+                                <i class="uil-thumbs-up"></i>
+                                <font id="@("like"+Model.dongtaiid)"> @Model.Likenum</font><span> 喜欢 </span>
+                            </div>
+                        </div>
+
+                        @*动态评论*@
+                        <div class="post-comments">
+                            <div id="aresult">
+                                @Html.Action("DynamicComment", "Community", new { id = Model.dongtaiid })
+                            </div>
+
+                            <div class="post-add-comment">
+                                <div class="post-add-comment-avature">
+                                    <a href="@Url.Action("Center","User",new { id=Session["userid"]})" aria-expanded="false">
+                                        <img src="@Html.Action("ThePortrait","Community")" alt="">
+                                    </a>
+                                </div>
+
+                                @using (Ajax.BeginForm("AddComment", "Community", new AjaxOptions { HttpMethod = "post", OnSuccess = "Comment", UpdateTargetId = "aresult" }, new { @style = "width:100%" }))
+                                {
+                                    <input type="hidden" name="dtid" value="@Model.dongtaiid" />
+                                    <div class="post-add-comment-text-area d-flex flex-row">
+                                        <div>
+                                            <input type="text" name="content" placeholder="写下你的评论..." style="float: left;width: 100%;">
+                                        </div>
+                                        <div>
+                                            <input style="float: right; width: 90px; background-color: #75e575; border-radius: 5px; color: white;" type="submit" value="发表评论" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    function addSearch() {
+        if ($('#input_text').val() == "") {
+            window.location.href = "/Search/OriginSearch";
+        }
+        else {
+            const url = "/Search/Search?KeyWord=" + $('#input_text').val()
+            window.location.href = url;
+        }
+    }
+
+    //发评论的回调函数
+    function Comment(data) {
+        if (data == "login") {
+            alert("请先登录！");
+            sessionStorage.setItem('thePass', window.location.href);
+            window.location.href = '/home/login';
+        }
+        else if (data == "fail") {
+            alert("评论失败！");
+        }
+        else {
+            $("#aresult").html(data);
+            updateComment(@Model.dongtaiid);
+        }
+    }
+    //点赞
+    function addLike(id) {
+        $.ajax({
+            url: "/Community/AddLike",
+            type: "post",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res == "login") {
+                    alert("请先登录");
+                    sessionStorage.setItem('thePass', window.location.href);
+                    window.location.href = "/home/login";
+                } else {
+                    $("#like" + id).html(res);
+                }
+            }
+        })
+    }
+
+    function updateComment(id) {
+        $.ajax({
+            url: "/Community/ShortCommentNum",
+            type: "post",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res == "login") {
+                    alert("请先登录");
+                    sessionStorage.setItem('thePass', window.location.href);
+                    window.location.href = "/home/login";
+                } else {
+                    $("#comNum").html(res+" 评论");
+                }
+            }
+        })
+    }
+</script>

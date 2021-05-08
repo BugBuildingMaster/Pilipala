@@ -1,0 +1,175 @@
+﻿@model IEnumerable<Models.tempShortComment>
+
+@{
+    ViewBag.Title = "TouristShortComment";
+}
+
+
+<div class="pull-right">
+    <style>
+        .review-list {
+            color: rgb(17, 17, 17);
+            display: block;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 21.06px;
+            width: 800px;
+        }
+
+            .review-list .review-item .main-hd {
+                height: 24px;
+                font-size: 0;
+            }
+
+                .review-list .review-item .main-hd .name {
+                    font-size: 25px;
+                    vertical-align: middle;
+                    margin-left: 10px;
+                }
+
+                .review-list .review-item .main-hd .main-meta, .review-list .review-item .main-hd .main-title-rating {
+                    vertical-align: middle;
+                    margin-left: 100px;
+                }
+
+            .review-list .review-item, .review-list .review-item .main-hd /*.main-meta*/ {
+                font-size: 20px;
+                margin-left: 0px;
+            }
+
+                .review-list .review-item .main-hd .main-title-rating {
+                    margin-left: 2px;
+                    position: relative;
+                    top: -2px;
+                }
+
+        .main-meta {
+            color: #95999C;
+            /*float: right;*/
+            font-size: 10px;
+        }
+
+        .review-list .review-item .main-bd h2 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .review-list .review-item .review-short {
+            color: #494949;
+            height: auto;
+            word-break: break-word;
+            cursor: pointer;
+            font-size: 17px;
+            padding-top: 15px;
+        }
+
+        .short-content {
+            height: 100px;
+            width: 750px;
+            margin-left: 30px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .action {
+            margin-bottom: 10px;
+            float: right;
+            margin-right: 8px;
+        }
+
+        .action-btn {
+            margin-right: 8px;
+        }
+        /*.review-list .review-item .main-bd*/ /*.action .action-btn*/ /*{
+                        color: #3377aa;
+                        padding: 4px 6px;
+                        margin-right: 10px;
+                        border-radius: 2px;
+                        background-color: #f0f7f9;
+                        display: inline-block;
+                        line-height: 1;
+                    }*/
+        .review-list .review-item:after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #ddd;
+            transform: scaleY(0.5);
+        }
+
+        .anim {
+            float: right;
+            font-size: 20px;
+            color: #0FA2F9;
+            margin-top: -10px;
+        }
+
+            .anim:hover {
+                color: rgb(102, 102, 153);
+            }
+
+        .likeimg {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+
+    <div class="review-list  ">
+    </div>
+</div>
+
+<div class="container eflex">
+    @foreach (var item in Model)
+    {
+        <div style="width:800px;height:160px;background-color:#ffff;border-radius:15px;margin-bottom:15px">
+            <div class="main review-item">
+                <header class="main-hd">
+                    <a href="/Animation/Details?id=@item.Animationid" class="name">@item.Aname</a>
+                    <span content="2020-04-19" class="main-meta">@item.Time</span>
+                </header>
+                <div class="main-bd">
+                    <div class="review-short">
+                        <div class="short-content">
+                            @item.Preview
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="action" onclick="addShortCommentlike(@item.Scommentid)">
+                <a class="action-btn up" title="获赞">
+                    <img class="likeimg" src="~/public/static/uploads/img/点赞.png" />
+                    <span id="@("theShortCommentNum"+item.Scommentid)">
+                        @item.Likenum
+                    </span>
+                </a>
+
+            </div>
+        </div>
+
+    }
+    <script>
+    function addShortCommentlike(id) {
+        $.ajax({
+            url: "/Animation/AddLike",
+            type: "post",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res == "login") {
+                    alert("请先登录")
+                    sessionStorage.setItem('thePass', window.location.href);
+                    window.location.href = "/home/login";
+                } else {
+                    $("#theShortCommentNum"+id).html(res);
+                }
+            }
+        })
+    }
+    </script>
+</div>

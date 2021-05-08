@@ -1,0 +1,412 @@
+﻿@model IEnumerable<Models.tempSearchUsers>
+
+@{
+    ViewBag.Title = "SearchUsers";
+}
+
+<link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Scripts/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-confirm.js"></script>
+<style>
+    .list-item {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        border-bottom: 1px solid #eee;
+        display: block;
+        padding: 20px 0;
+        position: relative;
+        line-height: 1;
+    }
+
+    .follow-select {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        word-break: break-word;
+        display: inline-block;
+        background-image: url(//s1.hdslb.com/bfs/static/jinkela/space/assets/icons.png);
+        vertical-align: middle;
+        background-repeat: no-repeat;
+        width: 24px;
+        height: 24px;
+        background-position: -468px -980px;
+    }
+
+    .list-item a {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        color: inherit;
+        text-decoration: none;
+        transition: color .2s ease,background-color .2s ease;
+        background-size: cover;
+        display: block;
+        float: left;
+        position: relative;
+        border-radius: 48px;
+        overflow: visible;
+        margin-left: 0;
+    }
+
+    .list-item .title {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        color: inherit;
+        text-decoration: none;
+        transition: color .2s ease,background-color .2s ease;
+        background-size: cover;
+        display: block;
+        float: left;
+        position: relative;
+        border-radius: 48px;
+        overflow: visible;
+        margin-left: 30px;
+        margin-top: 10px;
+    }
+
+    .list-item .cover1 img {
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        box-shadow: 0 0 0 1px #edf2f9;
+        display: block;
+        border-radius: 60px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .list-item .content {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        padding: 0 200px 0 0;
+        position: relative;
+        margin-left: 88px;
+        margin-top: 10px;
+    }
+
+    .list-item .auth-description {
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        line-height: 20px;
+        color: #6d757a;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100%;
+        text-overflow: ellipsis;
+        padding-right: 10px;
+        padding-top: 5px;
+        margin-left: 30px;
+    }
+
+    .fans-action {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        position: absolute;
+        right: 0;
+        top: 38px;
+    }
+
+    .fans-action-follow {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        word-break: break-word;
+        float: left;
+        display: block;
+        margin-left: 15px;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        background-color: #e5e9ef;
+        position: relative;
+        border-radius: 4px;
+        font-size: 0;
+        color: #6d757a;
+        padding: 4px 10px;
+        line-height: 16px;
+        border: 0;
+    }
+
+    .fans-action-text {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        text-align: center;
+        cursor: pointer;
+        color: #6d757a;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        word-break: break-word;
+        line-height: 16px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .be-dropdown-menu {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        text-align: center;
+        cursor: pointer;
+        font-size: 0;
+        color: #6d757a;
+        line-height: 16px;
+        margin: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        list-style: none;
+        position: fixed;
+        z-index: 10;
+        padding: 6px 0;
+        background-color: #fff;
+        border: 1px solid #e5e9ef;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.14);
+        left: 0px;
+        top: 0px;
+        transform-origin: center top;
+        display: none;
+    }
+
+    .be-dropdown-item {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        text-align: center;
+        cursor: pointer;
+        color: #6d757a;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        word-break: break-word;
+        line-height: 16px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .fans-action-btn {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        word-break: break-word;
+        float: left;
+        display: block;
+        line-height: 22px;
+        margin-left: 15px;
+        font-size: 0;
+        color: #6d757a;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid #ccd0d7;
+        border-radius: 4px;
+        width: 74px;
+    }
+
+    .username {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        color: inherit;
+        white-space: nowrap;
+        font-size: 16px;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        text-align: center;
+        padding: 8px;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .fans-action-follow {
+        position: relative;
+        display: inline-block;
+        padding: 10px 5px 10px 5px;
+    }
+
+        .fans-action-follow:hover .dropdown-content {
+            display: block;
+        }
+
+    .follow1 {
+        position: relative;
+        display: inline-block;
+        padding: 10px 5px 10px 5px;
+    }
+
+    .theFansNum {
+        margin-left: 30px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="container">
+
+    <ul class="relation-list">
+        @foreach (var item in Model)
+        {
+            <li class="list-item clearfix">
+                <div style=" display: flex; flex-direction: row; ">
+                    <div>
+                        <a href="https://localhost:44372/User/Center/@item.Userid" target="_blank" class="cover1">
+                            <img src="@item.Portrait" alt="@item.UserName">
+                        </a>
+                    </div>
+                    <div class="content1">
+                        <div>
+                            <a href="https://localhost:44372/User/Center/@item.Userid" target="_blank" class="title">
+                                <span class="username">@item.UserName</span>
+                            </a>
+                            <p title="Signatures" class="auth-description">
+                                @item.Signatures
+                            </p>
+                            <div class="theFansNum">
+                                粉丝数：@item.Fans
+                            </div>
+                        </div>
+                        <div class="fans-action">
+                            @{
+                                if (item.isFan == 0)
+                                {
+                                    <script>
+                                        $(".@item.Userid").ready(function () {
+                                            $(".@("b"+item.Userid )").hide();
+                                            $(".@("a"+item.Userid)").show();
+                                        })
+                                    </script>
+                                }
+                                else
+                                {
+                                    <script>
+                                        $("#@item.Userid").ready(function () {
+                                            $(".@("a"+item.Userid)").hide();
+                                            $(".@("b"+item.Userid )").show();
+                                        })
+                                    </script>
+                                }
+                            }
+                            <div class="be-dropdown fans-action-btn follow1 @("a"+item.Userid )"
+                                 onclick="Follow1(@item.Userid)">
+                                <span class="fans-action-text">关注</span>
+                            </div>
+                            <div class="be-dropdown fans-action-btn fans-action-follow @("b"+item.Userid )"
+                                 onclick="CancleFollow1(@item.Userid)">
+                                <span class="fans-action-text">已关注</span>
+                                <div class="dropdown-content"
+                                     onclick="CancleFollow1(@item.Userid)">
+                                    <span class="cancelFollow be-dropdown-item">取消关注</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<script>
+
+    function CancleFollow1(id) {
+        $.ajax({
+            type: "get",
+            url: "/User/Following",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res == "fail") {
+                    $(".b" + id).hide();
+                    $(".a" + id).show();
+                    //window.location.reload();
+                }
+                else if (res == "login") {
+                    alert('请先登录')
+                    sessionStorage.setItem('thePass', window.location.href);
+                    window.location.href = "/Users/login"
+                }
+            }
+        })
+    }
+
+    function Follow1(id) {
+        $.ajax({
+            type: "get",
+            url: "/User/Following",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res == "fail") {
+                    $(".b" + id).show();
+                    $(".a" + id).hide();
+                    //window.location.reload();
+                }
+                else if (res == "login") {
+                    alert('请先登录')
+                    sessionStorage.setItem('thePass', window.location.href);
+                    window.location.href = "/Users/login"
+                }
+            }
+        })
+    }
+
+</script>

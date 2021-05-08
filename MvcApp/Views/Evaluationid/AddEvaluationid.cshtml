@@ -1,0 +1,96 @@
+﻿@model Models.Evaluation
+
+<script src="~/Scripts/ckeditor/ckeditor.js"></script>
+<script src="~/Scripts/ckeditor/config.js"></script>
+
+
+@using (Ajax.BeginForm("AddEvaluation", "Evaluationid", null, new AjaxOptions() { HttpMethod = "post", OnSuccess = "upSuccess" }, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>测评</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <input type="hidden" name="id" value="@ViewBag.id" />
+        <input type="hidden" name="name" value="@Session["username"]" />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">标题</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">评分</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Score, new { htmlAttributes = new { @class = "form-control", @type = "number", @min = 1, @max = 10 } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">内容</label>
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.content, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.content, "", new { @class = "text-danger" })*@
+                @*方法一*@
+                @Html.TextAreaFor(model => model.Content, new { @class = "ckeditor" })
+            </div>
+            @*方法二*@
+            @*<div class="row clearfix" style="height:320px;overflow-y:hidden; ">
+                    <div class="col-md-12  column">
+                        <textarea name="content" id="editor" placeholder="来说点什么..." required="required"></textarea>
+                        <script>
+                                        var editor = CKEDITOR.replace('editor');
+                        </script>
+                    </div>
+                </div>*@
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="发布测评" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="BackToList" onclick="backtoList()">
+    Back to List
+    @*@Html.ActionLink("Back to List", "Index")*@
+</div>
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+    <script>
+        function backtoList() {
+            var theLink = ""
+            if (sessionStorage.getItem('thePass') == null) {
+                theLink = "/Animation/Index"
+            }
+            else {
+                theLink = sessionStorage.getItem('thePass')
+            }
+            window.location.href = theLink
+        }
+
+        function upSuccess(data) {
+            if (data == "success") {
+                alert("提交成功！内容将在审核后发布！");
+                backtoList();
+            }
+            else {
+                alert('发布失败！');
+                window.location.reload();
+            }
+        }
+    </script>
+}
+
+

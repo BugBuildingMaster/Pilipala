@@ -1,0 +1,104 @@
+﻿@using PagedList.Mvc;
+@model PagedList.PagedList<Models.Watch>
+
+@{
+
+}
+
+<style>
+    .UserWatch {
+        width: 100%;
+        background-color: white;
+        margin-bottom: 20px;
+        padding: 10px 10px 10px 10px;
+    }
+
+    .row div {
+        margin-bottom: 10px;
+    }
+</style>
+
+<div id="watch">
+    <div class="container d-flex flex-column align-items-center justify-content-around">
+        @foreach (var item in Model)
+        {
+            /*if (item.Type == "Buzzword")
+            {
+                <div class="row d-flex flex-column UserWatch @("theWatch"+item.Watchid)">
+                    <div>类型： 梗百科</div>
+                    @Html.Action("UserWatchBuzzword", "User", new { id = item.id })
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <label style="float:right;">评论时间：@item.Time</label>
+                        <button class="btn btn-primary" onclick="deleteWatch(@item.Watchid)">删除此条记录</button>
+                    </div>
+                </div>
+            }
+            else */
+            if (item.Type == "Animation")
+            {
+                <div class="row d-flex flex-column UserWatch @("theWatch"+item.Watchid)">
+                    <div>类型： 动漫</div>
+                    @Html.Action("UserWatchAnimation", "User", new { id = item.id })
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <label style="float:right;">评论时间：@item.Time</label>
+                        <button class="btn btn-primary" onclick="deleteWatch(@item.Watchid)">删除此条记录</button>
+                    </div>
+                </div>
+            }
+            else if (item.Type == "Evaluation")
+            {
+                <div class="row d-flex flex-column UserWatch @("theWatch"+item.Watchid)">
+                    <div>类型： 动漫</div>
+                    @Html.Action("UserWatchEvaluation", "User", new { id = item.id })
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <label style="float:right;">评论时间：@item.Time</label>
+                        <button class="btn btn-primary" onclick="deleteWatch(@item.Watchid)">删除此条记录</button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <script>
+        function deleteWatch(id) {
+            var alarm = "确认删除id为" + id + "的浏览记录？";
+            if (confirm(alarm) == true) {
+                $.ajax({
+                    type: "post",
+                    url: "/User/DeleteWatch",
+                    data: {
+                        id: id,
+                    },
+                    success: function (data) {
+                        if (data == 'Success') {
+                            alert('芜湖 没了！')
+                            $(".theWatch" + id).remove();
+                            //window.location.reload()
+                        }
+                        else if (data == 'Fail') {
+                            alert('淦，报错')
+                        }
+                    },
+                })
+            }
+            else {
+                return;
+            }
+
+        }
+    </script>
+
+
+    <div class="page-list">
+        @Html.PagedListPager(Model, page => Url.Action("UserWatch", "User", new { page }),
+           PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                 new AjaxOptions
+                 {
+                     HttpMethod = "GET",
+                     InsertionMode = InsertionMode.Replace,
+                     UpdateTargetId = "watch"
+                 }))
+    </div>
+</div>
+
+

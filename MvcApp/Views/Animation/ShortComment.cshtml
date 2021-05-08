@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Models.ShortComment>
+
+@{
+    ViewBag.Title = "ShortComment";
+    @*Layout = "~/Views/Shared/_Layout.cshtml";*@
+}
+
+<div>
+    @foreach (var item in Model)
+    {
+        <div class="row d-flex flex-row justify-content-around align-items-start align-text-bottom">
+            <div class="main review-item" style="padding: 20px 0px; height: 260px; position: relative;">
+
+
+
+                <header class="main-hd" style="padding: 0; margin-bottom: 0; height: 24px; font-size: 0;">
+                    <a href="个人主页" class="avator">
+                        <img width="55" height="55" src="@item.Users.UsersInfo.Portrait" />
+                    </a>
+
+                    <a href="个人主页" class="name" style="font-size: 25px; margin-left: 10px; vertical-align: middle;">@item.UserName:</a>
+                    <span style="vertical-align: middle; margin-left: 100px;">@*评分*@@item.Score</span>
+
+                    <span style="vertical-align: middle; margin-left: 100px;">@*时间*@@item.Time</span>
+
+                </header>
+
+
+                <div class="main-bd" style="padding: 0; margin-bottom: 0; height: 24px; font-size: 0;">
+                    <div class="review-short" style="color: #494949; height: 130px; word-break: break-word; cursor: pointer; font-size: 20px; padding-top: 100px;">
+                        <div class="short-content" style="">
+                            @item.content
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="action" style="margin-top: 47px;">
+                        <a class="action-btn up" style="color: #3377aa; padding: 4px 6px; margin-right: 4px; border-radius: 2px; background-color: #f0f7f9; display: inline-block; line-height: 1;" title="有用">
+                            <img src="~/public/static/uploads/img/点赞.png" />
+                            <span>
+                                @item.Likenum
+                            </span>
+                            <span>
+                                举报
+                            </span>
+                        </a>
+                        <a class="action-btn up" style="color: #3377aa; padding: 4px 6px; margin-right: 4px; border-radius: 2px; background-color: #f0f7f9; display: inline-block; line-height: 1;" title="有用">
+                            举报
+                        </a>
+                    </div>
+                    <div>
+                        举报
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+<script>
+    function shortCommentLike(id) {
+
+    }
+</script>

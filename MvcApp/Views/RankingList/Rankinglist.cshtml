@@ -1,0 +1,659 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Models.tempRankingList>
+
+
+@{
+    ViewBag.Title = "RankingList";
+    Layout = "~/Views/Shared/RLayout.cshtml";
+}
+<head>
+    <title>动漫评分排行榜</title>
+    <meta name="referrer" content="no-referrer">
+    <link href="~/assets/css/Com.css" rel="stylesheet" />
+    <link href="~/assets/css/icons.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+    <script src="~/Scripts/axioshttp.js"></script>
+    <style>
+        header .head_user .opts_account > img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /*导航*/
+        .nav ul li {
+            margin: 0px;
+        }
+
+            .nav ul li span a {
+                transition: all 0.3s ease 0s;
+            }
+
+        .nav-a {
+            margin-left: 200px;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        .nav ul {
+            list-style: none;
+        }
+
+            .nav ul li {
+                position: relative;
+                float: left;
+                -webkit-perspective: 60px;
+                -moz-perspective: 60px;
+                -ms-perspective: 60px;
+                perspective: 60px;
+                -webkit-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+                list-style: none;
+                z-index: 999
+            }
+
+                .nav ul li span a:hover {
+                    background-color: #3399FF;
+                    color: #FFFFFF;
+                    font-weight: 500;
+                    font-size: 23px;
+                    border-radius: 10px;
+                }
+
+                .nav ul li span a {
+                    display: block;
+                    padding: 0 25px;
+                    cursor: pointer;
+                }
+
+                .nav ul li.on span a {
+                    font-weight: bold;
+                    color: #333;
+                }
+
+                    .nav ul li.on span a:hover {
+                        color: #FFFFFF;
+                        font-size: 23px;
+                    }
+
+                .nav ul li a:hover {
+                    text-decoration: none;
+                    color: #FFFFFF;
+                }
+
+        .header .head_user .opts_account {
+            margin-left: 12px;
+        }
+
+        .header .head_user {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            right: 15px;
+        }
+
+        .page-list a:link {
+            color: #2464B2;
+            text-decoration: underline;
+            font-size: 25px;
+        }
+
+        .page-list a:visited {
+            color: #0000FF;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .page-list a:hover {
+            color: #FF00FF;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .page-list a:active {
+            color: #D200D2;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .page-list ul li {
+            list-style: none;
+            float: left;
+        }
+
+        .page-list li {
+            margin-right: 10px;
+            width: 80px;
+            display: list-item;
+        }
+        /* .page-list a {
+                        color: #2464B2;
+                        text-decoration: none;
+                        font-size:20px;
+                    }
+                        .page-list a:hover {
+                            font-size: 25px;
+                        }*/
+        .page-list {
+            margin-left: 240px;
+        }
+
+        .mainBody {
+            width: 900px;
+        }
+
+        .wrapper {
+            width: 1200px;
+            /* margin: 0 auto; */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .list-table td.last {
+            padding-right: 0px;
+        }
+
+        .main_content {
+            position: relative;
+            z-index: 5;
+            display: block;
+            width: 1400px;
+            margin: auto;
+            overflow: visible;
+            border-radius: 30px;
+            min-height: 100vh;
+            background-color: #afd7ff;
+            padding: 0 22px 2.5rem;
+        }
+
+        .w_139 {
+            text-align: center;
+            float: left;
+            width: 239px;
+            display: inline;
+            border-color: #dfe2e6;
+            margin-left: 30px;
+        }
+
+        li {
+            display: list-item;
+        }
+
+        .w_139 ul li .bb {
+            font-weight: 700;
+            background-color: #FFFFFF;
+            width: 230px;
+        }
+
+        .w_139 ul li .dd {
+            background-color: #FFFFFF;
+            width: 230px;
+        }
+
+        .w_139 ul li .odd {
+            background-color: #fafbfc;
+            border: 1px solid #f5f7f8;
+            width: 230px;
+        }
+
+        .hblock {
+            overflow: hidden;
+            border: hidden;
+        }
+
+        input {
+            outline: none;
+        }
+
+        .search_input {
+            width: 20.5rem;
+            height: 2.5rem;
+            border-radius: 10px;
+            border: grey 2px solid;
+        }
+
+        .inp_sub {
+            background-color: rgb(0, 148, 255);
+            color: rgb(255, 255, 255);
+            border: hidden;
+            padding: 7px 10px 7px 10px;
+            border-radius: 10%;
+            background-color: #0094ff;
+            color: #fff;
+            border: hidden;
+            width: 4.8rem;
+            height: 2.8rem;
+            font-size: 1rem;
+        }
+    </style>
+    <style>
+        header .head_user .opts_account > img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /*导航*/
+        .nav ul {
+            width: 550px;
+        }
+
+            .nav ul li {
+                width: auto;
+            }
+
+                .nav ul li span {
+                    margin-left: 20px;
+                }
+
+                    .nav ul li span a {
+                        transition: all 0.3s ease 0s;
+                        font-size: 14px;
+                    }
+
+        .nav-a {
+            margin-left: 200px;
+        }
+
+        .fr {
+            float: right;
+        }
+
+        .nav ul {
+            list-style: none;
+        }
+
+            .nav ul li {
+                position: relative;
+                float: left;
+                -webkit-perspective: 60px;
+                -moz-perspective: 60px;
+                -ms-perspective: 60px;
+                perspective: 60px;
+                -webkit-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+                list-style: none;
+                z-index: 999
+            }
+
+                .nav ul li span a:hover {
+                    background-color: #3399FF;
+                    color: #FFFFFF;
+                    font-weight: 500;
+                    font-size: 23px;
+                    border-radius: 10px;
+                }
+
+                .nav ul li span a {
+                    display: block;
+                    padding: 0 25px;
+                    cursor: pointer;
+                }
+
+                .nav ul li.on span a {
+                    font-weight: bold;
+                    color: #333;
+                }
+
+                    .nav ul li.on span a:hover {
+                        color: #FFFFFF;
+                        font-size: 23px;
+                    }
+
+                .nav ul li a:hover {
+                    text-decoration: none;
+                    color: #FFFFFF;
+                }
+
+        .header .head_user .opts_account {
+            margin-left: 12px;
+        }
+
+        .header .head_user {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            right: 15px;
+        }
+
+        .page-list a:link {
+            color: #2464B2;
+            text-decoration: underline;
+            font-size: 25px;
+        }
+
+        .page-list a:visited {
+            color: #0000FF;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .page-list a:hover {
+            color: #FF00FF;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .page-list a:active {
+            color: #D200D2;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .page-list ul li {
+            list-style: none;
+            float: left;
+        }
+
+        .page-list li {
+            margin-right: 10px;
+            width: 80px;
+            display: list-item;
+        }
+        /* .page-list a {
+            color: #2464B2;
+            text-decoration: none;
+            font-size:20px;
+        }
+            .page-list a:hover {
+                font-size: 25px;
+            }*/
+        .page-list {
+            margin-left: 240px;
+        }
+
+        .mainBody {
+            width: 900px;
+        }
+
+        .wrapper {
+            width: 1200px;
+            /* margin: 0 auto; */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .list-table td.last {
+            padding-right: 82px;
+        }
+
+        .main_content {
+            position: relative;
+            z-index: 5;
+            display: block;
+            width: 1400px;
+            margin: auto;
+            overflow: visible;
+            border-radius: 30px;
+            min-height: 100vh;
+            background-color: #afd7ff;
+            padding: 0 22px 2.5rem;
+        }
+
+        .w_139 {
+            position: fixed;
+            text-align: center;
+            float: left;
+            width: 239px;
+            display: inline;
+            border-color: #dfe2e6;
+            margin-left: 30px;
+        }
+
+        li {
+            display: list-item;
+        }
+
+        .w_139 ul li .bb {
+            font-weight: 700;
+            background-color: #FFFFFF;
+            width: 230px;
+        }
+
+        .w_139 ul li .dd {
+            background-color: #FFFFFF;
+            width: 230px;
+        }
+
+        .w_139 ul li .odd {
+            background-color: #fafbfc;
+            border: 1px solid #f5f7f8;
+            width: 230px;
+        }
+
+        .hblock {
+            overflow: hidden;
+            border: hidden;
+        }
+    </style>
+</head>
+<div class="main_content">
+
+    <!-- header -->
+    <div class="main_header">
+        <header>
+            <div class="header-innr">
+                <!-- 搜索-->
+                <div class="head_search">
+                    <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
+                        <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
+                        <input type="hidden" name="sid" value="">
+                        <input class="inp_sub" type="submit" value="搜索" id="sub">
+                    </form>
+                    <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+                </div>
+                <script>
+                    function addSearch() {
+                        if ($('#input_text').val() == "") {
+                            window.location.href = "/Search/OriginSearch";
+                        }
+                        else {
+                            const url = "/Search/Search?KeyWord=" + $('#input_text').val()
+                            window.location.href = url;
+                        }
+                    }
+                </script>
+                <!--导航栏-->
+                <div class="nav nav-a fr" style="margin-left: 3rem;">
+                    <ul style="display: flex; width: 100%;">
+                        <li data-cid="0">
+                            <span> @Html.ActionLink("首页", "Index", "Animation")</span>
+                        </li>
+                        <li data-cid="19">
+                            <span> @Html.ActionLink("番剧", "", "")</span>
+                        </li>
+                        <li data-cid="30" class="on">
+                            <span> @Html.ActionLink("排行榜", "Rankinglist", "RankingList")</span>
+                        </li>
+                        <li data-cid="36">
+                            <span> @Html.ActionLink("社区论坛", "index", "Community")</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 头部内容结束 -->
+        </header>
+
+    </div>
+    <div class="wrapper">
+        <div class="main" id="rankinglist">
+            <div class="w_139" style="margin-top:-10px;">
+                <div class="hblock">
+                    <ul>
+                        <li v-for="(singleType, i) in TheType">
+                            <a class="dd" href="javascript:void(0);" v-bind:title="singleType.Categoryname" v-on:click="partialRanking(singleType.Categoryid)">{{singleType.Categoryname}}</a>
+                        </li>
+                    </ul>
+                </div>
+                @*@Html.Action("PartialRankingCategory", "RankingList")*@
+            </div>
+            <div id="aresult" class="mainBody">
+                <div id="Div1" style="text-align: center; white-space: nowrap;">
+                    <div class="grayborder">
+                        <div class="top-title">
+                            <h2>今日动漫评分排行榜</h2>
+                        </div>
+                        <table class="list-table" v-for="(singleAnimation, i) in Rankinglist">
+                            <tr>
+                                <th width="50" class="first">排名</th>
+                                <th>关键词</th>
+                                <th width="30%" class="tc">相关链接</th>
+                                <th width="20%" class="last">评分</th>
+                            </tr>
+                            @*单个番剧排名*@
+                            <div class="L-vote">
+                                <tr class="hideline" style="background-color:#FFFFFF">
+                                    <td class="first">
+                                        <span class="num-top">{{singleAnimation.RowNum}}</span>
+                                    </td>
+                                    <td class="keyword">
+                                        <a class="list-title" target="_blank" href="javascript:void(0);" v-on:click="UsersUrl(singleAnimation.Animationid)">{{singleAnimation.Aname}}</a>
+                                    </td>
+                                    <td class="tc">
+                                        <a href="javascript:void(0);" v-on:click="UsersUrl(singleAnimation.Animationid)">动漫详情</a>
+                                    </td>
+                                    <td class="last">
+                                        <span class="icon-fall">{{singleAnimation.Score}}</span>
+                                    </td>
+                                </tr>
+
+                                <tr class="item-tr">
+                                    <td colspan="4">
+                                        <div class="item-info clearfix">
+                                            <a href="javascript:void(0);" v-on:click="UsersUrl(singleAnimation.Animationid)" class="item-img" target="_blank">
+                                                <image v-bind:src="singleAnimation.AimagePic" />
+                                            </a>
+                                            <p class="item-text">
+                                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleAnimation.Animationid)" target="_blank">
+                                                    {{singleAnimation.Aplot}}
+                                                </a>
+                                            </p>
+
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </div>
+                        </table>
+                    </div>
+                    <span v-if="RankinglistMoreLoad==false" style="font-size: 1.2rem; margin-top: 2rem; display: inline-block; vertical-align: middle; font-weight: bolder;">没有了哟~</span>
+                </div>
+            </div>
+        </div>
+        <script>
+            const app = new Vue({
+                el: "#rankinglist",
+                data: {
+                    Rankinglist: [],              //临时储存对象
+                    tempRankinglist: [],          //储存关注对象
+                    RankinglistMoreLoad: false,   // 标记是否还有更多数据
+                    loadingRankinglist: false,    // 标记是否正在加载
+                    counterF: 1,                 // 加载页数
+
+                    TheType: [],              //类别储存对象
+                },
+                created() {
+                    this.buildRankinglist(1, 1);
+                    this.buildCate();
+                },
+                mounted() {
+                    var _this = this;
+                    window.addEventListener('scroll', function () {
+                        //theHeight();      //测试页面高度的测试代码
+                        if (_this.loadingRankinglist) {
+                            //当正在加载时直接返回，防止多次加载
+                            return;
+                        }
+                        else {
+                            var scr = document.body.scrollTop;                  // 滚动的高度
+                            var clientHeight = document.body.clientHeight;      // 屏幕静态下的高度
+                            var scrHeight = document.body.scrollHeight || document.body.scrollHeight; // 整个网页的实际高度，兼容Pc端
+                            if (scr + clientHeight + 100 >= scrHeight) {
+                                if (_this.RankinglistMoreLoad) {       // 如果还有更多数据的标记为true，则将正在加载的标记置为true，将页数传给数据获取函数
+                                    _this.loadingRankinglist = true;
+                                    _this.counterF = _this.counterF + 1;
+                                    _this.buildRankinglist(_this.counterF);
+                                } else {
+                                    this.loadingRankinglist = false;   //未加载直接将正在加载标记置为false
+                                    return;
+                                }
+                            }
+                        }
+                    });
+                },
+                methods: {
+                    //数据获取
+                    async buildRankinglist(PageNum, id) {
+                        if (PageNum == null) {
+                            PageNum = 1;
+                        }
+                        if (id == null) {
+                            id = 1;
+                        }
+                        // 获取数据
+                        const { data: res } = await axios.get('/RankingList/theRankingList', {
+                            params: {
+                                type: id,
+                                page: PageNum
+                            }
+                        })
+                        // this.tempRankinglist是临时对象，用于对下一步操作进行进一步判断
+                        this.tempRankinglist = res;
+                        if (res.length != 0 && res.length == 20) {
+                            //此时不是最后一页，正常加载
+                            this.Rankinglist = this.Rankinglist.concat(this.tempRankinglist); //将临时对象的内容与粉丝对象进行拼接
+                            this.RankinglistMoreLoad = true;                              //将还有更多的标记置为true
+                        } else if (res.length != 0 && res.length < 20) {
+                            //此时已经是最后一页，将还有更多的标记置为false
+                            this.Rankinglist = this.Rankinglist.concat(this.tempRankinglist);
+                            this.RankinglistMoreLoad = false;
+                        } else {
+                            //其他情况直接置false
+                            this.RankinglistMoreLoad = false;
+                        }
+                        //加载结束，将正在加载标记置false
+                        this.loadingRankinglist = false;
+
+                        /*console.log(this.tempRankinglist)   测试语句
+                        console.log(this.Rankinglist)
+                        console.log(res)
+                        console.log(typeof (this.Rankinglist))
+                        console.log(typeof (res))*/
+                    },
+                    async UsersUrl(id) {
+                        window.open('/Animation/details?id=' + id);
+                    },
+                    async buildCate() {
+                        // 获取数据
+                        const { data: res } = await axios.get('/RankingList/RankingCategory', {
+                            params: {
+                            }
+                        })
+                        this.TheType = res;
+                    },
+                    async partialRanking(id) {
+                        this.counterF = 1;
+                        this.Rankinglist = [];
+                        this.tempRankinglist = [];
+                        this.RankinglistMoreLoad = false;
+                        this.loadingRankinglist = false;
+                        this.buildRankinglist(1, id);
+                        scrollTo(0, 0);
+                    }
+                }
+            })
+        </script>
+
+    </div>
+</div>

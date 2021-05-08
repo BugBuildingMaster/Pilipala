@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Models.tempEvaluation>
+
+@{
+    ViewBag.Title = "TouristEvaluation";
+}
+
+<link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Scripts/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-confirm.js"></script>
+<style>
+    .evaluation {
+        align-items: center;
+        box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
+        background-color: white;
+        height: 440px;
+        margin-top: 20px;
+    }
+
+    .Aimg {
+        width: 100%;
+        height: auto;
+        display: inline-block;
+        border-radius: 8px;
+        padding: 8px;
+    }
+
+    .content {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 9;
+        font-size: 18px;
+        color: #5a5a5a;
+    }
+</style>
+
+<div class="container">
+    @foreach (var item in Model)
+    {
+        <div class="row justify-content-around py-3 evaluation @("theEvaluation"+item.Evaluationid)">
+            <div class="col-md-4 h-100">
+                <img class="Aimg" src="@item.AimagePic" alt="@item.Aname" />
+            </div>
+
+            <div class="col-md-8 py-2 h-100 d-flex flex-column justify-content-between align-items-lg-start">
+                <div class="title">
+                    <h2>@item.Title</h2>
+                </div>
+
+                <div class="content">
+                    @item.Preview
+                </div>
+
+                <div class="w-100 d-flex flex-row justify-content-between ">
+                    <div class="url" style="color:red">
+                        <a href="@Url.Action("Details","Evaluationid",new { id = item.Evaluationid })">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+

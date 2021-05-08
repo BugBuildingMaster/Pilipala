@@ -1,0 +1,110 @@
+﻿@model  IEnumerable<Models.Evaluation>
+
+<style>
+    .eva-contanier {
+        margin-top: 20px;
+        display: flex;
+        @*background-color: #9b9898;*@
+        width: 94%;
+        height: 200px;
+
+        box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
+        background-color: white;
+        margin-top: 20px;
+    }
+
+    .eva-user {
+        width: 20%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .eva-user img{
+        width:37%;
+
+    }
+
+    .eva-title {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    #eva-con {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        /* font-size: 12px; */
+        color: #5a5a5a;
+    }
+
+    .eva-details {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+    }
+
+    .eva-box {
+        display: flex;
+        flex-direction: column;
+        width: 75%;
+        align-items: start;
+        justify-content: space-around;
+    }
+    .eva-box img{
+        width:100px;
+    }
+</style>
+
+@foreach (var item in Model)
+{
+    <div class="eva-contanier">
+        <div class="eva-user">
+            <img src="@item.Users.UsersInfo.Portrait" onload="getContent(@item.Evaluationid)" alt="Alternate Text" />
+            <span style="margin-top:20px; font-size: 18px; font-weight: 900;">@item.UserName</span>
+        </div>
+        <div class="eva-box" style="width:75%;">
+            <div class="eva-title">
+                @item.Title
+            </div>
+            <div class="@(item.Evaluationid + "eva-content")" id="eva-con">
+
+            </div>
+            <div class="eva-details">
+                <div>
+                    <span>点赞数：@item.Likenum</span>
+                    <span style="margin-left:20px;">点踩数：@item.Dislikenum</span>
+                </div>
+
+                <a href="@Url.Action("details","evaluationid",new { id=item.Evaluationid})">查看详情</a>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function getContent(id) {
+        console.log(id)
+        $.ajax({
+            type: "get",
+            url: "/evaluationid/getcontent",
+            data: {
+                id: id
+            },
+            success: function (data) {
+                const cdata = data.replace(/\\n/g, '<br/>'); //\为转义字符 g表示全局
+                $("." + id + "eva-content").html(cdata)
+            },
+            error: function (e) {
+                console.log(e.status)
+                console.log(e.responseText)
+            }
+        })
+    }
+</script>

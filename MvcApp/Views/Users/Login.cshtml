@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jsencrypt.min.js"></script>
+<script>
+    document.onreadystatechange = function () {
+        if (document.readyState == "complete") {
+            $.ajax({
+                url: "/Users/setRsa",
+                type: "post",
+                data: {
+                },
+                success: function (data) {
+                    sessionStorage.setItem('Pub', data);
+                    //调试用
+                    //console.log(data);
+                }
+            })
+        }
+    }</script>
+@section scripts
+{
+    <script>
+        $('#btn-login').on('click', function () {
+            if ($('#username').val().length == 0) {
+                $('.tips').html('请输入手机号或学号！');
+            } else if ($('#password').val().length == 0) {
+                $('.tips').html('请输入密码！');
+            } else {
+                const encrypt = new JSEncrypt();
+                var password = $('#password').val();
+                var pubKey = sessionStorage.getItem('Pub');
+                encrypt.setPublicKey(pubKey);
+                var sendWord = encrypt.encrypt(password);
+                $.ajax({
+                    url: "/users/Login",
+                    type: "post",
+                    data: {
+                        username: $('#username').val(),
+                        password: sendWord
+                    },
+                    success: function (data) {
+                        if (data == "success") {
+                            //alert("恭喜")
+                            var theLink = ""
+                            if (sessionStorage.getItem('thePass') == null) {
+                                theLink = "/Animation/Index"
+                            }
+                            else {
+                                theLink = sessionStorage.getItem('thePass')
+                                sessionStorage.removeItem('thePass');
+                            }
+                            window.location.href = theLink
+                        }
+                        else if(data=="fail") {
+                            $('.tips').html('密码错误！');
+                        } else{
+                            $('.tips').html('出现错误！');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}
+<h2>Login</h2>
+<label class="tips"></label>
+<input id="username" type="text" name="username" value="" />
+<input id="password" type="password" name="password" value="" />
+<button id="btn-login">提交</button>

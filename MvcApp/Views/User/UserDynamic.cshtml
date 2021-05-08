@@ -1,0 +1,468 @@
+﻿@model IEnumerable<Models.tempDongtai>
+@{
+    ViewBag.Title = "UserDynamic";
+}
+<style>
+    /**
+                * Component: Dropdown
+                * --------------------------------------------------
+                */
+    .c-dropdown {
+        position: relative;
+        display: inline-block;
+        text-align: left;
+        /*margin-top: 50px;*/
+        float: right;
+    }
+
+    .c-dropdown__list {
+        margin: 5px 0 0 0;
+        padding: 6px 0;
+        list-style: none;
+        position: absolute;
+        top: 125%;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        visibility: hidden;
+        border-radius: 3px;
+        background: #fff;
+        -webkit-transition: opacity .25s linear, top .25s linear;
+        transition: opacity .25s linear, top .25s linear;
+    }
+
+    .c-dropdown.is-open .c-dropdown__list {
+        opacity: 1;
+        visibility: visible;
+        top: 100%;
+    }
+
+    .c-dropdown__item {
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 20px;
+        cursor: pointer;
+        color: #434A54;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-transition: background-color .25s linear;
+        transition: background-color .25s linear;
+    }
+
+        .c-dropdown__item:hover {
+            background-color: #E6E9ED;
+        }
+
+    /**
+                * Component: Button
+                * --------------------------------------------------
+                */
+    .c-button {
+        -webkit-appearance: none;
+        margin: 0;
+        border: 0;
+        overflow: visible;
+        font: inherit;
+        text-transform: none;
+        display: inline-block;
+        vertical-align: middle;
+        text-decoration: none;
+        text-align: center;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        .c-button:hover, .c-button:focus {
+            outline: none;
+            text-decoration: none;
+        }
+
+        .c-button:not(:disabled) {
+            cursor: pointer;
+        }
+
+    /**
+                * Component: Button
+                * Modifier: Dropdown
+                * --------------------------------------------------
+                */
+    .c-button--dropdown {
+        padding: 6px 34px 6px 12px;
+        background-color: #55aaff;
+        color: #E6E9ED;
+        font-size: 14px;
+        line-height: 20px;
+        min-height: 32px;
+        border-radius: 3px;
+        -webkit-transition: background-color .2s linear;
+        transition: background-color .2s linear;
+    }
+
+        .c-button--dropdown:hover {
+            background-color: #55aaff;
+        }
+
+        .c-button--dropdown:after {
+            content: "";
+            position: absolute;
+            top: 14px;
+            right: 11px;
+            width: 0;
+            height: 0;
+            border: 5px solid transparent;
+            border-top-color: #E6E9ED;
+        }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }
+
+    .col-md-12 {
+        position: relative;
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .mb-4, .my-4 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    color1 {
+        color: #00adee;
+    }
+    /*
+                   .size {
+                       font-size: 20px;
+                   }
+
+                   .line {
+                       border-bottom: 2px solid #00adee;
+                       width: 100px;
+                       margin: auto;
+                   }*/
+
+    .card-header {
+        /*background-color: #00ceef;*/
+        /*color: white;*/
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1.25rem;
+    }
+
+    .card {
+        min-height: 400px;
+        width: 800px;
+        margin-left: 50px;
+    }
+
+    .card {
+        transition: text-shadow 3s linear;
+        background-color: #ffff;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        background-clip: border-box;
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+    }
+
+        .card:hover {
+            box-shadow: 3px 3px 20px 0 #a4b9b4, -3px -3px 20px 0 #a4b9b4;
+        }
+
+    .cover, .contain {
+        width: 100%;
+        height: 100%;
+        object-position: center;
+    }
+
+    .post .post-description .fullsizeimg, .post .post-description .fullsizevid {
+        max-height: 600px;
+        margin-left: 0;
+        width: calc(100% );
+        overflow: hidden;
+        margin-bottom: 5px;
+        margin-top: -10px;
+    }
+
+    .cover {
+        object-fit: cover;
+    }
+
+    img {
+        border-radius: 60px;
+        width: 60px;
+        height: 60px;
+        float: left;
+    }
+
+    .lcontent {
+        padding: 0 200px 0 0;
+        position: relative;
+        margin-top: 10px;
+        float: left;
+    }
+
+    .title {
+        font-size: 16px;
+        line-height: 1;
+        margin-bottom: 10px;
+        display: inline-block;
+        max-width: 680px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .desc {
+        color: #6d757a;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100%;
+        text-overflow: ellipsis;
+        line-height: 20px;
+        margin-left: 5px;
+        float: left;
+    }
+
+    .name {
+        margin-left: 10px;
+    }
+
+    .c-content {
+        width: 500px;
+        height: 230px;
+        /*border:1px red solid;*/
+        margin-top: 70px;
+        margin-left: 90px;
+    }
+
+    .content-full {
+        width: 100%;
+        height: auto;
+        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 7;
+    }
+
+    .div-load-more {
+        position: relative;
+        width: 100%;
+        height: 130px;
+        text-align: center;
+    }
+
+    .Evaluate {
+        width: 790px;
+        margin-left: -15px;
+    }
+
+    .like {
+        width: 80px;
+        height: 30px;
+        float: right;
+    }
+
+    .post-add-comment {
+        transition: all .2s ease;
+        display: flex;
+        position: relative;
+        margin-bottom: 20px;
+        overflow: hidden;
+        width: 700px;
+        float: left;
+    }
+
+    .uk-grid {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: unset;
+    }
+
+    .uk-grid {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        position: unset;
+    }
+
+    .post-add-comment-text-area {
+        background-color: #f1f3f4;
+        margin-left: 10px;
+        width: 100%;
+        border-radius: 50px;
+        overflow: hidden;
+        padding: 3px 15px;
+    }
+
+        .post-add-comment-text-area input {
+            border: 0;
+            width: 100%;
+            height: 30px;
+            background: #f1f3f4;
+            outline: 0;
+        }
+
+    input[type="text" i] {
+        padding: 1px 2px;
+    }
+
+    user agent stylesheet
+    input {
+        text-rendering: auto;
+        letter-spacing: normal;
+        word-spacing: normal;
+        text-transform: none;
+        text-indent: 0px;
+        text-shadow: none;
+        display: inline-block;
+        text-align: start;
+        cursor: text;
+        margin: 0em;
+    }
+
+    .icons {
+        position: absolute;
+        right: 15px;
+        top: 8px;
+    }
+
+        .icons span {
+            font-size: 19px;
+            margin-left: 10px;
+            margin-bottom: 50px;
+        }
+</style>
+<div class="row">
+    <div class="col-md-12">
+
+        @foreach (var item in Model)
+        {
+            <div class="card mb-4 text-center @("theDongtai"+item.dongtaiid)">
+                <div class="card-body">
+                    @*头像及发表时间*@
+                    <div class="c-header">
+                        <img src="@item.Portrait" alt="Alternate Text" />
+                        <div class="lcontent">
+                            <a href="https://localhost:44372/User/Center/@item.Userid" target="_blank" class="title">
+                                <span class="name">@item.UserName</span>
+                            </a>
+                            <small class="desc">@item.Time</small>
+                        </div>
+                    </div>
+                    <script src="~/assets/js/jquery-3.5.1.min.js"></script>
+                    @{
+                        if (item.UserName == Session["username"].ToString())
+                        {
+                            <div class="c-dropdown js-dropdown" onclick="deleteDongtai('@item.dongtaiid')">
+                                <input type="hidden" name="Framework" id="Framework" class="js-dropdown__input">
+                                <span class="c-button">删除</span>
+                            </div>
+                        }
+                    }
+
+                    @*发表内容*@
+                    <div class="c-content">
+                        @*文字内容*@
+                        <div class="content-full">
+                            <a href="https://localhost:44372/Community/DynamicDetail/@item.dongtaiid" style="color:black; text-decoration:none">
+                                @item.Content
+                            </a>
+                        </div>
+
+                    </div>
+                    @*评论分享*@
+                    <div class="Evaluate">
+                        <div class="post-add-comment" onclick="location='https://localhost:44372/Community/DynamicDetail/@item.dongtaiid'">
+                            <div class="post-add-comment-text-area">
+                                <input type="text" placeholder="发表一条友善的评论...">
+                            </div>
+                        </div>
+                        <div class="like" onclick="addDongtaiLike(@item.dongtaiid)">
+                            <img src="~/public/static/uploads/img/点赞.png" style="border-radius:0px;height:30px;width:30px;margin-left:10px;cursor:pointer" />
+                            <div class="like-num @("DongtaiLikeNum"+item.dongtaiid)" style="font-size: 8px;margin-top: 14px;margin-right: 10px;">@item.Likenum</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <script>
+        //点赞
+        function addDongtaiLike(id) {
+            $.ajax({
+                url: "/Community/AddLike",
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (res) {
+                    if (res == "login") {
+                        alert("请先登录")
+                        sessionStorage.setItem('thePass', window.location.href);
+                        window.location.href= "/home/login";
+                    } else {
+                        $(".DongtaiLikeNum" + id).html(res)
+                    }
+                }
+
+            })
+        }
+
+        //删除动态
+        function deleteDongtai(id) {
+            var alarm = '确认删除id为' + id + '的动态？';
+            if (confirm(alarm) == true) {
+                $.ajax({
+                    type: "post",
+                    url: "/Community/DeleteDongtai",
+                    data: {
+                        id: id,
+                    },
+                    success: function (data) {
+                        if (data == 'Fail') {
+                            alert('淦，报错')
+                        }
+                        else {
+                            $(".theDongtai" + id).remove();
+                        }
+                    },
+                })
+            }
+            else {
+                return;
+            }
+
+        }
+    </script>
+</div>

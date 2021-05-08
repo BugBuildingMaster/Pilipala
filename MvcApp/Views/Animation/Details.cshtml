@@ -1,0 +1,387 @@
+﻿@model  Models.Animation
+
+@{
+}
+
+<style type="text/css">
+    .p1 {
+        font-size: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        line-height: 1.5;
+        -webkit-box-orient: vertical;
+    }
+
+    .lazy-img {
+        width: 100%;
+    }
+
+    .A_aplot {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+    }
+
+        .A_aplot .content {
+            width: 94%;
+            height: 150px;
+        }
+
+        .A_aplot .title {
+            width: 94%;
+            font-size: large;
+            font-weight: bold;
+        }
+
+    #evaluation {
+        align-items: center;
+        flex-direction: column;
+        margin-top: 20px;
+    }
+</style>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Luba">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="HiBootstrap">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="referrer" content="no-referrer">
+    <title></title>
+    <link href="~/assets/css/fanjudetails.css" rel="stylesheet" />
+    <script src="~/Scripts/axios.js"></script>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axioshttp.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        function loadPlot(id) {
+            $.ajax({
+                type: "get",
+                url: '/Animation/GetPlot',
+                data: {
+                    id: id,
+                },
+                success: function (data) {
+                    var cdata = data.replace(/\\n/g, '<br/>'); //\为转义字符 g表示全局
+                    $(".plot").html(cdata)
+                }
+            })
+        }
+    </script>
+</head>
+<body class="container-fluid">
+    @Html.Action("Recommend", "Animation", new { name = ViewBag.username })
+    <div class="container">
+        <div class="head_channel">
+            <div class="indent clearfix">
+                <div class="subjectwrap clearfix">
+
+                    <!-- @*头部信息 例：番剧图、演员、集数*@ -->
+                    <div class="subject clearfix" style=" margin-top: 20px;">
+                        <div class="mainpic" style="float:left;">
+                            <a class="nbgnbg" href="#" title="点击看更多海报">
+                                <image onload="loadPlot(@Model.Animationid)" src="@Model.AimagePic" title="点击看更多海报" alt="@Model.Aname" />
+                            </a>
+                        </div>
+
+                        <div class="jianjie" style="float:left; padding-right:10px">
+                            <h2 style="font-size: 28px;margin-left: 15px; height:99px;">
+                                @Model.Aname
+                            </h2>
+                            <div class="A_aplot">
+                                <div class="title">剧情简介</div>
+                                <div class="content">
+                                    <p class="p1 plot">
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- 影评、分享 -->
+                            <div class="daxing1">
+                                <ul class="ul_subject_menu bicelink color_gray pt6 clearfix">
+                                    <li>
+                                        <img src="~/public/static/uploads/img/聊天%20气泡.png" />&nbsp;
+                                        <a onclick="changeSpan()" class="j a_show_login" href="#" rel="nofollow">写短评</a>
+                                    </li>
+                                    <li>
+                                        <img src="~/public/static/uploads/img/笔1.png" />&nbsp;
+                                        <a onclick="" class="j a_show_login writeEva" href="#" rel="nofollow">写影评</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- @*番剧评分及评分人数*@ -->
+                        <div class="rating_wrap" style="float:right;margin-top:-250px;margin-right:50px">
+                            <div class="clearfix">
+                                <div class="rating_logo ll">番剧评分</div>
+                            </div>
+                            <div class="rating_self clearfix" typeof="v:Rating">
+                                <strong class="ll rating_num" property="v:average">@Model.Score</strong>
+                                <span property="v:best" content="10.0"></span>
+                                <div class="rating_right ">
+                                    <div class="ll bigstar bigstar45">
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" id="showEva" onclick="showTheEva()">点击查看测评</button>
+                                <button type="button" id="hideEva" onclick="hideTheEva()">点击查看信息</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="blur_bj">
+                <img src="~/public/static/uploads/img/头部背景1.jpg">
+            </div>
+        </div>
+        <div class="main">
+            <div id="infos">
+                <div class="btn">
+                    <!-- Tab标题 -->
+                    <span class="spanList" v-on:click="showComment"><img src="~/public/static/uploads/img/图%20片-1.png">照片墙</span>
+                    <span class="spanList thecon" v-on:click="showComment"><img src="~/public/static/uploads/img/评%20论.png">评&nbsp&nbsp&nbsp&nbsp&nbsp论</span>
+                    <span class="spanList" v-on:click="showStaff"><img src="~/public/static/uploads/img/员工表.png"> 职员表</span>
+                </div>
+                <div class="context" style="background-image: url('../../public/static/uploads/img/3.jpg');">
+                    <!-- Tab内容 -->
+                    <!--图片-->
+                    <div class="con" id="photo">
+                    </div>
+                    <!--评论-->
+                    <div class="con TheComment" v-show="isShowC">
+                        <div class="pinglun">
+                            <div class="renmen1">
+                                <div class="tab-hd">
+                                    <a class="hot-comments-tab on" href="comments" data-id="hot">热门</a>&nbsp;/&nbsp;
+                                    <a class="new-comments-tab" href="comments?sort=time" data-id="new">最新</a>
+                                    <div id="addEvaluation" class="comment_btn j a_show_login2">
+                                        <img src="img/笔1.png" />
+                                        <span>我要写测评</span><br />
+                                    </div>
+                                </div>
+                                <div>
+                                    <button>点我</button>
+                                </div>
+                            </div>
+                            <div class="juping2">
+                                <div class="review-list">
+                                    @using (Ajax.BeginForm("AddComment", "Animation", new AjaxOptions { HttpMethod = "post", OnSuccess = "Comment", UpdateTargetId = "aresult" }))
+                                    {
+                                        <input type="hidden" name="id" value="@Model.Animationid" />
+                                        <textarea rows="4" cols="300" name="content"> </textarea>
+                                        <br />
+                                        <label>
+                                            输入评分
+                                            <input type="number" max="10" min="0" name="score" value="@Model.Score" />
+                                        </label>
+                                        <input type="submit" value="发表评论" />
+                                    }
+                                    <div id="aresult">
+                                        @Html.Action("ShortComment", "Animation", new { id = Model.Animationid })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!--演员表-->
+                    <div class="con TheInfo">
+                        <div class="xxinfo">
+                            <span><span class='xxpl'>导演</span>: <span class='attrs'>@Model.Adirector</span></span><br />
+                            <span><span class='xxpl'>编剧</span>: <span class='attrs'><a href="#">@Model.Awriter</a></span></span><br />
+                            <span class="actor">
+                                <span class='xxpl'>主演</span>: <span class='attrs'>
+                                    @Model.Amainactor
+                                </span>
+                            </span><br />
+                            <span class="xxpl">类型:</span> <span property="v:genre">喜剧</span> / <span property="v:genre">爱情</span> /
+                            <span class="xxpl">制片国家/地区:</span> @Model.Alocation<br />
+                            <span class="xxpl">语言:</span> @Model.Alanguage<br />
+                            <span class="xxpl">首播:</span> <span property="v:initialReleaseDate" content="2020-04-11(日本)">@Model.Adate</span><br />
+
+                            <span class="xxpl">集数:</span>@Model.Asetnumber<br />
+                            <span class="xxpl">单集片长:</span>@Model.AsetTime<br />
+                            <span class="xxpl">又名:</span>@Model.Anickname<br />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="evaluation" style="display:none;">
+            @Html.Action("Evaluation", "Animation", new { id = ViewBag.id })
+        </div>
+
+    </div>
+    <script>
+        $("#hideEva").hide()
+        //获取url参数
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) { return pair[1]; }
+            }
+            return (false);
+        }
+
+        function lazyLoad(images) {
+            // 2.1 获取可视窗口的高度
+            var viewHeight = window.innerHeight;
+            // 2.3 获取浏览器滚动条的高度（也就是内容向上滚动了多高）
+            var scrollTop = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
+            for (var i = 0; i < images.length; i++) {
+                // 这里使用立即执行函数，支持ES6的环境可以直接使用let i = 0，具体原因可自行百度立即执行函数
+                (function (i) {
+                    // 2.2 获取图片距离视图窗口顶部的距离
+                    var imageToTop = images[i].offsetTop;
+                    // 2.4 判断图片是否可见，如果图片距可视窗口顶部的距离小于可视窗口的高度与滚动条高度之和，则该图片可见
+                    if (imageToTop - viewHeight - scrollTop < 0) {
+                        // 制造图片延迟加载的动画效果
+                        setTimeout(function () {
+                            // 2.5 设置图片路径
+                            // 获取真实图片的路径
+                            var realSrc = images[i].getAttribute('data-src');
+                            // 设置图片的路径
+                            images[i].setAttribute('src', realSrc);
+                        }, 500)
+                    }
+                })(i)
+            }
+        }
+
+
+        $(function () {
+            $.ajax({
+                type: "get",
+                url: "/animation/Photoes",
+                data: {
+                    id: getQueryVariable('id')
+                },
+                success: function (res) {
+                    $.each(res, function (index, value) {
+                        var imgSrc = "<img class='lazy-img' src='../../public/static/uploads/img/loading.jpg' data-src='" + value + "'/>"
+                        $("#photo").append(imgSrc)
+                    });
+
+                    var imgs = document.getElementsByClassName('lazy-img');
+
+                    // 加载首屏的图片
+                    lazyLoad(imgs);
+
+                    // 窗口滚动时，触发懒加载函数
+                    window.onscroll = function () {
+                        lazyLoad(imgs);
+                    }
+
+
+                },
+                error: function (e) {
+                    console.log(e.status)
+                    console.log(e.responseText)
+                }
+            })
+        });
+
+        //短评回调
+        function Comment(data) {
+            if (data == "login") {
+                alert("请先登录！");
+                $("#aresult").html("")
+            }
+            else if (data == "fail") {
+                alert("评论失败！");
+            }
+            else {
+                $("#aresult").html(data);
+                alert("评论成功！");
+            }
+        }
+
+        function changeSpan() {
+            $(".con").hide();
+            $(".TheComment").show();
+            $(".spanList").removeClass("active");
+            $(".thecon").addClass("active");
+            hideTheEva();
+        }
+
+        //显示测评
+        function showTheEva() {
+            $(".main").hide()
+            document.getElementById("evaluation").style.display = "flex";
+            $("#hideEva").show()
+            $("#showEva").hide()
+        }
+        function hideTheEva() {
+            $(".main").show()
+            document.getElementById("evaluation").style.display = "none";
+            $("#hideEva").hide()
+            $("#showEva").show()
+        }
+        //切换评论\详情
+        $(".con").eq(0).show();
+        $(".btn span").click(function () {
+            var num = $(".btn span").index(this);
+            $(".con").hide();
+            $(".con").eq(num).show();
+            $(this).attr("class", "active spanList");
+            $(this).siblings().attr("class", "spanList");
+        })
+        //验证用户是否登录
+        $("#addEvaluation").click(function () {
+            $.ajax({
+                type: "get",
+                url: "/animation/isuserlogin",
+                success: function (data) {
+                    if (data == 'login') {
+                        alert('请先登录')
+                        window.location.href = "/home/login"
+                    }
+                    else if (data == 'success') {
+                        window.location.href = "/Evaluationid/AddEvaluationid/" + getQueryVariable('id')
+                    }
+                },
+                error: function (e) {
+                    console.log(e.status)
+                    console.log(e.responseText)
+                }
+            })
+        })
+        $(".writeEva").click(function () {
+            $.ajax({
+                type: "get",
+                url: "/animation/isuserlogin",
+                success: function (data) {
+                    if (data == 'login') {
+                        alert('请先登录')
+                        window.location.href = "/home/login"
+                    }
+                    else if (data == 'success') {
+                        window.location.href = "/Evaluationid/AddEvaluationid/" + getQueryVariable('id')
+                    }
+                },
+                error: function (e) {
+                    console.log(e.status)
+                    console.log(e.responseText)
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
+
+
+
+

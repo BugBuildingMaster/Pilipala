@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Models.tempCommunityEvaluation>
+
+<style>
+    .fullsizeimg {
+        width: 90%;
+        height: auto;
+        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 7;
+    }
+</style>
+
+<script>
+    //页面加载dom架构后直接填入数据
+    function loadingConcent(id) {
+        $.ajax({
+            type: "get",
+            url: '/Search/GetEvaluation',
+            data: {
+                id: id,
+                type: 2
+            },
+            success: function (data) {
+                var cdata = data.replace(/\\n/g, '<br/>'); //\为转义字符 g表示全局
+                $("#ShortValue" + id).html(cdata + "...")
+            }
+        })
+    }
+</script>
+
+@foreach (var item in Model)
+{
+    <div class="post @("theEvaluation"+item.Evaluationid)">
+        <div class="post-heading">
+            <div class="post-avature">
+                <img src="@item.Portrait" alt="" onclick="location='https://localhost:44303/User/Center/@item.Userid'" onload="loadingConcent(@item.Evaluationid)">
+            </div>
+            <div class="post-title">
+                <h4> @item.UserName </h4>
+                <p>
+                    <font> @item.Time </font>
+                </p>
+            </div>
+            <div class="post-btn-action">
+                <span class="icon-more uil-ellipsis-h" aria-expanded="false"></span>
+                <div class="mt-0 p-2 uk-dropdown" uk-dropdown="pos: top-right;mode:hover ">
+                    <ul class="uk-nav uk-dropdown-nav">
+                        @{
+                            if (Session["username"].ToString() == item.UserName)
+                            {
+                                <li onclick="deleteEva(@item.Evaluationid)">
+                                    <span href="#" class="text-danger">
+                                        <i class="uil-trash-alt mr-1"></i>
+                                        <font>删除</font>
+                                    </span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <span href="#" class="text-danger">
+                                        <i class="uil-trash-alt mr-1"></i>
+                                        <font>举报</font>
+                                    </span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="post-description">
+            <div class="fullsizeimg" id="@("ShortValue"+item.Evaluationid)">
+
+            </div>
+
+            <div class="post-state-details">
+                <a href="@Url.Action("Details","Evaluationid",new { id = item.Evaluationid })" style="float:right;">
+                    查看详情
+                </a>
+            </div>
+
+        </div>
+
+        <div class="post-state">
+            <div class="post-state-btns" onclick="EvaluationAddLike(@item.Evaluationid)">
+                <i class="uil-thumbs-up"></i>
+                <font id="@("EvaLike"+item.Evaluationid)"> @item.Likenum</font><span> 赞 </span>
+            </div>
+            <div class="post-state-btns" onclick="EvaluationAddDislike(@item.Evaluationid)">
+                <i class="uil-thumbs-down"></i>
+                <font id="@("EvaDislike"+item.Evaluationid)"> @item.Dislikenum</font><span> 踩 </span>
+            </div>
+        </div>
+    </div>
+
+}

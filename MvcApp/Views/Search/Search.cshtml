@@ -1,0 +1,292 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Luba">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="HiBootstrap">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="referrer" content="no-referrer">
+    <link href="~/assets/css/style.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+    <script src="~/Scripts/axioshttp.js"></script>
+    <title>Search</title>
+    <style>
+        .setMiddle {
+            width: 50rem;
+            margin: 0 auto;
+        }
+
+        .theShadow {
+            box-shadow: 0 2px 8px;
+        }
+
+        .TopStatusBar {
+            width: 100%;
+            height: 5rem;
+            background-color: paleturquoise;
+            position: initial;
+            z-index: 10;
+        }
+
+        .logoBox {
+            width: 8rem;
+            float: left;
+        }
+
+        .mainForm {
+            padding-top: 0.95rem;
+            float: left;
+        }
+
+        .search_input {
+            width: 35.5rem;
+            height: 2.5rem;
+            border-radius: 10px;
+            border: grey 2px solid;
+        }
+
+        .inp_sub {
+            background-color: rgb(0, 148, 255);
+            color: rgb(255, 255, 255);
+            border: hidden;
+            padding: 7px 10px 7px 10px;
+            border-radius: 10%;
+            background-color: #0094ff;
+            color: #fff;
+            border: hidden;
+            width: 4.8rem;
+            height: 2.8rem;
+            font-size: 1rem;
+        }
+
+        .LoGo {
+            width: 100%;
+        }
+
+        input {
+            outline: none;
+        }
+
+        .navbar-right-inner {
+            position: absolute;
+            right: 3rem;
+            width: 8rem;
+            height: 5rem;
+            justify-content: space-between;
+            margin: 0 -10px;
+            align-items: center;
+            -webkit-box-pack: justify;
+            -webkit-box-align: center;
+            display: -webkit-box;
+        }
+
+        .navbar-right-item {
+            padding: 0 10px 10px;
+        }
+
+        .showResult {
+            margin-left: 8rem;
+            width: 45rem;
+        }
+
+        .choiceBox {
+            width: 50rem;
+            height: 3rem;
+            margin-left: 8rem;
+        }
+
+        .pright {
+            width: 100%;
+            height: 100%;
+        }
+
+        .highlight {
+            border-bottom: 3px solid;
+        }
+
+        .smallChoice {
+            font-size: 22px;
+            margin-right: 2px;
+            width: 33.3%;
+            text-align: center;
+            /* text-align-last: justify; */
+            color: black;
+        }
+
+        .choiceBoxBack {
+            background-color: aliceblue;
+            width: 100%;
+            height: 3rem;
+            padding-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .smallChoice:hover {
+            color: #0d60f7;
+            border-bottom: 3px solid;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        document.onreadystatechange = function () {
+            loading();
+            ChangeStyle();
+        }
+
+        function loading() {
+            var list = ['https://localhost:44372/public/static/uploads/openinggif/smalllogo1.gif', 'https://localhost:44372/public/static/uploads/openinggif/smalllogo2.gif'];
+            document.getElementById('logoimg').addEventListener('mouseover', function () {
+                var ranLogo = list[Math.round(Math.random())];
+                document.getElementById('logoimg').src = ranLogo;
+            });
+        }
+        addEventListener('mousewheel', function () {
+            var height = document.documentElement.scrollTop || document.body.scrollTop;
+            var StatusBarheight = 20;
+            if (height > StatusBarheight) {
+                $(".TopStatusBar").addClass("theShadow");
+                $(".TopStatusBar").css('position', 'fixed');
+            } else {
+                $(".TopStatusBar").removeClass("theShadow");
+                $(".TopStatusBar").css('position', 'initial');
+
+            }
+        })
+
+        function ChangeStyle() {
+            var winWidth = window.innerWidth;
+            if (winWidth > 1440) {
+                $(".leftBox").addClass("setMiddle");
+                $(".choiceBox").addClass("setMiddle");
+                $(".choiceBox").css('margin-left', 'auto');
+                $(".showResult").addClass("setMiddle");
+                $(".showResult").css('width', '45rem');
+                $(".showResult").css('margin-left', 'auto');
+
+            }
+            else {
+                $(".leftBox").removeClass("setMiddle");
+                $(".choiceBox").removeClass("setMiddle");
+                $(".choiceBox").css('margin-left', '8rem');
+                $(".showResult").css('margin-left', '8rem');
+            }
+        }
+
+        addEventListener('resize', function () {
+            ChangeStyle();
+        })
+    </script>
+    @* 顶部栏 *@
+    <div class="TopStatusBar">
+        <div class="leftBox">
+            <div class="logoBox">
+                <a href="https://localhost:44372/Animation/index">
+                    <img id="logoimg" class="LoGo" alt="logo" src="~/public/static/uploads/openinggif/smalllogo1.gif">
+                </a>
+            </div>
+            <div class="mainForm">
+                <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
+                    <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
+                    <input type="hidden" name="sid" value="">
+                    <input class="inp_sub" type="submit" value="搜索" id="sub">
+                </form>
+                <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+            </div>
+        </div>
+        @* 登录 *@
+        <div class="navbar-top-action-item navbar-top-right">
+            <script>
+                function leaveUrl() {
+                    sessionStorage.setItem('thePass', window.location.href);
+                }
+            </script>
+            <div class="navbar-right-inner">
+                <div class="navbar-right-item">
+                    <div class="navbar-right-action">
+                        @{
+                            if (Session["username"] == null)
+                            {
+                                <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text" onclick="leaveUrl()">
+                                    @Html.ActionLink("登录", "Login", "Users")
+                                </div>
+                                <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item" onclick="leaveUrl()">
+                                    @Html.ActionLink("注册", "Regist1", "Users")
+                                </div>
+                            }
+                            else
+                            {
+                                @Ajax.ActionLink("注销", "LoginOut", "Users", new { }, new AjaxOptions()
+                           {
+                               InsertionMode = InsertionMode.Replace,
+                               HttpMethod = "Post",
+                               OnSuccess = "Loginout"
+                           }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
+                                <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                                    <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* 选项栏 *@
+    <div class="choiceBoxBack">
+        <div class="user-center__nav choiceBox d-flex justify-content-around text-white">
+            <div class="smallChoice p-2">测评</div>
+
+            <div class="smallChoice p-2">动漫</div>
+
+            <div class="smallChoice p-2">用户</div>
+        </div>
+    </div>
+    <div class="showResult">
+        <div class="theEvaluationSearch pright">
+            @Html.Action("SearchEvaluation", "Search")
+        </div>
+        <div class="theAnimationSearch pright" style="display:none">
+            @Html.Action("SearchAnimation", "Search")
+        </div>
+        <div class="theUsersSearch pright" style="display:none">
+            @Html.Action("SearchUsers", "Search")
+        </div>
+    </div>
+    <script>
+        function Loginout(data) {
+            location.reload();
+        }
+
+        $(function () {
+            $(".user-center__nav div").each(function (index) {
+                $(this).click(function (e) {
+                    //加高亮
+                    $(this).addClass("highlight").siblings().removeClass("highlight");
+                    $(".pright").eq(index).show().siblings(".pright").hide();
+                })
+            })
+        })
+
+        function addSearch() {
+            if ($('#input_text').val() == "") {
+                window.location.href = "/Search/OriginSearch";
+            }
+            else {
+                const url = "/Search/Search?KeyWord=" + $('#input_text').val()
+                window.location.href = url;
+            }
+        }
+    </script>
+</body>
+</html>

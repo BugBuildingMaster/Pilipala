@@ -1,0 +1,19 @@
+﻿@model Models.Animation
+
+<style>
+    .Watch_Animation {
+        height: 100px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+</style>
+
+<div> <a href="https://localhost:44372/Animation/details?id=@Model.Animationid">@Model.Aname</a> </div>
+<div>
+    <label>评分：@Model.Score</label>
+    <label>@Model.Awriter</label>
+</div>
+
+
+

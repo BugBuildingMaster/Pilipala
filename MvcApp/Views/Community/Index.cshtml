@@ -1,0 +1,510 @@
+﻿@{
+}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+    <title>社区论坛</title>
+    <link href="~/assets/css/Community.css" rel="stylesheet" />
+    <link href="~/assets/css/uikit.css" rel="stylesheet" />
+    <link href="~/assets/css/icons.css" rel="stylesheet" />
+    <script src="~/assets/js/simplebar.js"></script>
+    <script src="~/assets/js/uikit.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+</head>
+
+<style>
+    /*去掉按钮焦点框*/
+    .button {
+        font-weight: 600;
+        text-transform: capitalize;
+        display: inline-block;
+        user-select: none;
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        position: relative;
+        background: #dde9ff;
+        font-size: 15px;
+        line-height: 36px;
+        padding: 0 20px;
+        border-radius: 6px;
+        margin: 0;
+        height: 37px;
+        transition: all 0.08s ease 0s;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus {
+        outline: 5px auto -webkit-focus-ring-color;
+        outline-offset: -2px;
+        outline: none;
+    }
+
+    /*导航*/
+    .nav ul li span a {
+        transition: all 0.3s ease 0s;
+    }
+
+    .nav-a {
+        margin-left: 8rem;
+        font-size: 1.3rem;
+    }
+
+    .fr {
+        float: right;
+    }
+
+    .nav ul {
+        list-style: none;
+    }
+
+        .nav ul li {
+            position: relative;
+            float: left;
+            -webkit-perspective: 60px;
+            -moz-perspective: 60px;
+            -ms-perspective: 60px;
+            perspective: 60px;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            list-style: none;
+            z-index: 999
+        }
+
+            .nav ul li span a:hover {
+                background-color: #3399FF;
+                color: #FFFFFF;
+                font-weight: 500;
+                font-size: 23px;
+                border-radius: 10px;
+            }
+
+            .nav ul li span a {
+                display: block;
+                padding: 0 25px;
+                cursor: pointer;
+            }
+
+            .nav ul li.on span a {
+                font-weight: bold;
+                color: #333;
+            }
+
+                .nav ul li.on span a:hover {
+                    color: #FFFFFF;
+                    font-size: 23px;
+                }
+
+            .nav ul li a:hover {
+                text-decoration: none;
+                color: #FFFFFF;
+            }
+
+    .post .post-description .fullsizeimg, .post .post-description .fullsizevid {
+        max-height: 600px;
+        margin-left: 0;
+        width: calc(100% );
+        overflow: hidden;
+        margin-bottom: 5px;
+        margin-top: -10px;
+    }
+
+    #aresult div {
+        margin-left: 0px;
+    }
+
+    .uk-input {
+        outline: none;
+    }
+
+    input {
+        outline: none;
+    }
+
+    .box1 {
+        width: 190px;
+        height: 120px;
+        position: fixed;
+        left: 10px;
+        top: 80%;
+        background-color: #FFFFFF;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.1) inset;
+        border-radius: 6px;
+    }
+
+    .box {
+        font-size: 20px;
+        height: 40px;
+        width: 190px;
+        text-align: center;
+        cursor: pointer;
+        line-height: 40px;
+        border-radius: 3px;
+    }
+
+    .aa {
+        background-color: #ecebeb;
+    }
+
+    .box2 a {
+        color: black;
+    }
+
+        .box2 a:hover {
+            color: #FFFFFF;
+        }
+
+    .box2:hover {
+        background-color: #3399FF;
+    }
+
+    .AllEvaluation {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .AllShortComment {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .search_input {
+        width: 35.5rem;
+        height: 2.5rem;
+        border-radius: 10px;
+        border: grey 2px solid;
+    }
+
+    .inp_sub {
+        background-color: rgb(0, 148, 255);
+        color: rgb(255, 255, 255);
+        border: hidden;
+        padding: 7px 10px 7px 10px;
+        border-radius: 10%;
+        background-color: #0094ff;
+        color: #fff;
+        border: hidden;
+        width: 4.8rem;
+        height: 2.8rem;
+        font-size: 1rem;
+    }
+</style>
+
+<body>
+    <div class="main_content">
+        <!-- header -->
+        <div class="main_header">
+            <header>
+                <div class="header-innr">
+                    <!-- 搜索-->
+                    <div class="head_search">
+                        <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
+                            <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
+                            <input type="hidden" name="sid" value="">
+                            <input class="inp_sub" type="submit" value="搜索" id="sub">
+                        </form>
+                        <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+                    </div>
+                    <!--导航栏-->
+                    <div class="nav nav-a fr">
+                        <ul>
+                            <li data-cid="0">
+                                <span> @Html.ActionLink("首页", "Index", "Animation")</span>
+                            </li>
+                            <li data-cid="19">
+                                <span> @Html.ActionLink("番剧", "Index", "Animation")</span>
+                            </li>
+                            <li data-cid="30">
+                                <span> @Html.ActionLink("排行榜", "Rankinglist", "RankingList")</span>
+                            </li>
+                            <li data-cid="36" class="on">
+                                <span> @Html.ActionLink("社区论坛", "index", "Community")</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 用户 -->
+                    <div class="head_user">
+                        <!-- 用户头像 -->
+                        <a class="opts_account" href="@Url.Action("Center","User",new { id=Session["userid"]})" aria-expanded="false">
+                            <img src="@Html.Action("ThePortrait","Community")" alt="">
+                        </a>
+                    </div>
+
+                </div>
+                <!-- 头部内容结束 -->
+            </header>
+
+        </div>
+        @*动态页面*@
+        <div class="main_content_inner Dynamic pright">
+            <div class="section-small">
+
+                <div uk-grid="" class="uk-grid">
+
+                    <div class="uk-width-2-3@m fead-area uk-first-column">
+
+                        <div class="post-newer mt-lg-2">
+
+                            <div class="post-new" uk-toggle="target: body ; cls: post-focus">
+                                <div class="post-new-media">
+                                    <div class="post-new-media-user">
+                                        <img src="@Html.Action("ThePortrait","Community")" alt="">
+                                    </div>
+
+
+                                    <div class="post-new-media-input">
+                                        <input type="text" class="uk-input" placeholder="发表你的动态">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="post-pop">
+
+                            <div class="post-new-overyly" uk-toggle="target: body ; cls: post-focus"></div>
+
+                            <div class="post-new uk-animation-slide-top-small">
+
+
+                                <div class="post-new-header">
+
+                                    <h4> 发表一个新动态</h4>
+
+                                    <!-- close button-->
+                                    <span class="post-new-btn-close" uk-toggle="target: body ; cls: post-focus" uk-tooltip="title:Close; pos: left " title="" aria-expanded="true"></span>
+
+                                </div>
+
+                                <div class="post-new-media">
+                                    @*发表动态*@
+                                    @using (Ajax.BeginForm("AddDynamic", "Community", new AjaxOptions { HttpMethod = "post", OnSuccess = "addDynamic", UpdateTargetId = "aresult" }, new { @style = "width:100%" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.ValidationSummary(true)
+                                        <div class="post-new-media-user">
+                                            <img src="@Html.Action("ThePortrait","Community")" alt="">
+                                        </div>
+
+                                        <div style="margin-bottom:20px" class="post-new-media-input">
+                                            <textarea style="height: 70px;" type="text" name="content" class="uk-input" placeholder="发一条你的动态"></textarea>
+                                        </div>
+
+                                        <div class="uk-flex uk-flex-between">
+                                            <button type="submit" class="button primary px-6"> 发表 </button>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div id="aresult">
+                            @Html.Action("AllDynamic", "Community")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*测评页面*@
+        <div class="AllEvaluation pright" style="display:none">
+            @Html.Action("AllEvaluation", "Community")
+        </div>
+        @*短评页面*@
+        <div class="AllShortComment pright" style="display:none">
+            @Html.Action("AllShortComment", "Community")
+        </div>
+        <div class="box1">
+            <div class="box aa">
+                个 人 动 态
+            </div>
+            <div class="box">
+                番 剧 测 评
+            </div>
+            <div class="box">
+                番 剧 短 评
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addSearch() {
+            if ($('#input_text').val() == "") {
+                window.location.href = "/Search/OriginSearch";
+            }
+            else {
+                const url = "/Search/Search?KeyWord=" + $('#input_text').val()
+                window.location.href = url;
+            }
+        }
+
+        //选项栏选择高亮
+        $(function () {
+            $(".box1 .box").each(function (index) {
+                $(this).click(function (e) {
+                    //加高亮
+                    $(this).addClass("aa").siblings().removeClass("aa");
+                    $(".pright").eq(index).show().siblings(".pright").hide();
+                })
+            })
+        })
+
+        //点赞
+        function addLike(id) {
+            $.ajax({
+                url: "/Community/AddLike",
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (res) {
+                    if (res == "login") {
+                        alert("请先登录");
+                        sessionStorage.setItem('thePass', window.location.href);
+                        window.location.href = "/home/login";
+                    } else {
+                        $("#like" + id).html(res);
+                    }
+                }
+
+            })
+        }
+
+        //测评点赞
+        function EvaluationAddLike(id) {
+            $.ajax({
+                url: "/Evaluationid/AddLike",
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (res) {
+                    if (res == "login") {
+                        alert("请先登录");
+                        sessionStorage.setItem('thePass', window.location.href);
+                        window.location.href = "/home/login";
+                    } else {
+                        $("#EvaLike" + id).html(res);
+                    }
+                }
+            })
+        }
+
+        //测评点踩
+        function EvaluationAddDislike(id) {
+            $.ajax({
+                url: "/Evaluationid/AdddisLike",
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (res) {
+                    if (res == "login") {
+                        alert("请先登录");
+                        sessionStorage.setItem('thePass', window.location.href);
+                        window.location.href = "/home/login";
+                    } else {
+                        $("#EvaDislike" + id).html(res);
+                    }
+                }
+            })
+        }
+
+        //短评点赞
+        function ShortCommentAddlike(id) {
+            $.ajax({
+                url: "/Community/ShortCommentAddLike",
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (res) {
+                    if (res == "login") {
+                        alert("请先登录");
+                        sessionStorage.setItem('thePass', window.location.href);
+                        window.location.href = "/home/login";
+                    } else {
+                        $("#short" + id).html(res);
+                    }
+                }
+            })
+        }
+
+        //删除动态
+        function deleteDongtai(id) {
+            var alarm = '确认删除id为' + id + '的动态？';
+            if (confirm(alarm) == true) {
+                $.ajax({
+                    type: "post",
+                    url: "/Community/DeleteDongtai",
+                    data: {
+                        id: id,
+                    },
+                    success: function (data) {
+                        if (data == 'Fail') {
+                            alert('淦，报错')
+                        }
+                        else {
+                            $("#theDongtai" + id).remove();
+                        }
+                    },
+                })
+            }
+            else {
+                return;
+            }
+        }
+
+        //删除测评
+        function deleteEva(id) {
+            var alarm = '确认删除id为' + id + '的测评？';
+            if (confirm(alarm) == true) {
+                $.ajax({
+                    type: "post",
+                    url: "/Evaluationid/DeleteEvaluation",
+                    data: {
+                        id: id,
+                    },
+                    success: function (data) {
+                        if (data == 'Fail') {
+                            alert('淦，报错')
+                        }
+                        else {
+                            $(".theEvaluation" + id).remove();
+                        }
+                    },
+                })
+            }
+            else {
+                return;
+            }
+        }
+
+
+        //动态发布
+        function addDynamic(data) {
+            if (data == "login") {
+                alert("请先登录！");
+                sessionStorage.setItem('thePass', window.location.href);
+                window.location.href = '/home/login';
+            }
+            else if (data == "fail") {
+                alert("评论失败！");
+            }
+            else {
+                $("#aresult").html(data);
+                alert("评论成功！");
+            }
+        }
+    </script>
+</body>
+
+

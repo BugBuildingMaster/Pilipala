@@ -1,0 +1,207 @@
+﻿@model Models.Evaluation
+<link href="~/assets/css/animate.min.css" rel="stylesheet" />
+<meta name="referrer" content="no-referrer">
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<style>
+    .evaluation {
+        text-align: center;
+        font-size: medium;
+        color: dimgrey;
+    }
+
+        .evaluation p {
+            font-size: 20pt;
+            text-indent: 2em;
+            color: black;
+            margin-top: 10px;
+            line-height: 38pt;
+            letter-spacing: 1pt;
+        }
+
+        .evaluation img {
+            width: 100%;
+            display: table-cell;
+            vertical-align: middle;
+            padding: 50px;
+            border: solid 2px pink;
+            border-radius: 20px;
+            margin: 20px 0 20px 0;
+        }
+
+    .evaHeader {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .evaTitle {
+        font-size: 40px;
+        font-weight: bold;
+        margin-top: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .evaContent {
+        display: flex;
+        justify-content: space-between;
+        width: 70%;
+        padding: 0 20px 0 20px;
+        color: grey;
+        font-size: 18px;
+    }
+
+    .evalike {
+        width: 100px;
+        height: 100px;
+        background-color: white;
+        border-radius: 50%;
+        position: fixed;
+        left: 30px;
+        top: 500px;
+    }
+
+    .evadislike {
+        width: 100px;
+        height: 100px;
+        background-color: white;
+        border-radius: 50%;
+        position: fixed;
+        right: 30px;
+        top: 500px;
+    }
+</style>
+<body style="background-color:cornflowerblue">
+
+    <div onclick="addlike(@Model.Evaluationid)" class="evalike">
+        <img style="width:100%;height:100%" src="~/public/static/uploads/img/like (1).png" alt="Alternate Text" />
+    </div>
+
+    <div onclick="adddislike(@Model.Evaluationid)" class="evadislike">
+        <img style="width:100%;height:100%" src="~/public/static/uploads/img/dislike (1).png" alt="Alternate Text" />
+    </div>
+
+    <div class="container d-flex flex-column justify-content-around align-items-center" style="background-color:white">
+        <div class="evaHeader">
+            <div class="evaTitle">
+                @Model.Title
+            </div>
+            <div class="evaContent">
+                <div>作者:@Model.UserName</div>
+                <div>评分：@Model.Score</div>
+                <div id="TheLikeNmum">点赞数：@Model.Likenum</div>
+                <div id="TheDislikeNmum">点踩数：@Model.Dislikenum</div>
+                <div>发表时间：@Model.Time</div>
+            </div>
+        </div>
+        <div id="result" class="container-fluid d-flex flex-column justify-content-around align-items-center evaluation">
+
+        </div>
+        <div id="aresult" class="comment">
+            @*@Html.Action("EComment", "Evaluationid", new { id = Model.Evaluationid })*@
+        </div>
+        <div class="addcomment">
+            @using (Ajax.BeginForm("AddComment", "Evaluationid", new AjaxOptions { HttpMethod = "post", OnSuccess = "addComment", UpdateTargetId = "aresult" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                <div class="reply" style="width :700px;">
+                    <input type="hidden" class="form-control" value="@Model.Evaluationid" name="id">
+                    <input type="hidden" class="form-control" value="1" name="aid">
+
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Example textarea</label>
+                        <textarea name="content" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-info" style="margin-left :620px;margin-top :5px;">发送</button>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+
+
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+
+    function addlike(id) {
+        $.ajax({
+            url: "/Evaluationid/AddLike",
+            type: "post",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res == "login") {
+                    alert("请先登录")
+                    sessionStorage.setItem('thePass', window.location.href);
+                    window.location.href = "/home/login";
+                } else {
+                    $("#TheLikeNmum").html("点赞数：" + res);
+                }
+            }
+
+        })
+    }
+
+    function adddislike(id) {
+        $.ajax({
+            url: "/Evaluationid/AdddisLike",
+            type: "post",
+            data: {
+                id: id
+            },
+            success: function (res) {
+                if (res == "login") {
+                    alert("请先登录")
+                    sessionStorage.setItem('thePass', window.location.href);
+                    window.location.href = "/home/login";
+                } else {
+                    $("#TheDislikeNmum").html("点踩数：" + res);
+                }
+            }
+
+        })
+    }
+
+    function getValue() {
+        const url = window.location.href
+        //获取最后一个/的位置
+        var site = url.lastIndexOf("\/");
+        //截取最后一个/后的值
+        return url.substring(site + 1, url.length);
+    }
+
+    function addComment(data) {
+        if (data == "login") {
+            alert("请先登录！");
+            sessionStorage.setItem('thePass', window.location.href);
+            window.location.href = '/home/login';
+        }
+        else if (data == "fail") {
+            alert("评论失败！");
+        }
+        else {
+            $("#aresult").html(data);
+            alert("评论成功！");
+        }
+    }
+
+    //页面加载dom架构后直接填入数据
+    $(document).ready(function () {
+        $.ajax({
+            type: "get",
+            url: '/Evaluationid/GetEvaluation',
+            data: { id: getValue() },
+            success: function (data) {
+                const cdata = data.replace(/\\n/g, '<br/>'); //\为转义字符 g表示全局
+                $("#result").html(cdata)
+            }
+        })
+    })
+</script>

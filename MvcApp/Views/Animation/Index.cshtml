@@ -1,0 +1,987 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+
+}
+
+<!DOCTYPE html>
+
+<html lang="zxx">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Pilipala</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Luba">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="HiBootstrap">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="referrer" content="no-referrer">
+    <link href="~/assets/css/style.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        function loading() {
+            if (document.readyState == "complete") {
+                var div = document.getElementById('loading');
+                div.style.opacity = 1;
+                hidden(document.getElementById("loading"), 1, -0.01);
+                setTimeout('hide()', 400)
+            }
+            else {
+                setTimeout('loading()', 20);
+            }
+        }
+
+        function hide() {
+            $(".loading-div").hide();
+            $('body').css('overflow', 'scroll');
+            $(".mainbody").show();
+        }
+        document.onreadystatechange = function () {
+            if (sessionStorage.getItem('introViewed') == 'true') {
+                setTimeout('loading()', 1500);
+            } else {
+                setTimeout('loading()', 4500);
+            }
+        }
+
+        function init() {
+            $(".mainbody").hide();
+            $('body').css('overflow', 'scroll');
+            if (sessionStorage.getItem('introViewed') != 'true') {
+                $(".loading-div").show();
+                document.getElementById('opening').src = "https://localhost:44372/public/static/uploads/openinggif/logoAnimation.gif";
+                sessionStorage.setItem('introViewed', 'true');
+            }
+            else {
+                $(".loading-div").show();
+                document.getElementById('opening').src = "https://localhost:44372/public/static/uploads/openinggif/logo1.gif";
+            }
+            //logo随机
+            var list = ['https://localhost:44372/public/static/uploads/openinggif/smalllogo1.gif', 'https://localhost:44372/public/static/uploads/openinggif/smalllogo2.gif'];
+            document.getElementById('logoimg').addEventListener('mouseover', function () {
+                var ranLogo = list[Math.round(Math.random())];
+                document.getElementById('logoimg').src = ranLogo;
+            });
+        }
+
+        function hidden(o, i, s) {
+            t = setInterval(function () {
+                i += s;
+                o.style.opacity = i;
+                if (i < 0) window.clearInterval(t);
+            }, 1);
+        };
+
+        function moveToCenter() {
+            $("html, body").animate({ scrollTop: $(".theCenter").offset().top }, 1000);
+        }
+
+        function goToAnimation(id) {
+            var url = "https://localhost:44372/Animation/details?id=" + id;
+            window.location.href = url;
+        }
+    </script>
+    <style>
+        .col-sm-6 {
+            border-left: 1px solid #ddd;
+            height: 180px;
+        }
+
+        .footer-list {
+            margin-top: 20px;
+        }
+
+        .footer-content-list {
+            margin-top: 50px;
+        }
+
+        .pb-80 {
+            padding-bottom: 20px;
+        }
+
+        .pt-100 {
+            padding-top: 10px;
+        }
+
+        .trending-product-card .product-card-thumb {
+            background-color: #f5f5f5;
+            padding: 35px;
+            text-align: center;
+            position: relative;
+            margin-bottom: 0;
+            overflow: hidden;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            height: 400px;
+        }
+
+        input {
+            outline: none;
+        }
+
+        .loading-div {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .search_input {
+            width: 400px;
+            height: 40px;
+            border-radius: 10px;
+            border: grey 2px solid;
+            margin: 0 10px 0 0;
+        }
+
+        .inp_sub {
+            background-color: rgb(0, 148, 255);
+            color: rgb(255, 255, 255);
+            border: hidden;
+            padding: 7px 10px 7px 10px;
+            border-radius: 10%;
+        }
+
+        /*分页*/
+        .page-bar {
+            margin: 40px auto;
+            margin-top: 150px;
+        }
+
+        .ulflex {
+            background-color: white;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .liwhite {
+        }
+
+        ul {
+        }
+
+        ul, li {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        li {
+            list-style: none
+        }
+
+        .page-bar li:first-child > a {
+            margin-left: 0px
+        }
+
+        .page-bar a {
+            border: 1px solid #ddd;
+            text-decoration: none;
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #5D6062;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+            .page-bar a:hover {
+                background-color: #eee;
+            }
+
+            .page-bar a.banclick {
+                cursor: not-allowed;
+            }
+
+        .page-bar .active a {
+            color: #fff;
+            cursor: default;
+            background-color: #E96463;
+            border-color: #E96463;
+        }
+
+        .page-bar i {
+            font-style: normal;
+            color: #d44950;
+            margin: 0px 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body onload="init()">
+    <div class="loading-div" id="loading">
+        <img class="img" id="opening">
+    </div>
+    <div class="mainbody">
+        <div id="app">
+            <div class="topbar topbar-one">
+                <div class="container">
+                    <div class="topbar-inner">
+                        <div class="d-flex justify-content-center flex-wrap flex-md-nowrap justify-content-md-between">
+                            <div class="topbar-item">
+                                <div class="topbar-item-list">
+                                    <div class="topbar-list-content">
+                                        <p><i class="flaticon-new-email"></i><a href="mailto:info@pilipala.com">info@pilipala.com</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topbar-item">
+                                <div class="topbar-item-action">
+                                    <ul class="social-list">
+                                        <li class="social-btn social-icon-fb"><a href="#"><i class="bx bxl-facebook"></i></a></li>
+                                        <li class="social-btn social-icon-tw"><a href="#"><i class="bx bxl-twitter"></i></a></li>
+                                        <li class="social-btn social-icon-ins"><a href="#"><i class="bx bxl-instagram"></i></a></li>
+                                        <li class="social-btn social-icon-pin"><a href="#"><i class="bx bxl-pinterest-alt"></i></a></li>
+                                        <li class="social-btn social-icon-yt"><a href="#"><i class="bx bxl-youtube"></i></a></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .顶栏结束 -->
+            <!-- 头部 -->
+            <header class="header-banner header-banner-two position-relative">
+                <!-- 导航栏 -->
+                <div class="fixed-top">
+                    <div class="navbar-area navbar-area-red navbar-area-three">
+                        <!-- 移动菜单 -->
+                        <div class="main-nav">
+                            <div class="container-fluid p-0">
+                                <nav class="navbar navbar-expand-md navbar-light">
+                                    <div class="navbar-top">
+                                        <div class="container">
+                                            <a class="navbar-brand" href="https://localhost:44372">
+                                                <img id="logoimg" alt="logo" class="logo" src="~/public/static/uploads/openinggif/smalllogo1.gif">
+                                            </a>
+                                            <div class="navbar-top-action">
+                                                <div class="navbar-top-action-item navbar-support">
+                                                    <div class="navbar-support-inner">
+                                                        <div class="navbar-support-icon">
+                                                            <i class="flaticon-listen"></i>
+                                                        </div>
+                                                        <div class="navbar-support-details">
+                                                            <span>Call Us</span>
+                                                            <p><a href="tel:0020-678-1234-207">+20-678-1234-5567</a></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="navbar-top-action-item navbar-top-center">
+                                                    <div class="gbsecdivaa">
+                                                        <div class="gbsearch" style="padding-top:30px; display: block;">
+                                                            <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
+                                                                <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
+                                                                <input type="hidden" name="sid" value="">
+                                                                <input class="inp_sub" type="submit" style="background-color:#0094ff; color:#fff; border:hidden" value="搜索" id="sub">
+                                                            </form>
+                                                            <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                    function addSearch() {
+                                                        if ($('#input_text').val() == "") {
+                                                            window.location.href = "/Search/OriginSearch";
+                                                        }
+                                                        else {
+                                                            const url = "/Search/Search?KeyWord=" + $('#input_text').val()
+                                                            window.location.href = url;
+                                                        }
+                                                    }
+                                                </script>
+                                                <div class="navbar-top-action-item navbar-top-right">
+                                                    <div class="navbar-right-inner">
+                                                        <div class="navbar-right-item">
+                                                            <div class="navbar-right-action">
+                                                                @{
+                                                                    if (Session["username"] == null)
+                                                                    {
+                                                                        <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text">
+                                                                            @Html.ActionLink("登录", "Login", "Users")
+                                                                        </div>
+                                                                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                                                                            @Html.ActionLink("注册", "Register", "Users")
+                                                                        </div>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Ajax.ActionLink("注销", "LoginOut", "Users", new { }, new AjaxOptions()
+                                                                   {
+                                                                       InsertionMode = InsertionMode.Replace,
+                                                                       HttpMethod = "Post",
+                                                                       OnSuccess = "Loginout"
+                                                                   }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
+                                                                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                                                                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="navbar-main">
+                                        <div class="container">
+                                            <div class="d-flex align-items-center justify-content-between full-width">
+                                                <div class="navbar-category">
+                                                    <button>
+                                                        <i class="flaticon-menu"></i>
+                                                        所有种类
+                                                    </button>
+                                                    <div class="navbar-category-dropdown">
+                                                        <ul v-for="(item,i) in aCategory">
+                                                            <li v-on:click="btnCategory(item.Categoryname)"><a href="#category">{{item.Categoryname}}</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
+                                                    <ul class="navbar-nav ml-auto">
+                                                        <li class="nav-item">
+                                                            <a href="#" class="nav-link">首页</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a href="#" class="nav-link dropdown-toggle">番剧</a>
+                                                            <ul class="dropdown-menu">
+                                                                <li class="nav-item">
+                                                                    <a href="#" class="nav-link toCenter" onclick="moveToCenter()">国创</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a href="#" class="nav-link toCenter" onclick="moveToCenter()">国外</a>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a href="@Url.Action("Rankinglist","RankingList")" class="nav-link">排行榜</a>
+
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a href="#" class="nav-link dropdown-toggle">社交论坛</a>
+                                                            <ul class="dropdown-menu">
+                                                                <li class="nav-item">
+                                                                    <a href="@Url.Action("index","Community")" class="nav-link">发表动态</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a href="@Url.Action("index","Community")" class="nav-link">论坛</a>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                        @{
+                                                            if (Session["username"] != null)
+                                                            {
+                                                                <li class="nav-item">
+                                                                    <a href="#" class="nav-link dropdown-toggle">个人中心</a>
+                                                                    <ul class="dropdown-menu">
+                                                                        <li class="nav-item">
+                                                                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" class="nav-link">身份编辑</a>
+                                                                        </li>
+                                                                        <li class="nav-item">
+                                                                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" class="nav-link">忘记密码</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- .导航栏结束 -->
+                <div class="container-fluid">
+                    <div class="container header-carousel header-carousel-three owl-carousel center-block owl-theme">
+                        <div class="item">
+                            <div class="row d-flex justify-content-center align-items-center">
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="header-max-width">
+                                        <div class="header-content-title header-content-title-red">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="header-content-image" style="width:100%;height:100%;" onclick="goToAnimation(101)">
+                                        <img src="~/public/static/uploads/shouyepicture1/小埋.jpg" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="row d-flex justify-content-center align-items-center">
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="header-max-width">
+                                        <div class="header-content-title header-content-title-red">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="header-content-image" onclick="goToAnimation(88)">
+                                        <img src="~/public/static/uploads/shouyepicture1/血小板.jpg" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="row d-flex justify-content-center align-items-center">
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="header-max-width">
+                                        <div class="header-content-title header-content-title-red">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="header-content-image" onclick="goToAnimation(4)">
+                                        <img src="~/public/static/uploads/shouyepicture1/碳治郎.jpg" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <!-- .头部结束 -->
+            <!-- .电影结束-->
+            <div class="fanju" v-show="categoryShow" id="category">
+                <div class="container">
+                    <div class="fanju1">
+                        <div class="row align-items-center align-items-lg-end">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="section-title section-title-left text-center text-md-left">
+                                    <h2>关于番剧</h2>
+                                    <p>“番剧”是一个外来语词汇，意思为日本连载动画电视剧，属于二次元用户常用语。通常日本每年有四季动画剧，集中在1月、4月、7月、10月的某一个月份播出。因而类似美剧，番剧也是以季为单位，通常每周播出一集，一季12～13集（季番）或23-25集（半年番）居多</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-5">
+                                <div class=" image-position image-position-rb-30">
+                                    <img src="~/public/static/uploads/shouyepicture1/番剧.png" alt="about">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section v-show="categoryShow" class="new-arrival-section pb-70">
+                <div class="container" style="padding-top:25px; background-color:rgba(143, 204, 248, 0.77)">
+                    <div class="product-filter-tab-details">
+                        <div class="row">
+                            @*循环显示动漫信息*@
+                            <div v-for="(animation, i) in aCategoryList" class="col-sm-12 col-md-6 col-lg-3 element-item pb-30 lighting">
+                                <div v-on:click="aDetailsUrl(animation.Animationid)" class="trending-product-card">
+                                    <div class="product-card-thumb">
+                                        <a href="#">
+                                            <img v-bind:src="animation.AimagePic" alt="product" class="product-main-thumb">
+                                            <img :src="animation.AimagePic" alt="product" class="product-hover-thumb">
+                                        </a>
+                                    </div>
+                                    <div class="product-card-content">
+                                        <div class="review-star">
+                                            <ul v-for="(item,a) in starArray(animation.Score)">
+                                                <li class="full-star"><i class="bx bxs-star"></i></li>
+                                            </ul>
+                                        </div>
+                                        <h3>{{animation.Aname}} </h3>
+                                    </div>
+                                    <div class="product-card-button">
+                                        <ul>
+                                            <li>
+                                                <div class="quickview-redirect inline-popup-1">
+                                                    <a href="#product-popup-1" data-effect="mfp-zoom-in">
+                                                        <i class="flaticon-eye"></i>
+                                                    </a>
+                                                    <p class="product-tooltip">浏览</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="page-bar">
+                                <ul class="ulflex">
+                                    <li class="liwhite" v-if="currentPage>0"><a v-on:click="currentPage--,btnPageClick(currentPage+1)">上一页</a></li>
+                                    <li v-if="currentPage==0"><a href="#category" class="banclick">上一页</a></li>
+                                    <li v-for="index in pageIndexs" v-bind:class="{ 'active': (currentPage+1) == index}">
+                                        <a href="#category" v-on:click="btnPageClick(index)">{{ index }}</a>
+                                    </li>
+                                    <li v-if="currentPage!=(pageNum-1)"><a href="#category" v-on:click="currentPage++,btnPageClick(currentPage+1)">下一页</a></li>
+                                    <li v-if="currentPage == (pageNum-1)"><a href="#category" class="banclick">下一页</a></li>
+                                    <li><a>共<i>{{pageNum}}</i>页</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!--番剧-->
+            <div class="fanju">
+                <div class="container">
+                    <div class="fanju1">
+                        <div class="row align-items-center align-items-lg-end">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="section-title section-title-left text-center text-md-left">
+                                    <h2>关于番剧</h2>
+                                    <p>“番剧”是一个外来语词汇，意思为日本连载动画电视剧，属于二次元用户常用语。通常日本每年有四季动画剧，集中在1月、4月、7月、10月的某一个月份播出。因而类似美剧，番剧也是以季为单位，通常每周播出一集，一季12～13集（季番）或23-25集（半年番）居多</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-5">
+                                <div class=" image-position image-position-rb-30">
+                                    <img src="~/public/static/uploads/shouyepicture1/番剧.png" alt="about">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--番剧滚动条-->
+            <div class="">
+                <div class="container">
+                    <div class="partner-section-content bg-red pt-50 pb-50">
+                        <div class="partner-carousel owl-carousel owl-theme">
+                            <div class="item">
+                                <div class="partner-thumb">
+                                    <a href="https://localhost:44372/Animation/details?id=88">
+                                        <img src="~/public/static/uploads/shouyepicture1/工作细胞.png" alt="partner">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="partner-thumb">
+                                    <a href="https://localhost:44372/Animation/details?id=1">
+                                        <img src="~/public/static/uploads/shouyepicture1/欢迎来到实力至上主义的教室.jpg" alt="partner">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="partner-thumb">
+                                    <a href="https://localhost:44372/Animation/details?id=1">
+                                        <img src="~/public/static/uploads/shouyepicture1/辉夜大小姐.png" alt="partner">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="partner-thumb">
+                                    <a href="https://localhost:44372/Animation/details?id=5">
+                                        <img src="~/public/static/uploads/shouyepicture1/全职高手.jpg" alt="partner">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="partner-thumb">
+                                    <a href="https://localhost:44372/Animation/details?id=36">
+                                        <img src="~/public/static/uploads/shouyepicture1/异度侵入.png" alt="partner">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="partner-thumb">
+                                    <a href="https://localhost:44372/Animation/details?id=89">
+                                        <img src="~/public/static/uploads/shouyepicture1/总之就是非常可爱.png" alt="partner">
+                                    </a>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--番剧滚动条结束-->
+            <!--番剧-->
+            <section class="new-arrival-section pb-70">
+                <div class="container" style="padding-top:25px; background-color:rgba(143, 204, 248, 0.77)">
+                    <div class="product-filter-tab-details">
+                        <div class="row">
+                            <div v-for="(animation, i) in aJapanList" class="col-sm-12 col-md-6 col-lg-3 element-item pb-30 lighting">
+                                <div v-on:click="aDetailsUrl(animation.Animationid)" class="trending-product-card">
+                                    <div class="product-card-thumb">
+                                        <img v-bind:src="animation.AimagePic" alt="product" class="product-main-thumb">
+                                        <img :src="animation.AimagePic" alt="product" class="product-hover-thumb">
+
+                                    </div>
+                                    <div class="product-card-content">
+                                        <div class="review-star">
+                                            <ul v-for="(item,a) in starArray(animation.Score)">
+                                                <li class="full-star"><i class="bx bxs-star"></i></li>
+                                            </ul>
+                                        </div>
+
+                                        <h3>{{animation.Aname}} </h3>
+                                    </div>
+                                    <div class="product-card-button">
+                                        <ul>
+                                            <li>
+                                                <div class="quickview-redirect inline-popup-1">
+                                                    <a href="#product-popup-1" data-effect="mfp-zoom-in">
+                                                        <i class="flaticon-eye"></i>
+                                                    </a>
+                                                    <p class="product-tooltip">浏览</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            @*国漫展示*@
+            <section class="new-arrival-section pb-70">
+                <div class="container theCenter" style="padding-top:25px; background-color:rgba(143, 204, 248, 0.77)">
+                    <div class="product-filter-tab-details">
+                        <div class="row">
+                            <div v-for="(animation, i) in aChinaList" class="col-sm-12 col-md-6 col-lg-3 element-item pb-30 lighting">
+                                <div v-on:click="aDetailsUrl(animation.Animationid)" class="trending-product-card">
+                                    <div class="product-card-thumb">
+                                        <a href="#">
+                                            <img v-bind:src="animation.AimagePic" alt="product" class="product-main-thumb">
+                                            <img :src="animation.AimagePic" alt="product" class="product-hover-thumb">
+                                        </a>
+                                    </div>
+                                    <div class="product-card-content">
+                                        <div class="review-star">
+                                            <ul v-for="(item,a) in starArray(animation.Score)">
+                                                <li class="full-star"><i class="bx bxs-star"></i></li>
+
+                                            </ul>
+                                        </div>
+                                        <h3>{{animation.Aname}} </h3>
+                                    </div>
+                                    <div class="product-card-button">
+                                        <ul>
+                                            <li>
+                                                <div class="quickview-redirect inline-popup-1">
+                                                    <a href="#product-popup-1" data-effect="mfp-zoom-in">
+                                                        <i class="flaticon-eye"></i>
+                                                    </a>
+                                                    <p class="product-tooltip">浏览</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--番剧结束-->
+            <!-- blog-section -->
+            @*<section class="blog-section pt-100 pb-70">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>梗百科</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-4 pb-30">
+                            <div class="blog-flat">
+                                <div class="blog-flat-thumb">
+                                    <a href="#">
+                                        <img src="~/public/static/uploads/shouyepicture1/真香.gif" alt="blog">
+                                    </a>
+                                </div>
+                                <div class="blog-flat-content" style="padding-top:20px;">
+                                    <ul class="blog-entry">
+                                        <li class="blog-entry-category"></li>
+                                        <li></li>
+                                    </ul>
+                                    <h3>“真香”</h3>
+                                    <p>“真香”这个词是来自于《变形计》节目中王境泽所说。</p>
+                                    <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-4 pb-30">
+                            <div class="blog-flat">
+                                <div class="blog-flat-thumb">
+                                    <a href="blog-details.html">
+                                        <img src="" alt="blog">
+                                    </a>
+                                </div>
+                                <div class="blog-flat-content" style="padding-top:20px;">
+                                    <ul class="blog-entry">
+                                        <li class="blog-entry-category"></li>
+                                        <li></li>
+                                    </ul>
+                                    <h3></h3>
+                                    <p></p>
+                                    <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 offset-md-3 col-md-6 offset-lg-0 col-lg-4 pb-30">
+                            <div class="blog-flat">
+                                <div class="blog-flat-thumb">
+                                    <a href="blog-details.html">
+                                        <img src="" alt="blog">
+                                    </a>
+                                </div>
+                                <div class="blog-flat-content" style="padding-top:20px;">
+                                    <ul class="blog-entry">
+                                        <li class="blog-entry-category"></li>
+                                        <li></li>
+                                    </ul>
+                                    <h3></h3>
+                                    <p></p>
+                                    <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>*@
+            <!-- 底部 -->
+            <footer class="bg-off-white">
+                <div class="footer-upper pt-100 pb-80">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-4 col-lg-3" style="border:hidden">
+                                <div class="footer-content-item">
+                                    <div class="footer-logo">
+                                        <a href="#"><img id="logoimg" alt="logo" class="logo" src="~/public/static/uploads/openinggif/smalllogo1.gif" style="width:150px;height:84px"></a>
+                                    </div>
+                                    <div class="footer-details">
+                                        <p>一个百科与评测性质的网站，向有想法了解动漫与“梗”流行文化的人群进行科普，建立交流平台，构建出新的动漫生态 </p>
+                                    </div>
+                                    <div class="footer-social-logo">
+                                        <ul class="social-list" style="margin-top:5px">
+                                            <li class="social-btn social-btn-fb"><a href="#"><i class="bx bxl-facebook"></i></a></li>
+                                            <li class="social-btn social-btn-tw"><a href="#"><i class="bx bxl-twitter"></i></a></li>
+                                            <li class="social-btn social-btn-ins"><a href="#"><i class="bx bxl-instagram"></i></a></li>
+                                            <li class="social-btn social-btn-pin"><a href="#"><i class="bx bxl-pinterest-alt"></i></a></li>
+                                            <li class="social-btn social-btn-yt"><a href="#"><i class="bx bxl-youtube"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-2">
+                                <div class="footer-content-list footer-content-item">
+                                    <div class="footer-content-title">
+                                        <h3>关于我们</h3>
+                                    </div>
+                                    <ul class="footer-details footer-list">
+                                        >我们是二次元的搬运工
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-2">
+                                <div class="footer-content-list footer-content-item">
+                                    <div class="footer-content-title">
+                                        <h3>管理员</h3>
+                                    </div>
+                                    <ul class="footer-details footer-list">
+                                        <li>>后台登入</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-2">
+                                <div class="footer-content-list footer-content-item">
+                                    <div class="footer-content-title">
+                                        <h3>地址</h3>
+                                    </div>
+                                    <ul class="footer-details footer-list">
+                                        >江西师范大学
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="footer-content-list footer-content-item">
+                                    <div class="footer-content-title">
+                                        <h3>联系方式</h3>
+                                    </div>
+                                    <ul class="footer-details footer-list">
+                                        <li>>电话：181000000000</li>
+                                        <li>>邮箱：xxxxxxxxxx@163.com</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-lower bg-off-white-dark">
+                    <div class="container">
+                        <div class="d-flex justify-content-between flex-wrap flex-lg-nowrap align-items-baseline">
+                            <div class="footer-lower-item d-flex justify-content-between flex-wrap align-items-baseline">
+                                <div class="footer-copyright-text footer-copyright-text-red">
+                                    <p style="margin-left:470px;">版权所有 ©2020 pilipala  江西师范大学软件学院6817工作室</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- .底部结束 -->
+        </div>
+        <script src="~/Scripts/vue.js"></script>
+        <script src="~/Scripts/axios.js"></script>
+        <script src="~/Scripts/axioshttp.js"></script>
+        <script>
+            function Loginout(data) {
+                alert(data)
+                location.reload();
+            }
+        </script>
+        <script>
+            const app = new Vue({
+                el: "#app",
+                data: {
+                    //是否显示分类
+                    categoryShow: false,
+                    //日漫信息
+                    aJapanList: [],
+                    //国漫信息
+                    aChinaList: [],
+                    //分类信息
+                    aCategory: [],
+                    aCategoryList: [],
+
+                    //分页
+                    //一共多少条数据
+                    pageAll: '',
+                    //当前页面
+                    pageNum: '',
+                    //每页数据数量
+                    pageSize: 12,
+                    //当前页
+                    currentPage: 0,
+
+                    //点击后获取到的动漫名
+                    cName: '',
+                    pageInfo: []
+                },
+                created() {
+                    this.getaJapanList(),
+                    this.getaChinaList(),
+                    this.getaCategory()
+                },
+                methods: {
+                    //获取日漫信息 向控制器发一个get请求 并将请求到的数据存入aJapanList中
+                    async getaJapanList() {
+                        const { data: res } = await axios.get('/Animation/GetJapanAniamtions', {
+                            params: {
+                                pages: 16
+                            }
+                        })
+                        this.aJapanList = res
+                        console.log('ssss')
+                        console.log(this.aJapanList)
+                    },
+                    //获取国漫信息 向控制器发一个get请求 并将请求到的数据存入aChinaList中
+                    async getaChinaList() {
+                        const { data: res } = await axios.get('/Animation/GetChinaAniamtions', {
+                            params: {
+                                pages: 16
+                            }
+                        })
+                        this.aChinaList = res
+                        console.log(this.aChinaList)
+                    },
+                    //获取分类的信息
+                    async getaCategory() {
+                        const { data: res } = await axios.get('/Animation/GetCategories')
+                        this.aCategory = res
+                        console.log(this.aCategory)
+                    },
+                    //分类点击事件
+                    btnCategory(name) {
+                        this.getCategoryListNum(name)
+                        this.getaCategoryList(name)
+                        this.categoryShow = true
+                    },
+                    //根据获取该分类下的动漫
+                    async getaCategoryList(name) {
+                        const { data: res2 } = await axios.get('/Animation/getaByCategory', {
+                            params: {
+                                name: name,
+                                num: this.pageSize,
+                                currentPage: this.currentPage
+                            }
+                        })
+                        this.cName = name
+                        this.aCategoryList = res2
+                        console.log(res2)
+                    },
+                    //获取该动漫分类下的动漫数量
+                    async getCategoryListNum(name) {
+                        const { data: res } = await axios.get('/Animation/getaCategoryNUm', {
+                            params: {
+                                name: name
+                            }
+                        })
+                        this.pageAll = res
+                        //向下取整
+                        this.pageNum = Math.ceil(this.pageAll / this.pageSize)
+                        console.log(this.pageNum)
+                    },
+                    btnPageClick(a) {
+                        this.currentPage = a - 1
+                        this.getaCategoryList(this.cName)
+                    },
+                    //点击图片根据id跳转至详情页面
+                    async aDetailsUrl(id) {
+                        const type = 'Animation'
+                        const { data: res } = await axios.get('/User/AddWatch', {
+                            params: {
+                                type: type,
+                                id: id
+                            }
+                        })
+                        window.location.href = '/Animation/details?id=' + id
+                    },
+                    //返回星星数量
+                    starArray(num) {
+                        var ar = []
+                        var intNum = parseInt(num) / 2
+                        while (intNum > 0) {
+                            ar.push(1)
+                            intNum = intNum - 1
+                        }
+                        return ar
+                    },
+                },
+                computed: {
+                    //分页页数
+                    pageIndexs: function () {
+                        var left = 1;
+                        var right = this.pageNum;
+                        var ar = [];
+                        while (left <= right) {
+                            ar.push(left)
+                            left++
+                        }
+                        return ar
+                    },
+
+                }
+            })
+        </script>
+    </div>
+</body>
+</html>

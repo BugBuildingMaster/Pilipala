@@ -1,0 +1,843 @@
+﻿@model Models.UsersInfo
+@{
+    Layout = "~/Views/Shared/ULayout.cshtml";
+}
+<meta name="referrer" content="no-referrer">
+<script src="~/assets/js/jquery-3.5.1.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Scripts/jquery-confirm.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-confirm.js"></script>
+<script src="~/Scripts/vue.js"></script>
+<script src="~/Scripts/axios.js"></script>
+<script src="~/Scripts/axioshttp.js"></script>
+<style>
+    input {
+        outline: none;
+    }
+</style>
+<style>
+    .list-item {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        border-bottom: 1px solid #eee;
+        display: block;
+        padding: 20px 0;
+        position: relative;
+        line-height: 1;
+    }
+
+    .follow-select {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        word-break: break-word;
+        display: inline-block;
+        background-image: url(//s1.hdslb.com/bfs/static/jinkela/space/assets/icons.png);
+        vertical-align: middle;
+        background-repeat: no-repeat;
+        width: 24px;
+        height: 24px;
+        background-position: -468px -980px;
+    }
+
+    .list-item a {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        color: inherit;
+        text-decoration: none;
+        transition: color .2s ease,background-color .2s ease;
+        background-size: cover;
+        display: block;
+        float: left;
+        position: relative;
+        border-radius: 48px;
+        overflow: visible;
+        margin-left: 0;
+    }
+
+    .list-item .title {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        color: inherit;
+        text-decoration: none;
+        transition: color .2s ease,background-color .2s ease;
+        background-size: cover;
+        display: block;
+        float: left;
+        position: relative;
+        border-radius: 48px;
+        overflow: visible;
+        margin-left: 30px;
+        margin-top: 10px;
+    }
+
+    .list-item .cover1 img {
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        box-shadow: 0 0 0 1px #edf2f9;
+        display: block;
+        border-radius: 60px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .list-item .content {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        padding: 0 200px 0 0;
+        position: relative;
+        margin-left: 88px;
+        margin-top: 10px;
+    }
+
+    .list-item .auth-description {
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        line-height: 20px;
+        color: #6d757a;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100%;
+        text-overflow: ellipsis;
+        padding-right: 10px;
+        padding-top: 5px;
+        margin-left: 30px;
+    }
+
+    .fans-action {
+        color: #222;
+        font-size: 12px;
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        position: absolute;
+        right: 0;
+        top: 38px;
+    }
+
+    .fans-action-follow {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        word-break: break-word;
+        float: left;
+        display: block;
+        margin-left: 15px;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        background-color: #e5e9ef;
+        position: relative;
+        border-radius: 4px;
+        font-size: 0;
+        color: #6d757a;
+        padding: 4px 10px;
+        line-height: 16px;
+        border: 0;
+    }
+
+    .fans-action-text {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        text-align: center;
+        cursor: pointer;
+        color: #6d757a;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        word-break: break-word;
+        line-height: 16px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .be-dropdown-menu {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        text-align: center;
+        cursor: pointer;
+        font-size: 0;
+        color: #6d757a;
+        line-height: 16px;
+        margin: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+        list-style: none;
+        position: fixed;
+        z-index: 10;
+        padding: 6px 0;
+        background-color: #fff;
+        border: 1px solid #e5e9ef;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.14);
+        left: 0px;
+        top: 0px;
+        transform-origin: center top;
+        display: none;
+    }
+
+    .be-dropdown-item {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        text-align: center;
+        cursor: pointer;
+        color: #6d757a;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        word-break: break-word;
+        line-height: 16px;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .fans-action-btn {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        word-break: break-word;
+        float: left;
+        display: block;
+        line-height: 22px;
+        margin-left: 15px;
+        font-size: 0;
+        color: #6d757a;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid #ccd0d7;
+        border-radius: 4px;
+        width: 74px;
+    }
+
+    .username {
+        font-family: Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+        list-style: none;
+        color: inherit;
+        white-space: nowrap;
+        font-size: 16px;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        vertical-align: baseline;
+        word-break: break-word;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        text-align: center;
+        padding: 8px;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .fans-action-follow {
+        position: relative;
+        display: inline-block;
+        padding: 10px 5px 10px 5px;
+    }
+
+        .fans-action-follow:hover .dropdown-content {
+            display: block;
+        }
+
+    .follow1 {
+        position: relative;
+        display: inline-block;
+        padding: 10px 5px 10px 5px;
+    }
+
+    .theBack {
+        background-color: rgb(255, 255, 255);
+    }
+</style>
+<!-- 顶部tab -->
+<div class="tab-header">
+    <div class="inner">
+        <div class="pull-left">
+            <div class="pull-left">嗨，欢迎来到<span class="cr">pilipala网</span></div>
+        </div>
+        @*<div class="pull-right d-flex flex-row align-items-center justify-content-around">
+                @{
+                    if (Session["username"] == null)
+                    {
+                        <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text">
+                            @Html.ActionLink("登录", "Login", "Home")
+                        </div>
+                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                            @Html.ActionLink("注册", "Regist1", "Home")
+                        </div>
+                    }
+                    else
+                    {
+                        @Ajax.ActionLink("注销", "LoginOut", "Users", new { }, new AjaxOptions()
+                   {
+                       InsertionMode = InsertionMode.Replace,
+                       HttpMethod = "Post",
+                       OnSuccess = "Loginout"
+                   }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
+                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=170394100,2460412031&fm=15&gp=0.jpg" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                        </div>
+                    }
+                }
+            </div>*@
+    </div>
+</div>
+<!-- 顶部标题 -->
+<script>
+    document.onreadystatechange = function () {
+        loading();
+    }
+
+    function loading() {
+        var list = ['https://localhost:44372/public/static/uploads/openinggif/smalllogo1.gif', 'https://localhost:44372/public/static/uploads/openinggif/smalllogo2.gif'];
+        document.getElementById('logoimg').addEventListener('mouseover', function () {
+            var ranLogo = list[Math.round(Math.random())];
+            document.getElementById('logoimg').src = ranLogo;
+        });
+    }
+</script>
+
+<div class="bgf5 clearfix">
+    <div class="top-user">
+        <div class="inner">
+            <a class="logo" href="https://localhost:44372" style="border-right:1px solid #e0e0e0"><img id="logoimg" src="~/public/static/uploads/openinggif/smalllogo1.gif" alt="pilipala网" class="cover logo" style="border-radius:0px;"></a>
+            <div class="title" style="border:hidden;margin-top:15px;">个人中心</div>
+            <div class="pull-right d-flex flex-row align-items-center justify-content-around" style="margin-top:20px;">
+                @{
+                    if (Session["username"] == null)
+                    {
+                        <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text" onclick="leaveUrl()">
+                            @Html.ActionLink("登录", "Login", "Home")
+                        </div>
+                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item" onclick="leaveUrl()">
+                            @Html.ActionLink("注册", "Regist1", "Home")
+                        </div>
+                    }
+                    else
+                    {
+                        @Ajax.ActionLink("注销", "LoginOut", "Users", new { }, new AjaxOptions()
+                   {
+                       InsertionMode = InsertionMode.Replace,
+                       HttpMethod = "Post",
+                       OnSuccess = "Loginout"
+                   }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
+                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item" style="margin-left:15px;">
+                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                        </div>
+                    }
+                }
+            </div>
+            <script>
+                function leaveUrl() {
+                    sessionStorage.setItem('thePass', window.location.href);
+                }
+            </script>
+        </div>
+    </div>
+</div>
+<div class="content clearfix bgf5">
+    <section class="user-center inner clearfix">
+        @*侧边栏*@
+        <div class="pull-left bgf">
+            <dl class="user-center__nav">
+                <dt>帐户信息</dt>
+                <dd><a>首页</a></dd>
+
+                <dd><a>Ta的关注</a> <span style="color:gray; float:right; margin-right:11px; margin-top:11px;">@Model.Fowllors</span></dd>
+
+                <dd><a>Ta的粉丝</a><span style="color: gray; float: right; margin-right: 11px; margin-top: 11px;">@Model.Fans</span></dd>
+
+            </dl>
+            <dl class="user-center__nav">
+                <dt>个人空间</dt>
+                <dd><a href="#">番剧测评</a></dd>
+
+                <dd><a href="#">番剧短评</a></dd>
+
+                <dd><a href="#">个人动态</a></dd>
+            </dl>
+        </div>
+        @*用户首页*@
+        <div class="pull-right pright">
+            <div class="user-center__info bgf">
+                <div class="pull-left clearfix">
+                    <div class="port b-r50 pull-left" style="float:left;margin-right:5px;">
+                        <img src="@Model.Portrait" alt="用户名" class="cover b-r50">
+                    </div>
+                    <p class="name text-nowrap" style="float:left;margin-top:50px;max-width:126px;">您好，@Model.UserName</p>
+                </div>
+
+                <div class="pull-right user-nav" style="width:620px">
+                    <a class="user-nav__but d-flex flex-md-column align-items-center" style="margin-top:20px">
+                        <i class="iconfont fz40 cr"><img src="~/public/static/uploads/img/粉丝.png" style="float: none;border-radius:0px;"></i>
+                        <div class="c6" onclick="oyes(1)">粉丝数 <span class="cr">@Model.Fans<!-- 粉丝数 --></span></div>
+                    </a>
+                    <a href="" class="user-nav__but" style="margin-top:20px">
+                        <i class=""><img src="~/public/static/uploads/img/关注.png" style="float: none;border-radius:0px;"></i>
+                        <div class="c6" onclick="oyes(2)">关注数 <span class="c3">@Model.Fowllors<!-- 关注数 --></span></div>
+                    </a>
+                    @*<a href="" class="user-nav__but" style="margin-top:20px">
+                            <i class="iconfont fz40 cr"><img src="~/public/static/uploads/img/收%20藏%20(1).png" style="float: none;border-radius:0px;"></i>
+                            <div class="c6">我的收藏</div>
+                        </a>*@
+                </div>
+            </div>
+        </div>
+        @*Ta的关注*@
+        <!--<div class="pull-right pright" id="follows" style="display:none">
+        我的关注
+        <div id="linkpoint"></div>-->
+        @*@Html.Action("UserFollow", "User", new { name = ViewBag.username })*@
+        <!--</div>-->
+        <div class="pull-right pright" id="follows" style="display:none">
+            <div class="container theBack" id="theFollows" style="text-align: center; white-space: nowrap;">
+                <ul class="relation-list">
+                    <li class="list-item clearfix" v-for="(singleFollow, i) in Followers">
+                        <div v-if="singleFollow.RowNum" v-bind:class="'cF'+singleFollow.RowNum" style=" display: flex; flex-direction: row; ">
+                            <div>
+                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" target="_blank" class="cover1">
+                                    <img v-bind:src="singleFollow.Portrait" v-bind:alt="singleFollow.FollowerName">
+                                </a>
+                            </div>
+                            <div class="content1">
+                                <div>
+                                    <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" target="_blank" class="title">
+                                        <span class="username">{{singleFollow.FollowerName}}</span>
+                                    </a>
+                                    <p title="Signatures" class="auth-description">
+                                        {{singleFollow.Signatures}}
+                                    </p>
+                                </div>
+                                <div class="fans-action">
+                                    <template v-if="singleFollow.isFans==1">
+                                        <div v-bind:class="'follower'+singleFollow.Userid" class="be-dropdown fans-action-btn fans-action-follow"
+                                             v-on:click="CancleFollow(singleFollow.Userid,singleFollow.RowNum)">
+                                            <span class="fans-action-text">已关注</span>
+                                            <div class="dropdown-content"
+                                                 v-on:click="CancleFollow(singleFollow.Userid,singleFollow.RowNum)">
+                                                <span class="cancelFollow be-dropdown-item">取消关注</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        <div v-bind:class="'unfollower'+singleFollow.Userid" class="be-dropdown fans-action-btn follow1" v-bind:id="singleFollow.Userid"
+                                             v-on:click="Follow(singleFollow.Userid,singleFollow.RowNum)">
+                                            <span class="fans-action-text">关注</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <span v-if="FollowersMoreLoad==false" style="font-size: 1.2rem; margin-top: 2rem; display: inline-block; vertical-align: middle; font-weight: bolder;">没有了哟~</span>
+            </div>
+        </div>
+        <script>
+            const app = new Vue({
+                el: "#follows",
+                data: {
+                    Followers: [],              //临时储存对象
+                    tempFollowers: [],          //储存关注对象
+                    FollowersMoreLoad: false,   // 标记是否还有更多数据
+                    loadingFollowers: false,    // 标记是否正在加载
+                    counterF: 1                 // 加载页数
+                },
+                created() {
+                    this.buildFollowers()
+                },
+                mounted() {
+                    var _this = this;
+                    window.addEventListener('scroll', function () {
+                        //theHeight();      //测试页面高度的测试代码
+                        if (_this.loadingFollowers) {
+                            //当正在加载时直接返回，防止多次加载
+                            return;
+                        }
+                        var FollowsBody = document.getElementById("follows");
+                        //检测关注界面是否打开，未打开则直接返回
+                        if (FollowsBody.style.display != "none") {
+                            var scr = document.body.scrollTop;                  // 滚动的高度
+                            var clientHeight = document.body.clientHeight;      // 屏幕静态下的高度
+                            var scrHeight = document.body.scrollHeight || document.body.scrollHeight; // 整个网页的实际高度，兼容Pc端
+                            if (scr + clientHeight + 100 >= scrHeight) {
+                                if (_this.FollowersMoreLoad) {       // 如果还有更多数据的标记为true，则将正在加载的标记置为true，将页数传给数据获取函数
+                                    _this.loadingFollowers = true;
+                                    _this.counterF = _this.counterF + 1;
+                                    _this.buildFollowers(_this.counterF);
+                                } else {
+                                    this.loadingFollowers = false;   //未加载直接将正在加载标记置为false
+                                    return;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    });
+                },
+                methods: {
+                    //数据获取
+                    async buildFollowers(PageNum) {
+                        if (PageNum == null) {
+                            PageNum = 1;
+                        }
+                        // 获取数据
+                        const { data: res } = await axios.get('/Tourist/TouristFollow', {
+                            params: {
+                                page: PageNum,
+                                name:'@Model.UserName'
+                            }
+                        })
+                        // this.tempFollowers是临时对象，用于对下一步操作进行进一步判断
+                        this.tempFollowers = res;
+                        if (res.length != 0 && res.length == 20) {
+                            //此时不是最后一页，正常加载
+                            this.Followers = this.Followers.concat(this.tempFollowers); //将临时对象的内容与粉丝对象进行拼接
+                            this.FollowersMoreLoad = true;                              //将还有更多的标记置为true
+                        } else if (res.length != 0 && res.length < 20) {
+                            //此时已经是最后一页，将还有更多的标记置为false
+                            this.Followers = this.Followers.concat(this.tempFollowers);
+                            this.FollowersMoreLoad = false;
+                        } else {
+                            //其他情况直接置false
+                            this.FollowersMoreLoad = false;
+                        }
+                        //加载结束，将正在加载标记置false
+                        this.loadingFollowers = false;
+
+                        /*console.log(this.tempFollowers)   测试语句
+                        console.log(this.Followers)
+                        console.log(res)
+                        console.log(typeof (this.Followers))
+                        console.log(typeof (res))*/
+                    },
+                    async UsersUrl(id) {
+                        window.open('/User/Center/?id=' + id);
+                    },
+                    async CancleFollow(id, num) {
+                        const { data: res } = await axios.get('/User/Following', {
+                            params: {
+                                id: id
+                            }
+                        })
+                        if (res == "fail") {
+                            console.log(this.Followers[num - 1].isFans);
+                            this.Followers[num - 1].isFans = 0;
+                        }
+                    },
+                    async Follow(id, num) {
+                        const { data: res1 } = await axios.get('/User/Following', {
+                            params: {
+                                id: id
+                            }
+                        })
+                        if (res1 == "fail") {
+                            console.log(this.Followers[num - 1].isFans);
+                            this.Followers[num - 1].isFans = 1;
+                        }
+                    }
+                }
+            })
+        </script>
+        @*Ta的粉丝*@
+        <!--<div class="pull-right pright" id="fans" style="display:none">
+        我的粉丝
+        <div id="linkpoint"></div>-->
+        @*@Html.Action("FansFollow", "User", new { name = ViewBag.username })*@
+        <!--</div>-->
+        <div class="pull-right pright" id="fans" style="display:none">
+            <div class="container theBack" id="theFans" style="text-align: center; white-space: nowrap;">
+                <ul class="relation-list">
+                    <li class="list-item clearfix" v-for="(singleFans, i) in Fans">
+                        <div v-if="singleFans.RowNum" v-bind:class="'cFa'+singleFans.RowNum" style=" display: flex; flex-direction: row; ">
+                            <div>
+                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFans.Userid)" target="_blank" class="cover1">
+                                    <img v-bind:src="singleFans.Portrait" v-bind:alt="singleFans.FollowerName">
+                                </a>
+                            </div>
+                            <div class="content1">
+                                <div>
+                                    <a href="javascript:void(0);" v-on:click="UsersUrl(singleFans.Userid)" target="_blank" class="title">
+                                        <span class="username">{{singleFans.UserName}}</span>
+                                    </a>
+                                    <p title="Signatures" class="auth-description">
+                                        {{singleFans.Signatures}}
+                                    </p>
+                                </div>
+                                <div class="fans-action">
+                                    <template v-if="singleFans.isFans==1">
+                                        <div v-bind:class="'Fan'+singleFans.Userid" class="be-dropdown fans-action-btn fans-action-follow"
+                                             v-on:click="CancleFollow(singleFans.Userid,singleFans.RowNum)">
+                                            <span class="fans-action-text">已关注</span>
+                                            <div class="dropdown-content"
+                                                 v-on:click="CancleFollow(singleFans.Userid,singleFans.RowNum)">
+                                                <span class="cancelFollow be-dropdown-item">取消关注</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        <div v-bind:class="'unFan'+singleFans.Userid" class="be-dropdown fans-action-btn follow1" v-bind:id="singleFans.Userid"
+                                             v-on:click="Follow(singleFans.Userid,singleFans.RowNum)">
+                                            <span class="fans-action-text">关注</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <span v-if="FansMoreLoad==false" style="font-size: 1.2rem; margin-top: 2rem; display: inline-block; vertical-align: middle; font-weight: bolder;">没有了哟~</span>
+            </div>
+        </div>
+        <!--<p id="thetest"></p>
+        <script>
+            window.addEventListener('mousemove', function () {
+                theHeight();
+            })
+            function theHeight() {
+                var say = document.getElementById("thetest");
+                var x = document.body.scrollTop;
+                var y = document.body.clientHeight;
+                var z = document.body.scrollHeight;
+                say.innerHTML = "scrollTop:" + x + "clientHeight:" + y + "scrollHeight:" + z;
+            }
+        </script>-->
+        <script>
+            const app2 = new Vue({
+                el: "#fans",
+                data: {
+                    tempFans: [],           //临时储存对象
+                    Fans: [],               //储存粉丝对象
+                    FansMoreLoad: false,    // 标记是否还有更多数据
+                    loadingFans: false,     // 标记是否正在加载
+                    counter: 1              // 加载页数
+                },
+                created() {
+                    this.buildFans()
+                },
+                mounted() {
+                    var _this = this;
+                    window.addEventListener('scroll', function () {
+                        //theHeight();      //测试页面高度的测试代码
+                        if (_this.loadingFans) {
+                            //当正在加载时直接返回，防止多次加载
+                            return;
+                        }
+                        var FanBody = document.getElementById("fans");
+                        //检测粉丝界面是否打开，未打开则直接返回
+                        if (FanBody.style.display != "none") {
+                            var scr = document.body.scrollTop; // 滚动的高度
+                            var clientHeight = document.body.clientHeight; // 屏幕静态下的高度
+                            var scrHeight = document.body.scrollHeight || document.body.scrollHeight; // 整个网页的实际高度，兼容Pc端
+                            if (scr + clientHeight + 100 >= scrHeight) {
+                                if (_this.FansMoreLoad) {       // 如果还有更多数据的标记为true，则将正在加载的标记置为true，将页数传给数据获取函数
+                                    _this.loadingFans = true;
+                                    _this.counter = _this.counter + 1;
+                                    _this.buildFans(_this.counter);
+                                } else {
+                                    this.loadingFans = false;   //未加载直接将正在加载标记置为false
+                                    return;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    });
+                },
+                methods: {
+                    //数据获取
+                    async buildFans(PageNum) {
+                        if (PageNum == null) {
+                            PageNum = 1;
+                        }
+                        // 获取数据
+                        const { data: res } = await axios.get('/Tourist/TouristFans', {
+                            params: {
+                                page: PageNum,
+                                name:'@Model.UserName'
+                            }
+                        })
+                        // this.tempFans是临时对象，用于对下一步操作进行进一步判断
+                        this.tempFans = res;
+                        if (res.length != 0 && res.length == 20) {
+                            //此时不是最后一页，正常加载
+                            this.Fans = this.Fans.concat(this.tempFans);    //将临时对象的内容与粉丝对象进行拼接
+                            this.FansMoreLoad = true;                       //将还有更多的标记置为true
+                        } else if (res.length != 0 && res.length < 20) {
+                            //此时已经是最后一页，将还有更多的标记置为false
+                            this.Fans = this.Fans.concat(this.tempFans);
+                            this.FansMoreLoad = false;
+                        } else {
+                            //其他情况直接置false
+                            this.FansMoreLoad = false;
+                        }
+                        //加载结束，将正在加载标记置false
+                        this.loadingFans = false;
+
+                        /*console.log(this.tempFans)    测试语句
+                        console.log(this.Fans)
+                        console.log(res)
+                        console.log(typeof (this.Fans))
+                        console.log(typeof (res))*/
+                    },
+                    async UsersUrl(id) {
+                        window.open('/User/Center/?id=' + id);
+                    },
+                    async CancleFollow(id, num) {
+                        const { data: res } = await axios.get('/User/Following', {
+                            params: {
+                                id: id
+                            }
+                        })
+                        if (res == "fail") {
+                            console.log(this.Fans[num - 1].isFans);
+                            this.Fans[num - 1].isFans = 0;
+                        }
+                    },
+                    async Follow(id, num) {
+                        const { data: res1 } = await axios.get('/User/Following', {
+                            params: {
+                                id: id
+                            }
+                        })
+                        if (res1 == "fail") {
+                            console.log(this.Fans[num - 1].isFans);
+                            this.Fans[num - 1].isFans = 1;
+                        }
+                    }
+                }
+            })
+        </script>
+
+        @*测评*@
+        <div class="pull-right pright" style="display:none;">
+
+            @Html.Action("TouristEvaluation", "Tourist", new { name = ViewBag.username })
+
+        </div>
+        @*短评*@
+        <div class="pull-right pright" style="display:none">
+            @Html.Action("TouristShortComment", "Tourist", new { name = ViewBag.username })
+        </div>
+        @*动态*@
+        <div class="pull-right pright" style="display:none;">
+            @Html.Action("TouristDynamic", "Tourist", new { name = ViewBag.username })
+        </div>
+    </section>
+    <!-- 头像选择模态框 -->
+</div>
+@*修改信息的脚本*@
+<script>
+    //转换格式
+    function toTime(obj) {
+        var date = new Date(obj);
+        var y = 1900 + date.getYear();
+        var m = "0" + (date.getMonth() + 1);
+        var d = "0" + date.getDate();
+        return y + "-" + m.substring(m.length - 2, m.length) + "-" + d.substring(d.length - 2, d.length);
+    }
+    //最开始获取用户名
+    var curValue = $("#username").val();
+    $.ajax({
+        type: "get",
+        url: "/user/getInfo",
+        data: {
+            name: curValue
+        },
+        success: function (res) {
+            //alert('hello')
+            console.log('分割线')
+            console.log(res)
+            //选中信息
+            $("input:radio[value=" + res.Gender + "]").attr('checked', 'true')
+            //填入签名
+            $("input#Signatures").val(res.Signatures == null ? "" : res.Signatures)
+            //填入生日 将数据库中的时间戳格式转化成  yyyy-mm-dd  的形式
+            var birthday = parseInt(res.Birthday.replace(/[^\d]/g, ''))
+            var timestamp = new Date(birthday)
+            const strb = toTime(timestamp);
+            $("input.datepicker").val(res.Birthday == null ? "" : strb)
+        }
+    })
+    //切换选项框
+    $(function () {
+        $(".user-center__nav dd").each(function (index) {
+            $(this).click(function (e) {
+                //加高亮
+                $(".user-center__nav dd").removeClass("highlight");
+                $(this).addClass("highlight")
+                $(".pright").eq(index).show().siblings(".pright").hide();
+            })
+        })
+    })
+    function oyes(num) {
+        $(".user-center__nav dd").each(function () {
+            if (num == 1) {
+                $(".pright").hide();
+                $("#fans").show();
+            }
+            else {
+                $(".pright").hide();
+                $("#follows").show();
+            }
+        })
+    }
+
+</script>
+

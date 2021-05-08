@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Models.tempCommunityShortComment>
+
+<style>
+    .fullsizeimg {
+        width: 90%;
+        height: auto;
+        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 7;
+    }
+
+    .TheAnimationName {
+        left: 10rem;
+        position: revert;
+    }
+
+    img:hover {
+        cursor: pointer;
+    }
+</style>
+
+@foreach (var item in Model)
+{
+    <div class="post">
+        <div class="post-heading">
+            <div class="post-avature">
+                <img src="@item.Portrait" alt="" onclick="location='https://localhost:44303/User/Center/@item.Userid'">
+            </div>
+            <div class="post-title">
+                <h4> @item.UserName </h4>
+                <p>
+                    <font> @item.Time </font>
+                </p>
+
+            </div>
+            <div class="post-btn-action">
+                <span class="icon-more uil-ellipsis-h" aria-expanded="false"></span>
+                <div class="mt-0 p-2 uk-dropdown" uk-dropdown="pos: top-right;mode:hover ">
+                    <ul class="uk-nav uk-dropdown-nav">
+                        <li>
+                            <span href="#" class="text-danger">
+                                <i class="uil-trash-alt mr-1"></i>
+                                <font>
+                                    举报
+                                </font>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="post-description">
+            <div class="fullsizeimg">
+                @item.content
+            </div>
+            <a href="https://localhost:44303/Animation/details?id=@item.Animationid"><span class="TheAnimationName">———— @item.Aname</span></a>
+        </div>
+        <div class="post-state">
+            <div class="post-state-btns" onclick="ShortCommentAddlike(@item.Scommentid)">
+                <i class="uil-thumbs-up"></i>
+                <font id="@("short"+item.Scommentid)"> @item.Likenum</font><span> 赞 </span>
+            </div>
+        </div>
+    </div>
+
+}

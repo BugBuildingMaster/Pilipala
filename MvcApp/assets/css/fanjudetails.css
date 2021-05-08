@@ -1,0 +1,904 @@
+.head_channel {
+    height: 420px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .head_channel .blur_bj {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        z-index: -1;
+        -webkit-filter: blur(5px);
+        filter: blur(15px);
+        transform: scale(1.2);
+    }
+
+        .head_channel .blur_bj img {
+            width: 100%;
+            height: 120%;
+            background-size: cover;
+            background-position-y: -150px;
+        }
+
+    .head_channel .blur_bj_gray {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        background: rgba(0, 0, 0, .2);
+        z-index: -1;
+        opacity: 0.5;
+    }
+
+.indent {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 83.2px;
+    line-height: 21.06px;
+    width: 100%;
+}
+
+.indent1 {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 83.2px;
+    line-height: 21.06px;
+    /* margin-left: 40px; */
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.subjectwrap {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 270.4px;
+    line-height: 21.06px;
+    position: relative;
+    width: 100%;
+    margin-left: 50px;
+}
+
+.subject {
+    color: rgb(17, 17, 17);
+    display: block;
+    float: left;
+    font-size: 13px;
+    font-weight: 400;
+    height: 270.4px;
+    line-height: 21.06px;
+    width: 100%;
+    margin-top: 80px;
+}
+
+.mainpic {
+    color: rgb(17, 17, 17);
+    display: block;
+    /* margin-left: 60px; */
+    margin-left: 0px;
+    margin-top: 30px;
+    font-size: 13px;
+    font-weight: 400;
+    height: 300px;
+    line-height: 21.06px;
+    /* 	margin-right: 15px;
+ */ margin-right: 0px;
+    max-width: 200px;
+    text-align: center;
+    width: 200px;
+}
+
+    .mainpic img {
+        width: 200px;
+        height: 300px;
+    }
+
+.nbgnbg {
+    color: rgb(102, 102, 153);
+    cursor: pointer;
+    display: inline;
+    font-size: 13px;
+    font-weight: 400;
+    height: auto;
+    line-height: 21.06px;
+    text-align: center;
+    text-decoration-color: rgb(51, 119, 170);
+    text-decoration-line: none;
+    text-decoration-style: solid;
+    width: auto;
+}
+
+.xxinfo {
+    color: rgb(17, 17, 17);
+    display: block;
+    float: left;
+    font-size: 25px;
+    font-weight: 200;
+    height: 500px;
+    line-height: 50px;
+    max-width: 800px;
+    width: 800px;
+    padding-left: 50px;
+}
+
+.xxpl {
+    color: rgb(102, 102, 102);
+    display: inline;
+    font-size: 25px;
+    font-weight: 200;
+    height: 50px;
+    line-height: 19.5px;
+    width: 50px;
+}
+
+.attrs {
+    color: rgb(17, 17, 17);
+    display: inline;
+    font-size: 25px;
+    font-weight: 200;
+    height: auto;
+    line-height: 21.06px;
+    width: auto;
+}
+
+.actor {
+    color: rgb(17, 17, 17);
+    display: inline;
+    font-size: 25px;
+    font-weight: 200;
+    height: auto;
+    line-height: 21.06px;
+    width: auto;
+}
+
+.rating_wrap {
+    clear: both;
+    color: rgb(40, 40, 40);
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    height: 200px;
+    line-height: 14px;
+    width: 200px;
+    word-break: normal;
+    margin-top: 70px;
+    margin-left: 40px;
+}
+
+.rating_logo {
+    color: rgb(40, 40, 40);
+    display: block;
+    float: left;
+    font-size: 20px;
+    font-weight: 600;
+    height: 20px;
+    line-height: 12px;
+    width: 100px;
+}
+
+.rating_self {
+    color: rgb(155, 155, 155);
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    height: 60px;
+    line-height: 24px;
+    overflow-wrap: break-word;
+    width: 155px;
+}
+
+.interest_sectl .rating_self:before,
+.interest_sectl .rating_self:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.rating_num {
+    color: #ffff;
+    display: block;
+    float: left;
+    font-size: 40px;
+    font-weight: 400;
+    height: 70px;
+    line-height: 56px;
+    min-width: 30%;
+    width: 80px;
+}
+
+.rating_right {
+    color: rgb(155, 155, 155);
+    display: block;
+    float: left;
+    font-size: 12px;
+    font-weight: 400;
+    height: 40px;
+    line-height: 24px;
+    padding-bottom: 10px;
+    padding-left: 6px;
+    padding-top: 10px;
+    width: 75px;
+}
+
+.bigstar {
+    background-clip: border-box;
+    background-image: url('../../public/static/uploads/img/打星.png');
+    background-origin: padding-box;
+    background-position-y: -15px;
+    background-size: auto;
+    color: rgb(155, 155, 155);
+    display: block;
+    float: left;
+    font-size: 12px;
+    font-weight: 400;
+    height: 15px;
+    line-height: 24px;
+    margin-top: 1px;
+    width: 75px;
+}
+
+.jianjie {
+    width: 610px;
+    height: 300px;
+    margin-top: 30px;
+    margin-left: 20px;
+    /* margin-left: 30px; */
+    border-left: solid floralwhite;
+    border-right: solid floralwhite;
+}
+
+.jjh2 {
+    color: rgb(255, 255, 255);
+    display: inline;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+    font-weight: 400;
+    height: auto;
+    line-height: 24px;
+    width: 600px;
+    /* margin-left: 40px; */
+    margin-left: 20px;
+    margin-top: 50px;
+}
+
+.daxing {
+    clear: both;
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 40px;
+    line-height: 21.06px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    /* margin-left: 23px; */
+    margin-left: 10px;
+}
+
+.biaoqian {
+    color: #ffff;
+    font-size: 16px;
+    height: 21.6px;
+    letter-spacing: 3px;
+    line-height: 22px;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    width: 50px;
+    background-color: #7cc7f7;
+    border-radius: 15%;
+    text-align: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+    .biaoqian:hover {
+        background-color: #55aaff
+    }
+
+.daxing1 {
+    margin-top: 0px;
+    /* margin-left: 33px; */
+    margin-left: 18px;
+    height: 50px;
+    text-decoration: none;
+}
+
+.ul_subject_menu {
+    margin-left: -55px;
+    height: 40px;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+    .ul_subject_menu li {
+        float: left;
+        display: inline;
+        line-height: 14px;
+        margin-left: 15px;
+    }
+
+.a_show_login {
+    height: 20px;
+    width: 20px;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.main {
+    width: 100%;
+    height: 900px;
+}
+
+.btn {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 0.3rem 0 rgba(117, 117, 117, 0.1);
+}
+
+.spanList {
+    font-family: PingFang-SC-Medium;
+    font-size: 25px;
+    color: #3f3f3f;
+    text-align: center;
+    line-height: 1.2rem;
+    display: inline-block;
+    position: relative;
+    letter-spacing: 0.005rem;
+    margin-right: 130px;
+    float: left;
+    /* margin-left: 136px; */
+    margin-left: 80px;
+    margin-top: 5px;
+}
+
+    .spanlist:hover {
+        color: #007BFF;
+    }
+
+.active {
+    font-family: PingFang-SC-Bold;
+    font-size: 25px;
+    color: #3f3f3f;
+    text-align: center;
+    line-height: 1.2rem;
+    letter-spacing: 0.005rem;
+    display: inline-block;
+}
+
+    .active::after {
+        position: absolute;
+        left: -18px;
+        top: 39px;
+        content: "";
+        width: 140px;
+        height: 3px;
+        background-color: #0FA2F9;
+        border-radius: 0.04rem;
+    }
+
+.context {
+    width: 100%;
+    height: 1600px;
+    float: left;
+    margin-left: 10px;
+}
+
+.con {
+    display: none;
+    width: 100%;
+    height: 800px;
+    margin-top: 0.8rem;
+}
+
+.duanping {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 479.8px;
+    line-height: 21.06px;
+    margin-bottom: 30px;
+    width: 800px;
+}
+
+.duanping1 {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 60px;
+    line-height: 21.06px;
+    margin-top: 16px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 675px;
+}
+
+.comment_btn {
+    border: 1px solid #007BFF;
+}
+
+.a_show_login2 {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    cursor: pointer;
+    display: block;
+    float: right;
+    font-size: 15px;
+    font-weight: 400;
+    height: 20px;
+    line-height: 20px;
+    padding-bottom: 25px;
+    padding-left: 12px;
+    padding-top: 7px;
+    text-decoration-style: solid;
+    width: 130px;
+}
+
+.comment-item {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 70px;
+    line-height: 21.06px;
+    padding-bottom: 14px;
+    padding-top: 4px;
+    position: relative;
+    word-break: break-word;
+}
+
+.duanping2 .comment-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: #ddd;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+}
+
+.mod-bd {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 419.8px;
+    line-height: 21.06px;
+    width: 800px;
+}
+
+.tab-hd {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 20.8px;
+    line-height: 21.06px;
+    padding-bottom: 15px;
+    position: relative;
+    width: 800px;
+}
+
+.hot-comments-tab {
+    background-size: auto;
+    color: rgb(102, 102, 153);
+    cursor: pointer;
+    display: inline;
+    font-size: 13px;
+    font-weight: 400;
+    height: auto;
+    line-height: 21.06px;
+    text-decoration-color: rgb(17, 17, 17);
+    text-decoration-style: solid;
+    width: auto;
+}
+
+.new-comments-tab {
+    color: rgb(102, 102, 153);
+    cursor: pointer;
+    display: inline;
+    font-size: 13px;
+    font-weight: 400;
+    height: auto;
+    line-height: 21.06px;
+    text-decoration-color: rgb(51, 119, 170);
+    text-decoration-style: solid;
+    width: auto;
+}
+
+.tab {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 384px;
+    line-height: 21.06px;
+    width: 675px;
+}
+
+.tab-bd {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 384px;
+    line-height: 21.06px;
+    width: 800px;
+}
+
+.comment {
+    color: rgb(73, 73, 73);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 60px;
+    line-height: 200%;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 800px;
+    word-break: break-word;
+}
+
+.comment-item {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 70px;
+    line-height: 21.06px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding-bottom: 14px;
+    padding-top: 4px;
+    position: relative;
+    width: 675px;
+    word-break: break-word;
+}
+
+.comment-vote {
+    color: rgb(73, 73, 73);
+    display: block;
+    float: right;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    height: 21.6px;
+    line-height: 22.1px;
+    overflow-wrap: break-word;
+    width: 51.3125px;
+    word-break: break-word;
+}
+
+.comment-info {
+    color: rgb(73, 73, 73);
+    display: inline;
+    font-size: 13px;
+    /* height :auto; */
+    line-height: 22.1px;
+    overflow-wrap: break-word;
+    width: auto;
+    word-break: break-word;
+}
+
+.allstar50 {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-image: url(../img/打星.png);
+    background-size: auto;
+    color: rgb(73, 73, 73);
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 15px;
+    line-height: 22.1px;
+    margin-right: 3px;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 75px;
+    word-break: break-word;
+    zoom: 1;
+}
+
+.allstar30 {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-image: url(../img/打星.png);
+    background-origin: padding-box;
+    background-position-x: 0px;
+    background-position-y: -45px;
+    background-size: auto;
+    color: rgb(73, 73, 73);
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 15px;
+    line-height: 22.1px;
+    margin-right: 3px;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 75px;
+    word-break: break-word;
+    zoom: 1;
+}
+
+.allstar40 {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-image: url(../img/打星.png);
+    background-origin: padding-box;
+    background-position-x: 0px;
+    background-position-y: -15px;
+    background-size: auto;
+    color: rgb(73, 73, 73);
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 15px;
+    line-height: 22.1px;
+    margin-right: 3px;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 75px;
+    word-break: break-word;
+}
+
+.allstar20 {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-image: url(../img/打星.png);
+    background-origin: padding-box;
+    background-position-x: 0px;
+    background-position-y: -90px;
+    background-size: auto;
+    color: rgb(73, 73, 73);
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 15px;
+    line-height: 22.1px;
+    margin-right: 3px;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 75px;
+    word-break: break-word;
+}
+
+.allstar10 {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-image: url(../img/打星.png);
+    background-origin: padding-box;
+    background-position-x: 0px;
+    background-position-y: -120px;
+    background-size: auto;
+    color: rgb(73, 73, 73);
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 15px;
+    line-height: 22.1px;
+    margin-right: 3px;
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 75px;
+    word-break: break-word;
+}
+
+.comment-time {
+    color: rgb(170, 170, 170);
+    display: inline;
+    font-size: 13px;
+    font-weight: 400;
+    height: auto;
+    line-height: 22.1px;
+    overflow-wrap: break-word;
+    width: auto;
+    word-break: break-word;
+}
+
+.comment-content {
+    color: rgb(102, 102, 102);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 38.4px;
+    line-height: 19.5px;
+    overflow-wrap: break-word;
+    width: 800px;
+    word-break: break-word;
+}
+
+.short {
+    color: rgb(102, 102, 102);
+    display: inline;
+    font-size: 13px;
+    font-weight: 400;
+    height: auto;
+    line-height: 0px;
+    overflow-wrap: break-word;
+    width: 800px;
+    word-break: break-word;
+}
+
+.juping1 {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 60px;
+    line-height: 21.06px;
+    margin-top: 16px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 675px;
+}
+
+.dph2 {
+    color: rgb(0, 119, 34);
+    display: block;
+    font-size: 16px;
+    font-weight: 400;
+    height: 48px;
+    line-height: 24px;
+    margin-bottom: 12px;
+    width: 675px;
+}
+
+.review-list {
+    color: rgb(17, 17, 17);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    height: 1440px;
+    line-height: 21.06px;
+    margin-top: 20px;
+    width: 800px;
+}
+
+    .review-list .review-item {
+        padding: 20px 0px;
+        height: 260px;
+        position: relative;
+    }
+
+        .review-list .review-item .main-hd {
+            padding: 0;
+            margin-bottom: 0;
+            height: 24px;
+            font-size: 0;
+        }
+
+            .review-list .review-item .main-hd .name {
+                font-size: 25px;
+                margin-left: 10px;
+                vertical-align: middle;
+            }
+
+            .review-list .review-item .main-hd .main-meta, .review-list .review-item .main-hd .main-title-rating {
+                vertical-align: middle;
+                margin-left: 100px;
+            }
+
+            .review-list .review-item, .review-list .review-item .main-hd .main-meta {
+                font-size: 20px;
+                margin-left: 0px;
+            }
+
+                .review-list .review-item .main-hd .main-title-rating {
+                    margin-left: 2px;
+                    position: relative;
+                    top: -2px;
+                }
+
+.main-meta {
+    color: #95999C;
+}
+
+.review-list .review-item .main-bd h2 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.review-list .review-item .review-short {
+    color: #494949;
+    height: 130px;
+    word-break: break-word;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 80;
+    padding-top: 100px;
+}
+
+.action {
+    margin-top: 47px;
+}
+
+.review-list .review-item .main-bd .action .action-btn {
+    color: #3377aa;
+    padding: 4px 6px;
+    margin-right: 4px;
+    border-radius: 2px;
+    background-color: #f0f7f9;
+    display: inline-block;
+    line-height: 1;
+}
+
+.review-list .review-item:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    transform: scaleY(0.5);
+}
+
+a {
+    cursor: pointer;
+}
+
+    a:visited {
+        color: #007BFF;
+        text-decoration: none;
+    }
+
+.col-md-4 {
+    margin-bottom: 50px;
+    margin-top: 20px;
+    height: 380px;
+}
+
+.pinglun {
+    padding-left: 50px;
+}
+
+.shoucang {
+    margin-top: 49px;
+    width: 300px;
+    height: 200px;
+}
+
+.sc {
+    display: block;
+    /* display: inline; */
+    width: 130px;
+    height: 70px;
+    background-color: #7cc7f7;
+    padding-left: 10px;
+    padding-top: 3px;
+    border-radius: 10%;
+    font-size: 20px;
+    font-weight: 400;
+    cursor: pointer;
+    color: #fff;
+}
+
+    .sc:hover {
+        background-color: #55aaff
+    }

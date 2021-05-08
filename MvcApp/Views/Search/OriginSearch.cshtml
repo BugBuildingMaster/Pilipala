@@ -1,0 +1,109 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Luba">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="HiBootstrap">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="referrer" content="no-referrer">
+    <link href="~/assets/css/style.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+    <script src="~/Scripts/axioshttp.js"></script>
+    <title>OriginSearch</title>
+    <style>
+        .mainForm {
+            margin: auto;
+            width: 42rem;
+            height: 30rem;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 13rem;
+        }
+
+        input {
+            outline: none;
+        }
+
+        .search_input {
+            width: 35.5rem;
+            height: 2.5rem;
+            border-radius: 10px;
+            border: grey 2px solid;
+        }
+
+        .inp_sub {
+            background-color: rgb(0, 148, 255);
+            color: rgb(255, 255, 255);
+            border: hidden;
+            padding: 7px 10px 7px 10px;
+            border-radius: 10%;
+            background-color: #0094ff;
+            color: #fff;
+            border: hidden;
+            width: 4.8rem;
+            height: 2.8rem;
+            font-size: 1rem;
+        }
+
+        .theLogo {
+            width: 20rem;
+            margin: 0 auto;
+        }
+
+        .LoGo {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        document.onreadystatechange = function () {
+            loading();
+        }
+
+        function loading() {
+            var list = ['https://localhost:44372/public/static/uploads/openinggif/smalllogo1.gif', 'https://localhost:44372/public/static/uploads/openinggif/smalllogo2.gif'];
+            document.getElementById('logoimg').addEventListener('mouseover', function () {
+                var ranLogo = list[Math.round(Math.random())];
+                document.getElementById('logoimg').src = ranLogo;
+            });
+        }
+    </script>
+    <div class="mainForm">
+        <div class="theLogo">
+            <a href="https://localhost:44372">
+                <img class="LoGo" id="logoimg" src="~/public/static/uploads/openinggif/smalllogo1.gif" alt="pilipala网" />
+            </a>
+        </div>
+        <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
+            <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
+            <input type="hidden" name="sid" value="">
+            <input class="inp_sub" type="submit" value="搜索" id="sub">
+        </form>
+        <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+    </div>
+    <script>
+        function addSearch() {
+            if ($('#input_text').val() == "") {
+                window.location.href = "/Search/OriginSearch";
+            }
+            else {
+                const url = "/Search/Search?KeyWord="  + $('#input_text').val()
+                window.location.href = url;
+                }
+            }
+    </script>
+</body>
+</html>

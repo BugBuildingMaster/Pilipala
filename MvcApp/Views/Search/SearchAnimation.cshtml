@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Models.tempSearchAnimation>
+
+@{
+    ViewBag.Title = "SearchAnimation";
+}
+<style>
+</style>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-sm-12 col-md-6 col-lg-4 element-item pb-30 lighting">
+            <div class="trending-product-card">
+                <a href="https://localhost:44372/Animation/details?id=@item.Animationid">
+                    <div class="product-card-thumb">
+                        <img src="@item.AimagePic" alt="@item.Aname" class="product-main-thumb">
+                        <img src="@item.AimagePic" alt="@item.Aname" class="product-hover-thumb">
+                    </div>
+                    <div class="product-card-content">
+                        <h3>@item.Aname</h3>
+                    </div>
+                </a>
+                <div class="product-card-button">
+                    <ul>
+                        <li>
+                            <div class="quickview-redirect inline-popup-1">
+                                <a href="https://localhost:44372/Animation/details?id=@item.Animationid" data-effect="mfp-zoom-in">
+                                    <i class="flaticon-eye"></i>
+                                </a>
+                                <p class="product-tooltip">浏览</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>

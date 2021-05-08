@@ -1,0 +1,203 @@
+body {
+    font: 12px Arial,"微软雅黑","hiragino sans gb",simsun;
+    color: #4D4D4D;
+}
+ ul {
+    list-style: none;
+	    display: block;
+}
+li {
+    margin-left: -45px;
+    width: 188px;
+    display: list-item;
+}
+
+.wrapper {
+    width: 1100px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+.w_139 {
+	text-align: center;
+    float: left;
+    width: 182px;
+    display: inline;
+	border-color: #dfe2e6;
+    margin-left:30px;
+}
+.hblock {
+    overflow: hidden;
+    border: 1px solid #d4d4d9;
+}
+.w_139 ul li .bb {
+    font-weight: 700;
+}
+.w_139 ul li a {
+    color: #666;
+    display: block;
+    white-space: nowrap;
+    padding: 0 10px;
+    overflow: hidden;
+    line-height: 37px;
+    font-size: 14px;
+    border: 1px solid #FFF;
+}
+.w_139 ul li .odd {
+    background-color: #fafbfc;
+    border: 1px solid #f5f7f8;
+}
+.w_139 ul li a:hover {
+	    background-color: #6badff;
+	    color: #FFF;
+	    border: 1px solid #6badff;
+}
+.mainBody {
+    float: right;
+    width: 840px;
+    margin-right:20px;
+}
+.grayborder {
+    border: 1px solid #d9d9de;
+}
+.top-title {
+    background: url('../../public/static/uploads/img/news.png') repeat-x left -80px;
+    height: 16px;
+    overflow: hidden;
+    padding: 8px 10px 7px 15px;
+}
+.top-title h2 {
+    float: left;
+    font-size: 14px;
+    margin-right: 10px;
+	margin-top:-3px;
+}
+.list-table {
+    width: 100%;
+    table-layout: fixed;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.first {
+    padding-left: 10px;
+}
+.list-table th {
+    background: #F7F7F7;
+    color: gray;
+    height: 25px;
+    line-height: 24px;
+    overflow: hidden;
+}
+th {
+    text-align: left;
+}
+.tc {
+    text-align: center;
+}
+.last {
+    padding-right: 10px;
+    text-align: center;
+}
+.hideline td {
+    border-bottom: 0;
+    height: 20px;
+    background: url('../../public/static/uploads/img/line_b.gif') repeat-x 0 100%;
+}
+.num-top {
+    height: 11px;
+    color: #fff;
+    text-align: center;
+    display: inline;
+    float: left;
+    font-size: 10px;
+    line-height: 10px;
+    background: #F23D7C;
+    border: 1px solid #DD2464;
+}
+.keyword {
+    background: url('../../public/static/uploads/img/line_t.gif') no-repeat 0 100%;
+}
+.list-title {
+    float: left;
+    margin-right: 5px;
+}
+.list-table td.last {
+    padding-right: 65px;
+}
+.icon-fall {
+    background-position: 100% -19px;
+	float: right;
+	padding-right: 10px;
+	
+}
+.icon, #sub-nav li a span, .icon-video, .icon-rise, .icon-fall, .icon-fair, .icon-search, .tab-skin-hot li.current, .tab-skin-main li.current, .tab-skin-sub li.current, .item-default, .realtime, .weekspot, #main-nav li.current a span {
+    background-repeat: no-repeat;
+}
+.list-table .item-tr td {
+    border-bottom: 0;
+    padding-bottom: 3px;
+    background: #FFFBFF url('../../public/static/uploads/img/line_b.gif') repeat-x 0 100%;
+}
+.list-table .item-tr .item-info, .list-table .item-tr .item-news {
+    padding: 15px 20px 12px 15px;
+    background: #FFFBFF;
+}
+.list-table .item-info {
+    height: auto;
+    width: auto;
+    padding-right: 20px;
+}
+.item-info {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+.item-text {
+    line-height: 20px;
+    position: relative;
+    top: -3px;
+    display: inline;
+	font-size: 16px;
+}
+.item-text a {
+    color: #4D4D4D;
+}
+.clearfix::after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+a {
+    color: #2464B2;
+    text-decoration: none;
+}
+.list-table .item-tr td .item-img img {
+    margin-left: 0;
+    margin-bottom: 5px;
+    margin-right: 20px;
+	width:90px ;
+	height: 120px;
+}
+.item-img img {
+    float: left;
+    border: 1px solid #E8E8E8;
+    display: inline;
+    margin: 0 10px 0 5px;
+    position: relative;
+}
+.vote{
+	float: right;
+	margin-right: 68px;
+	margin-bottom: 10px;
+	cursor: pointer;
+	color: #2464B2;
+}
