@@ -74,7 +74,7 @@
         }
 
         function loading() {
-            var list = ['https://localhost:44372/public/static/uploads/openinggif/smalllogo1.gif', 'https://localhost:44372/public/static/uploads/openinggif/smalllogo2.gif'];
+            var list = ['../public/static/uploads/openinggif/smalllogo1.gif', '../public/static/uploads/openinggif/smalllogo2.gif'];
             document.getElementById('logoimg').addEventListener('mouseover', function () {
                 var ranLogo = list[Math.round(Math.random())];
                 document.getElementById('logoimg').src = ranLogo;
@@ -83,7 +83,7 @@
     </script>
     <div class="mainForm">
         <div class="theLogo">
-            <a href="https://localhost:44372">
+            <a href="..">
                 <img class="LoGo" id="logoimg" src="~/public/static/uploads/openinggif/smalllogo1.gif" alt="pilipala网" />
             </a>
         </div>

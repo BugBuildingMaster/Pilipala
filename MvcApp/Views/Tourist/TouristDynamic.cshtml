@@ -374,7 +374,7 @@
                     <div class="c-header">
                         <img src="@item.Portrait" alt="Alternate Text" />
                         <div class="lcontent">
-                            <a href="https://localhost:44372/User/Center/@item.Userid" target="_blank" class="title">
+                            <a href="../User/Center/@item.Userid" target="_blank" class="title">
                                 <span class="name">@item.UserName</span>
                             </a>
                             <small class="desc">@item.Time</small>
@@ -386,7 +386,7 @@
                     <div class="c-content">
                         @*文字内容*@
                         <div class="content-full">
-                            <a href="https://localhost:44372/Community/DynamicDetail/@item.dongtaiid" style="color:black; text-decoration:none">
+                            <a href="../Community/DynamicDetail/@item.dongtaiid" style="color:black; text-decoration:none">
                                 @item.Content
                             </a>
                         </div>
@@ -394,7 +394,7 @@
                     </div>
                     @*评论分享*@
                     <div class="Evaluate">
-                        <div class="post-add-comment" onclick="location='https://localhost:44372/Community/DynamicDetail/@item.dongtaiid'">
+                        <div class="post-add-comment" onclick="location='../Community/DynamicDetail/@item.dongtaiid'">
                             <div class="post-add-comment-text-area">
                                 <input type="text" placeholder="发表一条友善的评论...">
                             </div>

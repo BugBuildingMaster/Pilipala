@@ -218,16 +218,16 @@
 {
     <div class="@("E" + item.Evaluationid)">
         <div class="main review-item" id="@("E" + item.Evaluationid)">
-            <a class="subject-img" href="https://localhost:44372/Animation/details?id=@item.Animationid">
+            <a class="subject-img" href="../Animation/details?id=@item.Animationid">
                 <img class="imagePic" alt="@item.Aname" title="@item.Aname" src="@item.AimagePic" onload="loadingConcent(@item.Evaluationid, 2); loadingConcent(@item.Evaluationid, 1);">
             </a>
 
             <header class="main-hd">
-                <a href="https://localhost:44372/User/Center/@item.Userid" class="avator">
+                <a href="../User/Center/@item.Userid" class="avator">
                     <img class="ThePortrait" width="24" height="24" src="@item.Portrait">
                 </a>
 
-                <a href="https://localhost:44372/User/Center/@item.Userid" class="name">@item.UserName</a>
+                <a href="../User/Center/@item.Userid" class="name">@item.UserName</a>
 
                 <span class="main-title-rating">@item.Score</span>
 
@@ -239,7 +239,7 @@
 
             <div class="main-bd">
 
-                <a href="https://localhost:44372/Evaluationid/Details/@item.Evaluationid" class="Thetitle">@item.Title</a>
+                <a href="../Evaluationid/Details/@item.Evaluationid" class="Thetitle">@item.Title</a>
 
                 <div class="review-short">
                     <div id="@("ShortValue"+item.Evaluationid)" class="short-content">

@@ -50,15 +50,16 @@
             $('body').css('overflow', 'scroll');
             if (sessionStorage.getItem('introViewed') != 'true') {
                 $(".loading-div").show();
-                document.getElementById('opening').src = "https://localhost:44372/public/static/uploads/openinggif/logoAnimation.gif";
+                document.getElementById('opening').src = "../public/static/uploads/openinggif/logoAnimation.gif";
+                //document.getElementById('opening').src = "../public/static/uploads/openinggif/logoAnimation.gif";
                 sessionStorage.setItem('introViewed', 'true');
             }
             else {
                 $(".loading-div").show();
-                document.getElementById('opening').src = "https://localhost:44372/public/static/uploads/openinggif/logo1.gif";
+                document.getElementById('opening').src = "../public/static/uploads/openinggif/logo1.gif";
             }
             //logo随机
-            var list = ['https://localhost:44372/public/static/uploads/openinggif/smalllogo1.gif', 'https://localhost:44372/public/static/uploads/openinggif/smalllogo2.gif'];
+            var list = ['../public/static/uploads/openinggif/smalllogo1.gif', '../public/static/uploads/openinggif/smalllogo2.gif'];
             document.getElementById('logoimg').addEventListener('mouseover', function () {
                 var ranLogo = list[Math.round(Math.random())];
                 document.getElementById('logoimg').src = ranLogo;
@@ -78,7 +79,7 @@
         }
 
         function goToAnimation(id) {
-            var url = "https://localhost:44372/Animation/details?id=" + id;
+            var url = "../Animation/details?id=" + id;
             window.location.href = url;
         }
     </script>
@@ -262,7 +263,7 @@
                                 <nav class="navbar navbar-expand-md navbar-light">
                                     <div class="navbar-top">
                                         <div class="container">
-                                            <a class="navbar-brand" href="https://localhost:44372">
+                                            <a class="navbar-brand" href="..">
                                                 <img id="logoimg" alt="logo" class="logo" src="~/public/static/uploads/openinggif/smalllogo1.gif">
                                             </a>
                                             <div class="navbar-top-action">
@@ -565,42 +566,42 @@
                         <div class="partner-carousel owl-carousel owl-theme">
                             <div class="item">
                                 <div class="partner-thumb">
-                                    <a href="https://localhost:44372/Animation/details?id=88">
+                                    <a href="../Animation/details?id=88">
                                         <img src="~/public/static/uploads/shouyepicture1/工作细胞.png" alt="partner">
                                     </a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="partner-thumb">
-                                    <a href="https://localhost:44372/Animation/details?id=1">
+                                    <a href="../Animation/details?id=1">
                                         <img src="~/public/static/uploads/shouyepicture1/欢迎来到实力至上主义的教室.jpg" alt="partner">
                                     </a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="partner-thumb">
-                                    <a href="https://localhost:44372/Animation/details?id=1">
+                                    <a href="../Animation/details?id=1">
                                         <img src="~/public/static/uploads/shouyepicture1/辉夜大小姐.png" alt="partner">
                                     </a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="partner-thumb">
-                                    <a href="https://localhost:44372/Animation/details?id=5">
+                                    <a href="../Animation/details?id=5">
                                         <img src="~/public/static/uploads/shouyepicture1/全职高手.jpg" alt="partner">
                                     </a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="partner-thumb">
-                                    <a href="https://localhost:44372/Animation/details?id=36">
+                                    <a href="../Animation/details?id=36">
                                         <img src="~/public/static/uploads/shouyepicture1/异度侵入.png" alt="partner">
                                     </a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="partner-thumb">
-                                    <a href="https://localhost:44372/Animation/details?id=89">
+                                    <a href="../Animation/details?id=89">
                                         <img src="~/public/static/uploads/shouyepicture1/总之就是非常可爱.png" alt="partner">
                                     </a>
                                 </div>
@@ -890,7 +891,7 @@
                             }
                         })
                         this.aJapanList = res
-                        console.log('ssss')
+                        //console.log('ssss')
                         console.log(this.aJapanList)
                     },
                     //获取国漫信息 向控制器发一个get请求 并将请求到的数据存入aChinaList中
@@ -901,13 +902,13 @@
                             }
                         })
                         this.aChinaList = res
-                        console.log(this.aChinaList)
+                        //console.log(this.aChinaList)
                     },
                     //获取分类的信息
                     async getaCategory() {
                         const { data: res } = await axios.get('/Animation/GetCategories')
                         this.aCategory = res
-                        console.log(this.aCategory)
+                        //console.log(this.aCategory)
                     },
                     //分类点击事件
                     btnCategory(name) {
@@ -926,7 +927,7 @@
                         })
                         this.cName = name
                         this.aCategoryList = res2
-                        console.log(res2)
+                        //console.log(res2)
                     },
                     //获取该动漫分类下的动漫数量
                     async getCategoryListNum(name) {
@@ -938,7 +939,7 @@
                         this.pageAll = res
                         //向下取整
                         this.pageNum = Math.ceil(this.pageAll / this.pageSize)
-                        console.log(this.pageNum)
+                        //console.log(this.pageNum)
                     },
                     btnPageClick(a) {
                         this.currentPage = a - 1

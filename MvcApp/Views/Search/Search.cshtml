@@ -145,7 +145,7 @@
         }
 
         function loading() {
-            var list = ['https://localhost:44372/public/static/uploads/openinggif/smalllogo1.gif', 'https://localhost:44372/public/static/uploads/openinggif/smalllogo2.gif'];
+            var list = ['../public/static/uploads/openinggif/smalllogo1.gif', '../public/static/uploads/openinggif/smalllogo2.gif'];
             document.getElementById('logoimg').addEventListener('mouseover', function () {
                 var ranLogo = list[Math.round(Math.random())];
                 document.getElementById('logoimg').src = ranLogo;
@@ -191,7 +191,7 @@
     <div class="TopStatusBar">
         <div class="leftBox">
             <div class="logoBox">
-                <a href="https://localhost:44372/Animation/index">
+                <a href="../Animation/index">
                     <img id="logoimg" class="LoGo" alt="logo" src="~/public/static/uploads/openinggif/smalllogo1.gif">
                 </a>
             </div>

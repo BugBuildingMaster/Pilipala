@@ -409,6 +409,7 @@
     <Content Include="images\uploads\2021-01-0340ab5482-d100-4310-a324-191b5e7b3bbd" />
     <Content Include="images\uploads\2021-01-03458ae2f8-dd69-49d7-b40f-068fad008c92" />
     <Content Include="public\static\uploads\img\p2578181143.webp" />
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
