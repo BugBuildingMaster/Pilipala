@@ -382,7 +382,7 @@
                     </div>
                     <script src="~/assets/js/jquery-3.5.1.min.js"></script>
                     @{
-                        if (item.UserName == Session["username"].ToString())
+                        if (item.UserName == name["UserName"].ToString())
                         {
                             <div class="c-dropdown js-dropdown" onclick="deleteDongtai('@item.dongtaiid')">
                                 <input type="hidden" name="Framework" id="Framework" class="js-dropdown__input">

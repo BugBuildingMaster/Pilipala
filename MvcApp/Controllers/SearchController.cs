@@ -40,6 +40,8 @@ namespace MvcApp.Controllers
                     HttpCookie cookie = Request.Cookies["Login"];
                     JObject username = readtoken(cookie.Values["Token"]);
                     name = username["UserName"].ToString();
+                    ViewBag.username = name;
+                    ViewBag.userid = username["UserId"].ToString();
                 }
                 sManager.Search(KeyWord, name);
                 return View();

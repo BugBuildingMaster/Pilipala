@@ -21,6 +21,13 @@ namespace MvcApp.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
+            if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                ViewBag.username = name["UserName"].ToString();
+                ViewBag.userid = name["UserId"].ToString();
+            }
             return View();
         }
 

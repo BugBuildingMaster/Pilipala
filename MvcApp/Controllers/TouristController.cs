@@ -35,6 +35,7 @@ namespace MvcApp.Controllers
                 else
                 {
                     ViewBag.username = name;
+                    ViewBag.userid = id;
                     UsersInfo user = uManager.GetUsersInfo((int)id);
                     return View(user);
                 }

@@ -59,8 +59,8 @@ namespace MvcApp.Controllers
         #region 注销登录
         public string LoginOut()
         {
-            Session["userid"] = null;
-            Session["username"] = null;
+            //Session["userid"] = null;
+            //Session["username"] = null;
             string data = "已注销登录！";
             Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
             Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
@@ -95,20 +95,24 @@ namespace MvcApp.Controllers
             //生成密钥对
             AsymmetricCipherKeyPair keyPair = keyGenerator.GenerateKeyPair();
             TextWriter textWriter = new StringWriter();
+            //获取私钥
             PemWriter pemWriter = new PemWriter(textWriter);
             pemWriter.WriteObject(keyPair.Private); //获取密钥对的私钥
             pemWriter.Writer.Flush();   //清空缓存区，防止脏写
             string priKey = textWriter.ToString();
             priKey = RsaKeyConvert.PrivateKeyPkcs1ToPkcs8(priKey);
             Session["Private"] = priKey;    //将私钥保存在session中
+            //将私钥保存在本地
+            StreamWriter streamWriter = new StreamWriter(Server.MapPath("~/priKey.txt"));
+            streamWriter.Write(priKey);
+            streamWriter.Flush();
+            streamWriter.Close();
+            //获取公钥
             TextWriter textWriter1 = new StringWriter();
             PemWriter pemWriter1 = new PemWriter(textWriter1);
             pemWriter1.WriteObject(keyPair.Public); //获取密钥对的公钥
             pemWriter1.Writer.Flush();   //清空缓存区，防止脏写
             string pubKey = textWriter1.ToString();
-
-            Session["pub"] = pubKey;    //将私钥保存在session中
-
             //将公钥存入cookie方便读取
             Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
             Response.Cookies["Key"].Value = pubKey;
@@ -410,10 +414,10 @@ namespace MvcApp.Controllers
                 {
                     Users user = usersManager.GetUser(username);
 
-                    Session["UserId"] = user.Userid;               //保存用户id
-                    Session["Username"] = user.UserName;               //保存用户名
-                    Session["Userphoto"] = user.UsersInfo.Portrait;             //保存用户头像路径
-                    Session.Timeout = 120;
+                    //Session["UserId"] = user.Userid;               //保存用户id
+                    //Session["Username"] = user.UserName;               //保存用户名
+                    //Session["Userphoto"] = user.UsersInfo.Portrait;             //保存用户头像路径
+                    //Session.Timeout = 120;
 
                     string token = gettoken(user.Userid.ToString(), user.UserName, user.UsersInfo.Portrait, DateTime.Now);
                     HttpCookie cookie = new HttpCookie("Login");
@@ -440,7 +444,9 @@ namespace MvcApp.Controllers
             try
             {
                 //获取用户的盐
-                string name = Session["username"].ToString();
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject username = readtoken(cookie.Values["Token"]);
+                string name = username["UserName"].ToString();
                 string salt = usersManager.GetSalt(name);
                 //验证旧密码是否正确
                 if (usersManager.ComparePwd(Encryption(oldPwd, salt), name))

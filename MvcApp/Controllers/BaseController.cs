@@ -87,7 +87,17 @@ namespace MvcApp.Controllers
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtAlgorithm alg = new HMACSHA256Algorithm();
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, alg);
-            string priKey = Session["Private"].ToString();
+            string priKey;
+            if (Session["Private"] == null)
+            {
+                StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
+                priKey = sr.ReadToEnd();
+                sr.Close();
+            }
+            else
+            {
+                priKey = Session["Private"].ToString();
+            }
             var json = decoder.Decode(tokenContent, priKey, true);
             JObject jo = (JObject)JsonConvert.DeserializeObject(json);
             //校验通过，返回解密后的json对象

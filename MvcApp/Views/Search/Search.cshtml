@@ -215,13 +215,13 @@
                 <div class="navbar-right-item">
                     <div class="navbar-right-action">
                         @{
-                            if (Session["username"] == null)
+                            if (ViewBag.username == null)
                             {
-                                <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text" onclick="leaveUrl()">
+                                <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text">
                                     @Html.ActionLink("登录", "Login", "Users")
                                 </div>
-                                <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item" onclick="leaveUrl()">
-                                    @Html.ActionLink("注册", "Regist1", "Users")
+                                <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                                    @Html.ActionLink("注册", "Register", "Users")
                                 </div>
                             }
                             else
@@ -233,7 +233,7 @@
                                OnSuccess = "Loginout"
                            }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
                                 <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
-                                    <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                                    <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" title="@ViewBag.username"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
                                 </div>
                             }
                         }

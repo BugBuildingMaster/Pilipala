@@ -143,7 +143,7 @@
                     <!-- 用户 -->
                     <div class="head_user">
                         <!-- 用户头像 -->
-                        <a class="opts_account" href="@Url.Action("Center","User",new { id=Session["userid"]})" aria-expanded="false">
+                        <a class="opts_account" href="@Url.Action("Center","User",new { id=ViewBag.userid})" aria-expanded="false">
                             <img src="@Html.Action("ThePortrait","Community")" alt="">
                         </a>
                     </div>
@@ -218,7 +218,7 @@
 
                             <div class="post-add-comment">
                                 <div class="post-add-comment-avature">
-                                    <a href="@Url.Action("Center","User",new { id=Session["userid"]})" aria-expanded="false">
+                                    <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" aria-expanded="false">
                                         <img src="@Html.Action("ThePortrait","Community")" alt="">
                                     </a>
                                 </div>

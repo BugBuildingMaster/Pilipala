@@ -36,6 +36,7 @@ namespace MvcApp.Controllers
                 if (visitor == user.UserName)
                 {
                     ViewBag.username = name;
+                    ViewBag.userid = id;
                     //db.PersonalSpace(name, visitor);
                     return View(user);
                 }
@@ -75,6 +76,7 @@ namespace MvcApp.Controllers
         {
             HttpCookie cookie = Request.Cookies["Login"];
             JObject name = readtoken(cookie.Values["Token"]);
+            ViewBag.username = name["UserName"].ToString();
             return PartialView(uManager.GetUserDongtai(name["UserName"].ToString()));
         }
 
@@ -111,7 +113,10 @@ namespace MvcApp.Controllers
                     {
                         //拼接返回的Img标签
                         string dbsrc = "/images/uploads/" + fileName;
-                        string username = Session["username"].ToString();
+
+                        HttpCookie cookie = Request.Cookies["Login"];
+                        JObject name = readtoken(cookie.Values["Token"]);
+                        string username = name["UserName"].ToString();
                         bool edit = uManager.EditUsersInfo(username, dbsrc);
                         return edit ? Content(dbsrc) : Content("fail");
                     }

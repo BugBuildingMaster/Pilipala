@@ -14,7 +14,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <input type="hidden" name="id" value="@ViewBag.id" />
-        <input type="hidden" name="name" value="@Session["username"]" />
+        <input type="hidden" name="name" value="@ViewBag.username" />
 
         <div class="form-group">
             <label class="control-label col-md-2">标题</label>

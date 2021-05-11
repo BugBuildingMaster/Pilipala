@@ -335,13 +335,13 @@
             <div class="title" style="border:hidden;margin-top:15px;">个人中心</div>
             <div class="pull-right d-flex flex-row align-items-center justify-content-around" style="margin-top:20px;">
                 @{
-                    if (Session["username"] == null)
+                    if (ViewBag.username == null)
                     {
-                        <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text" onclick="leaveUrl()">
-                            @Html.ActionLink("登录", "Login", "Home")
+                        <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text">
+                            @Html.ActionLink("登录", "Login", "Users")
                         </div>
-                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item" onclick="leaveUrl()">
-                            @Html.ActionLink("注册", "Regist1", "Home")
+                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                            @Html.ActionLink("注册", "Register", "Users")
                         </div>
                     }
                     else
@@ -352,8 +352,8 @@
                        HttpMethod = "Post",
                        OnSuccess = "Loginout"
                    }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
-                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item" style="margin-left:15px;">
-                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
+                            <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" title="@ViewBag.username"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
                         </div>
                     }
                 }

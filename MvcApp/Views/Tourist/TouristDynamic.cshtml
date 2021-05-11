@@ -381,15 +381,6 @@
                         </div>
                     </div>
                     <script src="~/assets/js/jquery-3.5.1.min.js"></script>
-                    @{
-                        if (item.UserName == Session["username"].ToString())
-                        {
-                            <div class="c-dropdown js-dropdown" onclick="deleteDongtai('@item.dongtaiid')">
-                                <input type="hidden" name="Framework" id="Framework" class="js-dropdown__input">
-                                <span class="c-button">删除</span>
-                            </div>
-                        }
-                    }
 
                     @*发表内容*@
                     <div class="c-content">
@@ -439,30 +430,5 @@
             })
         }
 
-        //删除动态
-        function deleteDongtai(id) {
-            var alarm = '确认删除id为' + id + '的动态？';
-            if (confirm(alarm) == true) {
-                $.ajax({
-                    type: "post",
-                    url: "/Community/DeleteDongtai",
-                    data: {
-                        id: id,
-                    },
-                    success: function (data) {
-                        if (data == 'Fail') {
-                            alert('淦，报错')
-                        }
-                        else {
-                            $(".theDongtai" + id).remove();
-                        }
-                    },
-                })
-            }
-            else {
-                return;
-            }
-
-        }
     </script>
 </div>

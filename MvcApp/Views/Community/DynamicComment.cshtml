@@ -30,9 +30,9 @@
                 <ul class="uk-nav uk-dropdown-nav">
                     @*如果是用户自己的评论 可以删除 别人的可以举报*@
                     @{
-                        if (Session["username"] != null)
+                        if (ViewBag.username != null)
                         {
-                            if (Session["username"].ToString() == item.UserName)
+                            if (ViewBag.username.ToString() == item.UserName)
                             {
                                 <li onclick="deleteComment(@item.dongtaiCommentid)">
                                     <span href="#" class="text-danger">

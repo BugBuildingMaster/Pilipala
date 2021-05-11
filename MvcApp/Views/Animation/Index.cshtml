@@ -305,7 +305,7 @@
                                                         <div class="navbar-right-item">
                                                             <div class="navbar-right-action">
                                                                 @{
-                                                                    if (Session["username"] == null)
+                                                                    if (ViewBag.username == null)
                                                                     {
                                                                         <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text">
                                                                             @Html.ActionLink("登录", "Login", "Users")
@@ -323,7 +323,7 @@
                                                                        OnSuccess = "Loginout"
                                                                    }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
                                                                         <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
-                                                                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                                                                            <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" title="@ViewBag.username"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
                                                                         </div>
                                                                     }
                                                                 }
@@ -380,16 +380,16 @@
                                                             </ul>
                                                         </li>
                                                         @{
-                                                            if (Session["username"] != null)
+                                                            if (ViewBag.username != null)
                                                             {
                                                                 <li class="nav-item">
                                                                     <a href="#" class="nav-link dropdown-toggle">个人中心</a>
                                                                     <ul class="dropdown-menu">
                                                                         <li class="nav-item">
-                                                                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" class="nav-link">身份编辑</a>
+                                                                            <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" class="nav-link">身份编辑</a>
                                                                         </li>
                                                                         <li class="nav-item">
-                                                                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" class="nav-link">忘记密码</a>
+                                                                            <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" class="nav-link">忘记密码</a>
                                                                         </li>
                                                                     </ul>
                                                                 </li>

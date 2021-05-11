@@ -103,8 +103,11 @@ namespace MvcApp.Controllers
         public ActionResult AddEvaluationid(int? id)
         {
             var e = eManager.GetEvaluation((int)id);
+            HttpCookie cookie = Request.Cookies["Login"];
+            JObject name = readtoken(cookie.Values["Token"]);
             ViewBag.id = id;
             ViewBag.Aname = e.Aname;
+            ViewBag.username = name["UserName"].ToString();
             return View();
         }
         //添加测评 审核通过后发布

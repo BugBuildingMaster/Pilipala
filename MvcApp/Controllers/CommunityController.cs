@@ -18,13 +18,7 @@ namespace MvcApp.Controllers
         // GET: Community
         public ActionResult Index()
         {
-            if (Request.Cookies["Login"] == null)
-            {
-                string url = Request.Url.ToString();
-                System.Web.HttpContext.Current.Session["thePass"] = url;
-                return RedirectToAction("Login", "Users");
-            }
-            else
+            if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
             {
                 HttpCookie cookie = Request.Cookies["Login"];
                 string tokenContent = cookie.Values["Token"];
@@ -38,9 +32,18 @@ namespace MvcApp.Controllers
                 }
                 else
                 {
-                    cManager.Dynamic(Session["username"].ToString());   //社区初始化
+                    //获取token中的名字
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ViewBag.userid = name["UserId"].ToString();
+                    cManager.Dynamic(name["UserName"].ToString());   //社区初始化
                     return View();
                 }
+            }
+            else
+            {
+                string url = Request.Url.ToString();
+                System.Web.HttpContext.Current.Session["thePass"] = url;
+                return RedirectToAction("Login", "Users");
             }
         }
 
@@ -52,6 +55,12 @@ namespace MvcApp.Controllers
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
                 return RedirectToAction("Login", "Users");
+            }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                ViewBag.userid = name["UserId"].ToString();
             }
             return View(cManager.DynamicDetail(id));
         }
@@ -65,6 +74,12 @@ namespace MvcApp.Controllers
                 System.Web.HttpContext.Current.Session["thePass"] = url;
                 return RedirectToAction("Login", "Users");
             }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                ViewBag.username = name["UserName"].ToString();
+            }
             return PartialView(cManager.AllDynamic());
         }
 
@@ -76,6 +91,12 @@ namespace MvcApp.Controllers
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
                 return RedirectToAction("Login", "Users");
+            }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                ViewBag.username = name["UserName"].ToString();
             }
             return PartialView(cManager.DynamicComment((int)id));
         }
@@ -89,6 +110,12 @@ namespace MvcApp.Controllers
                 System.Web.HttpContext.Current.Session["thePass"] = url;
                 return RedirectToAction("Login", "Users");
             }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                ViewBag.username = name["UserName"].ToString();
+            }
             return PartialView(cManager.DynamicReply((int)id));
         }
 
@@ -100,6 +127,12 @@ namespace MvcApp.Controllers
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
                 return RedirectToAction("Login", "Users");
+            }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                ViewBag.username = name["UserName"].ToString();
             }
             return PartialView(cManager.AllEvaluation());
         }
@@ -126,8 +159,9 @@ namespace MvcApp.Controllers
             }
             else
             {
-                var name = Session["username"].ToString();
-                var Portrait = cManager.GetPortrait(name);
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                var Portrait = cManager.GetPortrait(name["UserName"].ToString());
                 return Content(Portrait.ToString());
             }
         }
@@ -287,7 +321,9 @@ namespace MvcApp.Controllers
             }
             else
             {
-                string i = cManager.AddLike(id, Session["username"].ToString());
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                string i = cManager.AddLike(id, name["UserName"].ToString());
                 return Content(i);
             }
         }
@@ -304,7 +340,9 @@ namespace MvcApp.Controllers
             }
             else
             {
-                string i = cManager.ShortCommentAddLike(id, Session["username"].ToString());
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                string i = cManager.ShortCommentAddLike(id, name["UserName"].ToString());
                 return Content(i);
             }
         }
@@ -321,7 +359,9 @@ namespace MvcApp.Controllers
             }
             else
             {
-                string i = cManager.DongtaiCommentAddLike(id, Session["username"].ToString());
+                HttpCookie cookie = Request.Cookies["Login"];
+                JObject name = readtoken(cookie.Values["Token"]);
+                string i = cManager.DongtaiCommentAddLike(id, name["UserName"].ToString());
                 return Content(i);
             }
         }
