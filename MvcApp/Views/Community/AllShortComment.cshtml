@@ -27,7 +27,7 @@
     <div class="post">
         <div class="post-heading">
             <div class="post-avature">
-                <img src="@item.Portrait" alt="" onclick="location='https://localhost:44303/User/Center/@item.Userid'">
+                <img src="@item.Portrait" alt="" onclick="location='/User/Center/@item.Userid'">
             </div>
             <div class="post-title">
                 <h4> @item.UserName </h4>
@@ -56,7 +56,7 @@
             <div class="fullsizeimg">
                 @item.content
             </div>
-            <a href="https://localhost:44303/Animation/details?id=@item.Animationid"><span class="TheAnimationName">———— @item.Aname</span></a>
+            <a href="/Animation/details?id=@item.Animationid"><span class="TheAnimationName">———— @item.Aname</span></a>
         </div>
         <div class="post-state">
             <div class="post-state-btns" onclick="ShortCommentAddlike(@item.Scommentid)">

@@ -331,7 +331,7 @@
 <div class="bgf5 clearfix">
     <div class="top-user">
         <div class="inner">
-            <a class="logo" href=".." style="border-right:1px solid #e0e0e0"><img id="logoimg" src="~/public/static/uploads/openinggif/smalllogo1.gif" alt="pilipala网" class="cover logo" style="border-radius:0px;"></a>
+            <a class="logo" href="../.." style="border-right:1px solid #e0e0e0"><img id="logoimg" src="~/public/static/uploads/openinggif/smalllogo1.gif" alt="pilipala网" class="cover logo" style="border-radius:0px;"></a>
             <div class="title" style="border:hidden;margin-top:15px;">个人中心</div>
             <div class="pull-right d-flex flex-row align-items-center justify-content-around" style="margin-top:20px;">
                 @{
@@ -463,13 +463,13 @@
                     <li class="list-item clearfix" v-for="(singleFollow, i) in Followers">
                         <div v-if="singleFollow.RowNum" v-bind:class="'cF'+singleFollow.RowNum" style=" display: flex; flex-direction: row; ">
                             <div>
-                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" target="_blank" class="cover1">
+                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" class="cover1">
                                     <img v-bind:src="singleFollow.Portrait" v-bind:alt="singleFollow.FollowerName">
                                 </a>
                             </div>
                             <div class="content1">
                                 <div>
-                                    <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" target="_blank" class="title">
+                                    <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" class="title">
                                         <span class="username">{{singleFollow.FollowerName}}</span>
                                     </a>
                                     <p title="Signatures" class="auth-description">
@@ -613,13 +613,13 @@
                     <li class="list-item clearfix" v-for="(singleFans, i) in Fans">
                         <div v-if="singleFans.RowNum" v-bind:class="'cFa'+singleFans.RowNum" style=" display: flex; flex-direction: row; ">
                             <div>
-                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFans.Userid)" target="_blank" class="cover1">
+                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFans.Userid)" class="cover1">
                                     <img v-bind:src="singleFans.Portrait" v-bind:alt="singleFans.FollowerName">
                                 </a>
                             </div>
                             <div class="content1">
                                 <div>
-                                    <a href="javascript:void(0);" v-on:click="UsersUrl(singleFans.Userid)" target="_blank" class="title">
+                                    <a href="javascript:void(0);" v-on:click="UsersUrl(singleFans.Userid)" class="title">
                                         <span class="username">{{singleFans.UserName}}</span>
                                     </a>
                                     <p title="Signatures" class="auth-description">

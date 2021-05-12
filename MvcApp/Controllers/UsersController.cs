@@ -371,7 +371,19 @@ namespace MvcApp.Controllers
             {
                 //解密
                 password = password.Replace("\r", "").Replace("\n", "").Replace(" ", "");
-                string key = Session["Private"].ToString();
+                string priKey;
+                if (Session["Private"] == null)
+                {
+                    StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
+                    priKey = sr.ReadToEnd();
+                    sr.Close();
+                    Session["Private"] = priKey;
+                }
+                else
+                {
+                    priKey = Session["Private"].ToString();
+                }
+                string key = priKey;
                 //使用私钥解密
                 string trueValue = DecryptData(key, password);
                 //生成新盐
@@ -406,7 +418,19 @@ namespace MvcApp.Controllers
             try
             {
                 password = password.Replace("\r", "").Replace("\n", "").Replace(" ", "");
-                string key = Session["Private"].ToString();
+                string priKey;
+                if (Session["Private"] == null)
+                {
+                    StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
+                    priKey = sr.ReadToEnd();
+                    sr.Close();
+                    Session["Private"] = priKey;
+                }
+                else
+                {
+                    priKey = Session["Private"].ToString();
+                }
+                string key = priKey;
                 //使用私钥解密
                 string trueValue = DecryptData(key, password);
                 string salt = usersManager.GetSalt(username);

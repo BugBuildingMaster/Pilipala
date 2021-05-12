@@ -70,9 +70,21 @@ namespace MvcApp.Controllers
             //关键字段
             string content = UserId + UserName + Userphoto + time.ToString();
             //对关键字段生成签名
-            string sign = Sign(content, Session["Private"].ToString());
+            string priKey;
+            if (Session["Private"] == null)
+            {
+                StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
+                priKey = sr.ReadToEnd();
+                sr.Close();
+                Session["Private"] = priKey;
+            }
+            else
+            {
+                priKey = Session["Private"].ToString();
+            }
+            string sign = Sign(content, priKey);
             tokenInfo.sign = sign;
-            TokenHelper.SecretKey = Session["Private"].ToString();
+            TokenHelper.SecretKey = priKey;
             string valueToken = TokenHelper.GenToken(tokenInfo);
             return valueToken;
         }
@@ -87,21 +99,32 @@ namespace MvcApp.Controllers
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtAlgorithm alg = new HMACSHA256Algorithm();
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, alg);
-            string priKey;
-            if (Session["Private"] == null)
+            try
             {
-                StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
-                priKey = sr.ReadToEnd();
-                sr.Close();
+                string priKey;
+                if (Session["Private"] == null)
+                {
+                    StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
+                    priKey = sr.ReadToEnd();
+                    sr.Close();
+                    Session["Private"] = priKey;
+                }
+                else
+                {
+                    priKey = Session["Private"].ToString();
+                }
+                var json = decoder.Decode(tokenContent, priKey, true);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(json);
+                //校验通过，返回解密后的json对象
+                return jo;
             }
-            else
+            catch (Exception)
             {
-                priKey = Session["Private"].ToString();
+                Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+                RedirectToAction("Index", "Animation");
+                return null;
             }
-            var json = decoder.Decode(tokenContent, priKey, true);
-            JObject jo = (JObject)JsonConvert.DeserializeObject(json);
-            //校验通过，返回解密后的json对象
-            return jo;
         }
         #endregion
 
