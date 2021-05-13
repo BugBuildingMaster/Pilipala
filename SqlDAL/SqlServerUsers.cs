@@ -114,10 +114,18 @@ namespace SqlDAL
 
         public bool EditUserInfos(string name, string gender, DateTime? birthday, string signatures)
         {
-            db.UsersInfo.Find(name).Gender = gender;
-            db.UsersInfo.Find(name).Birthday = birthday;
-            db.UsersInfo.Find(name).Signatures = signatures;
-
+            if (gender == "null")
+                db.UsersInfo.Find(name).Gender = null;
+            else
+                db.UsersInfo.Find(name).Gender = gender;
+            if (birthday == null)
+                db.UsersInfo.Find(name).Birthday = null;
+            else
+                db.UsersInfo.Find(name).Birthday = birthday;
+            if (signatures == "null")
+                db.UsersInfo.Find(name).Signatures = null;
+            else
+                db.UsersInfo.Find(name).Signatures = signatures;
             return db.SaveChanges() > 0;
         }
 
@@ -144,19 +152,12 @@ namespace SqlDAL
 
         /*--------------------------------------------------------------*/
         #region 添加用户
-        public bool AddUser(string username, string pwd, string email, string salt)
+        public int AddUser(string username, string pwd, string email, string salt)
         {
-            ObjectParameter result=new ObjectParameter("result",0);
-            db.UserRegister(1,email,username,pwd,salt, result);
-            int res =(int)result.Value;
-            if (res==1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            ObjectParameter result = new ObjectParameter("result", 0);
+            db.UserRegister(1, email, username, pwd, salt, result);
+            int res = (int)result.Value;
+            return res;
         }
         #endregion
 
@@ -164,6 +165,14 @@ namespace SqlDAL
         public bool IsUsernameUnique(string name)
         {
             bool exists = db.Users.Any(x => x.UserName == name);
+            return exists;
+        }
+        #endregion
+
+        #region 判断邮箱是否唯一
+        public bool IsEmailUnique(string email)
+        {
+            bool exists = db.Users.Any(x => x.Email == email);
             return exists;
         }
         #endregion

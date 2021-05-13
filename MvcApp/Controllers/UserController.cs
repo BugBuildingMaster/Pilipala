@@ -139,8 +139,19 @@ namespace MvcApp.Controllers
         //修改个人信息
         public string EditUserInfo(string name, string gender, DateTime? birthday, string signatures)
         {
-            bool edit = uManager.EditUserInfos(name, gender, birthday, signatures);
-            return edit ? "success" : "fail";
+            HttpCookie cookie = Request.Cookies["Login"];
+            JObject Username = readtoken(cookie.Values["Token"]);
+            string username = Username["UserName"].ToString();
+            UsersInfo oriInfo = uManager.GetUsersInfo(username);
+            if (oriInfo.Gender == gender && oriInfo.Signatures == signatures && oriInfo.Birthday == birthday)
+            {
+                return "re";
+            }
+            else
+            {
+                bool edit = uManager.EditUserInfos(username, gender, birthday, signatures);
+                return edit ? "success" : "fail";
+            }
         }
 
 

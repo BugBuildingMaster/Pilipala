@@ -82,6 +82,16 @@ namespace MvcApp.Controllers
 
         /*----------------------------------------------------------------------------*/
 
+        #region 验证邮箱唯一
+        [HttpGet]
+        public string IsEmailUnique(string email)
+        {
+            if (usersManager.IsEmailUnique(email))
+                return "no";
+            else
+                return "yes";
+        }
+        #endregion
 
         #region 生成公钥私钥
         [HttpPost]
@@ -398,6 +408,10 @@ namespace MvcApp.Controllers
                 else if (v == "success")
                 {
                     return "success";
+                }
+                else if (v == "illEmail")
+                {
+                    return "illEmail";
                 }
                 else
                 {

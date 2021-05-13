@@ -1,30 +1,54 @@
 ﻿
 @{
     ViewBag.Title = "Login";
+    Layout = null;
 }
-<script src="~/Scripts/jquery-3.4.1.js"></script>
-<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
-<script src="~/Scripts/jsencrypt.min.js"></script>
-<script>
-    document.onreadystatechange = function () {
-        if (document.readyState == "complete") {
-            $.ajax({
-                url: "/Users/setRsa",
-                type: "post",
-                data: {
-                },
-                success: function (data) {
-                    sessionStorage.setItem('Pub', data);
-                    //调试用
-                    //console.log(data);
-                }
-            })
-        }
-    }</script>
-@section scripts
-{
+<!DOCTYPE html>
+
+<html lang="zxx">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Pilipala 登录</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Luba">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="HiBootstrap">
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <link href="~/assets/css/Style.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
     <script>
-        $('#btn-login').on('click', function () {
+        document.onreadystatechange = function () {
+            if (document.readyState == "complete") {
+                $.ajax({
+                    url: "/Users/setRsa",
+                    type: "post",
+                    data: {
+                    },
+                    success: function (data) {
+                        sessionStorage.setItem('Pub', data);
+                        //调试用
+                        //console.log(data);
+                    }
+                })
+            }
+            if (document.readyState != "complete") {
+                var list = ['url(../public/static/uploads/login$regist/背景2.jpg)  no-repeat center center', 'url(../public/static/uploads/login$regist/背景3.jpg)  no-repeat center center'];
+                var back = list[Math.round(Math.random())];
+                //$("body").removeAttr("style");
+                $("body").css("background", back);
+                $("body").css("background-size", "cover");
+                $("body").css("background-attachment", "fixed");
+            }
+        }
+
+        function login() {
             if ($('#username').val().length == 0) {
                 $('.tips').html('请输入手机号或学号！');
             } else if ($('#password').val().length == 0) {
@@ -55,19 +79,145 @@
                             }
                             window.location.href = theLink
                         }
-                        else if(data=="fail") {
+                        else if (data == "fail") {
                             $('.tips').html('密码错误！');
-                        } else{
+                        } else {
                             $('.tips').html('出现错误！');
                         }
                     }
                 });
             }
-        });
+        }
     </script>
-}
-<h2>Login</h2>
-<label class="tips"></label>
-<input id="username" type="text" name="username" value="" />
-<input id="password" type="password" name="password" value="" />
-<button id="btn-login">提交</button>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        input {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <link href="~/assets/css/Style.css" rel="stylesheet" />
+
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @section scripts
+{
+        <script>
+            $('#btn-login').on('click', function () {
+                if ($('#username').val().length == 0) {
+                    $('.tips').html('请输入手机号或学号！');
+                } else if ($('#password').val().length == 0) {
+                    $('.tips').html('请输入密码！');
+                } else {
+                    const encrypt = new JSEncrypt();
+                    var password = $('#password').val();
+                    var pubKey = sessionStorage.getItem('Pub');
+                    encrypt.setPublicKey(pubKey);
+                    var sendWord = encrypt.encrypt(password);
+                    $.ajax({
+                        url: "/users/Login",
+                        type: "post",
+                        data: {
+                            username: $('#username').val(),
+                            password: sendWord
+                        },
+                        success: function (data) {
+                            if (data == "success") {
+                                //alert("恭喜")
+                                var theLink = ""
+                                if (sessionStorage.getItem('thePass') == null) {
+                                    theLink = "/Animation/Index"
+                                }
+                                else {
+                                    theLink = sessionStorage.getItem('thePass')
+                                    sessionStorage.removeItem('thePass');
+                                }
+                                window.location.href = theLink
+                            }
+                            else if (data == "fail") {
+                                $('.tips').html('密码错误！');
+                            } else {
+                                $('.tips').html('出现错误！');
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    }
+    @*<h2>Login</h2>
+        <input id="username" type="text" name="username" value="" />
+        <input id="password" type="password" name="password" value="" />
+        <button id="btn-login">提交</button>*@
+    <div class="authentication-section" style=" background: rgba(0,0,0,0); ">
+        <div class="container p-0">
+            <div class="row m-0">
+                <div class="col-lg-2 p-0">
+                </div>
+                <div id="App" class="col-sm-12 col-lg-8 p-0" style=" background: rgba(0,0,0,0); ">
+                    <div class="authentication-item bg-white" style="height:400px; background: rgba(0,0,0,0);">
+                        <div class="authentication-user-panel" style="margin-top:20rem;">
+                            <div class="authentication-user-header">
+                                <a href="..">
+                                    <p style=" font-size: 2rem; margin: 0; color: #77acf1; font-weight: 600;">首页</p>
+                                </a>
+                            </div>
+                            <div class="authentication-user-body">
+                                <div class="authentication-tab">
+                                    <div class="authentication-tab-item authentication-tab-active" data-authentcation-tab="1"  style="font-size:2rem; color:#000000;">
+                                        <i class="flaticon-user-1"></i>
+                                        Login
+                                    </div>
+                                </div>
+                                <div class="authentication-tab-details">
+                                    <div class="authentication-tab-details-item authentication-tab-details-active" data-authentcation-details="1">
+                                        <div class="authentication-form"  style="opacity : 0.8;">
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group mb-20">
+                                                        <div class="input-group" style="background-color:#e8f0fe;">
+                                                            <div class="input-group-prepend mr-1">
+                                                                <span class="input-group-text"><i class="flaticon-user"></i></span>
+                                                            </div>
+                                                            <input id="username" name="name" value="" class="form-control" placeholder="用户名" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group mb-20">
+                                                        <div class="input-group" style="background-color:#e8f0fe;">
+                                                            <div class="input-group-prepend mr-1">
+                                                                <span class="input-group-text"><i class="flaticon-user"></i></span>
+                                                            </div>
+                                                            <input id="password"  type="password" name="password" value="" class="form-control" placeholder="密码" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <button id="btn-login" style="width:100%;" type="button" class="btn full-width mb-20" onclick="login();">登 录</button>
+                                            </div>
+                                            <label style="width:100%; color:red;font-size:medium;margin-top:10px;text-align:center;" class="tips"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 p-0">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

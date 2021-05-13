@@ -105,14 +105,26 @@ namespace BLL
 
         /*-----------------------------------------------------------------*/
 
+        #region 判断邮箱是否唯一
+        public bool IsEmailUnique(string name)
+        {
+            return iuser.IsEmailUnique(name);
+        }
+        #endregion
+
         #region 用户注册
         public string Register(string username, string pwd, string email, string salt)
         {
             string data;
             if (iuser.IsUsernameUnique(username) == false)
             {
-                bool v = iuser.AddUser(username,pwd,email,salt);
-                data = v == true ? "success" : "fail";
+                int v = iuser.AddUser(username,pwd,email,salt);
+                if (v == 1)
+                    data = "success";
+                else if(v==-2)
+                    data = "illEmail";  //-2代表邮箱已存在
+                else
+                    data="fail";
             }
             // 用户名已存在时返回 "illegalname"
             else
