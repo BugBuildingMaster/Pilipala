@@ -58,31 +58,6 @@ namespace BLL
         }
         #endregion
 
-        #region 用户注册
-        public string Register(string username, string pwd, string email, string salt)
-        {
-            string data;
-            if (iuser.IsUsernameUnique(username) == false)
-            {
-                bool v = iuser.AddUser(new Users
-                {
-                    UserName = username,
-                    Pwd = pwd,
-                    Email = email,
-                    IsAdmin = "false",
-                    Salt = salt
-                });
-                data = v == true ? "success" : "fail";
-            }
-            // 用户名已存在时返回 "illegalname"
-            else
-            {
-                data = "illegalname";
-            }
-            return data;
-        }
-        #endregion
-
         #region 判断用户是否唯一
         public bool IsUsernameUnique(string name)
         {
@@ -129,6 +104,25 @@ namespace BLL
         #endregion
 
         /*-----------------------------------------------------------------*/
+
+        #region 用户注册
+        public string Register(string username, string pwd, string email, string salt)
+        {
+            string data;
+            if (iuser.IsUsernameUnique(username) == false)
+            {
+                bool v = iuser.AddUser(username,pwd,email,salt);
+                data = v == true ? "success" : "fail";
+            }
+            // 用户名已存在时返回 "illegalname"
+            else
+            {
+                data = "illegalname";
+            }
+            return data;
+        }
+        #endregion
+
 
         #region 获取用户的浏览记录
         public IEnumerable<Watch> GetUserHistory(string name)

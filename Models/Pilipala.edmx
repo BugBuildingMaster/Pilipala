@@ -1351,6 +1351,8 @@
           <Parameter Name="Email" Type="nvarchar" Mode="In" />
           <Parameter Name="UserName" Type="nvarchar" Mode="In" />
           <Parameter Name="Pwd" Type="nvarchar" Mode="In" />
+          <Parameter Name="Salt" Type="nvarchar" Mode="In" />
+          <Parameter Name="result" Type="int" Mode="InOut" />
         </Function>
         <Function Name="WatchUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
@@ -3307,6 +3309,8 @@
             <Parameter Name="Email" Mode="In" Type="String" />
             <Parameter Name="UserName" Mode="In" Type="String" />
             <Parameter Name="Pwd" Mode="In" Type="String" />
+            <Parameter Name="Salt" Mode="In" Type="String" />
+            <Parameter Name="result" Mode="InOut" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="WatchUpdate">
             <Parameter Name="id" Mode="In" Type="Int32" />

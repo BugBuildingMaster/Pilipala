@@ -311,31 +311,6 @@
         <div class="pull-left">
             <div class="pull-left">嗨，欢迎来到<span class="cr">pilipala网</span></div>
         </div>
-        @*<div class="pull-right d-flex flex-row align-items-center justify-content-around">
-                @{
-                    if (Session["username"] == null)
-                    {
-                        <div class="navbar-right-action-item navbar-right-account navbar-option-item bottom-align-text">
-                            @Html.ActionLink("登录", "Login", "Home")
-                        </div>
-                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
-                            @Html.ActionLink("注册", "Regist1", "Home")
-                        </div>
-                    }
-                    else
-                    {
-                        @Ajax.ActionLink("注销", "LoginOut", "Users", new { }, new AjaxOptions()
-                   {
-                       InsertionMode = InsertionMode.Replace,
-                       HttpMethod = "Post",
-                       OnSuccess = "Loginout"
-                   }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
-                        <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
-                            <a href="@Url.Action("Center","User",new { id=Session["userid"]})" title="@Session["username"]"><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=170394100,2460412031&fm=15&gp=0.jpg" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
-                        </div>
-                    }
-                }
-            </div>*@
     </div>
 </div>
 <!-- 顶部标题 -->
@@ -345,7 +320,7 @@
     }
 
     function loading() {
-        var list = ['../public/static/uploads/openinggif/smalllogo1.gif', '../public/static/uploads/openinggif/smalllogo2.gif'];
+        var list = ['../../public/static/uploads/openinggif/smalllogo1.gif', '../../public/static/uploads/openinggif/smalllogo2.gif'];
         document.getElementById('logoimg').addEventListener('mouseover', function () {
             var ranLogo = list[Math.round(Math.random())];
             document.getElementById('logoimg').src = ranLogo;
@@ -839,5 +814,9 @@
         })
     }
 
+    //退出登录刷新界面
+    function Loginout(data) {
+        location.reload();
+    }
 </script>
 

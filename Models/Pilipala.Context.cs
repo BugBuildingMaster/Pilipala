@@ -282,7 +282,7 @@ namespace Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
     
-        public virtual int UserRegister(Nullable<int> num, string email, string userName, string pwd)
+        public virtual int UserRegister(Nullable<int> num, string email, string userName, string pwd, string salt, ObjectParameter result)
         {
             var numParameter = num.HasValue ?
                 new ObjectParameter("num", num) :
@@ -300,7 +300,11 @@ namespace Models
                 new ObjectParameter("Pwd", pwd) :
                 new ObjectParameter("Pwd", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UserRegister", numParameter, emailParameter, userNameParameter, pwdParameter);
+            var saltParameter = salt != null ?
+                new ObjectParameter("Salt", salt) :
+                new ObjectParameter("Salt", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UserRegister", numParameter, emailParameter, userNameParameter, pwdParameter, saltParameter, result);
         }
     
         public virtual int WatchUpdate(Nullable<int> id, string type, string name, Nullable<System.DateTime> time)

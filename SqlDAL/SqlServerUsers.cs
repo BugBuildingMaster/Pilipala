@@ -5,25 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Models;
 using IDAL;
+using System.Data.Entity.Core.Objects;
 
 namespace SqlDAL
 {
     public class SqlServerUsers : Basedb, IUsers
     {
-        #region 添加用户
-        public bool AddUser(Users user)
-        {
-            db.Users.Add(user);
-            if (db.SaveChanges() > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        #endregion
 
         #region 修改用户
         public bool EditUser(Users user)
@@ -156,6 +143,23 @@ namespace SqlDAL
         #endregion
 
         /*--------------------------------------------------------------*/
+        #region 添加用户
+        public bool AddUser(string username, string pwd, string email, string salt)
+        {
+            ObjectParameter result=new ObjectParameter("result",0);
+            db.UserRegister(1,email,username,pwd,salt, result);
+            int res =(int)result.Value;
+            if (res==1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        #endregion
+
         #region 判断用户名是否唯一
         public bool IsUsernameUnique(string name)
         {

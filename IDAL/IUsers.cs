@@ -20,8 +20,7 @@ namespace IDAL
         Users GetUsersByName(string name);
         //判断用户是否存在
         bool IsUsernameUnique(string name);
-        //添加某用户
-        bool AddUser(Users user);
+
         //修改某用户
         bool EditUser(Users user);
         //删除某用户
@@ -33,7 +32,6 @@ namespace IDAL
         //获取某个用户发布的动态
         IEnumerable<tempDongtai> GetUserDongtais(string name);
         IEnumerable<tempShortComment> GetUsersShortComment(string name);
-
         //修改用户信息
         bool EditUserInfos(string name, string portrait);
         bool EditUserInfos(string name, string gender, DateTime? birthday, string signatures);
@@ -42,6 +40,8 @@ namespace IDAL
 
 
         /*-------------------------------------------------------------------*/
+        //添加某用户
+        bool AddUser(string username, string pwd, string email, string salt);
         IEnumerable<Watch> GetUserHistory(string name);    //获取用户浏览记录
         Animation GetUserHistoryAnimation(int id);    //获取用户浏览记录中的动漫
         Evaluation GetUserHistoryEvaluation(int id);    //获取用户浏览记录中的测评
