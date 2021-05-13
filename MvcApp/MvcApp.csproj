@@ -476,7 +476,6 @@
     <Content Include="Views\Tourist\TouristShortComment.cshtml" />
     <Content Include="Views\Tourist\TouristDynamic.cshtml" />
     <Content Include="Views\RankingList\Rankinglist.cshtml" />
-    <Content Include="Views\Shared\LRLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

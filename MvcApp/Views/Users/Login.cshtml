@@ -36,16 +36,34 @@
                         //调试用
                         //console.log(data);
                     }
-                })
+                });
+
             }
             if (document.readyState != "complete") {
-                var list = ['url(../public/static/uploads/login$regist/背景2.jpg)  no-repeat center center', 'url(../public/static/uploads/login$regist/背景3.jpg)  no-repeat center center'];
+                var list = ['url(../public/static/uploads/login$regist/背景2.jpg)', 'url(../public/static/uploads/login$regist/背景3.jpg)'];
                 var back = list[Math.round(Math.random())];
                 //$("body").removeAttr("style");
-                $("body").css("background", back);
+                $("body").css("background-background-repeat ", "no-repeat");
+                $("body").css("background-position", "center center");
+                $("body").css("background-image", back);
                 $("body").css("background-size", "cover");
-                $("body").css("background-attachment", "fixed");
+                //$("body").css("background-attachment", "fixed");
             }
+        }
+
+        document.onmousemove = function (e) {
+            var mouX = event.clientX;
+            var mouY = event.clientY;
+            var winHight = window.innerHeight;
+            var winWidth = window.innerWidth;
+            mouX = parseFloat(mouX);
+            mouY = parseFloat(mouY);
+            winHight = parseFloat(winHight);
+            winWidth = parseFloat(winWidth);
+            var x = Math.round((mouX / winWidth) * 10000) / 100.0 + "%";
+            var y = Math.round((mouY / winHight) * 10000) / 100.0 + "%";
+            document.getElementById("theBody").style.backgroundPositionX = x;
+            document.getElementById("theBody").style.backgroundPositionY = y;
         }
 
         function login() {
@@ -100,7 +118,7 @@
         }
     </style>
 </head>
-<body>
+<body id="theBody">
     <script src="~/Scripts/jquery-3.4.1.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Scripts/jsencrypt.min.js"></script>
@@ -108,55 +126,6 @@
 
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
-    @section scripts
-{
-        <script>
-            $('#btn-login').on('click', function () {
-                if ($('#username').val().length == 0) {
-                    $('.tips').html('请输入手机号或学号！');
-                } else if ($('#password').val().length == 0) {
-                    $('.tips').html('请输入密码！');
-                } else {
-                    const encrypt = new JSEncrypt();
-                    var password = $('#password').val();
-                    var pubKey = sessionStorage.getItem('Pub');
-                    encrypt.setPublicKey(pubKey);
-                    var sendWord = encrypt.encrypt(password);
-                    $.ajax({
-                        url: "/users/Login",
-                        type: "post",
-                        data: {
-                            username: $('#username').val(),
-                            password: sendWord
-                        },
-                        success: function (data) {
-                            if (data == "success") {
-                                //alert("恭喜")
-                                var theLink = ""
-                                if (sessionStorage.getItem('thePass') == null) {
-                                    theLink = "/Animation/Index"
-                                }
-                                else {
-                                    theLink = sessionStorage.getItem('thePass')
-                                    sessionStorage.removeItem('thePass');
-                                }
-                                window.location.href = theLink
-                            }
-                            else if (data == "fail") {
-                                $('.tips').html('密码错误！');
-                            } else {
-                                $('.tips').html('出现错误！');
-                            }
-                        }
-                    });
-                }
-            });
-        </script>
-    }
-    @*<h2>Login</h2>
-        <input id="username" type="text" name="username" value="" />
-        <input id="password" type="password" name="password" value="" />
-        <button id="btn-login">提交</button>*@
     <div class="authentication-section" style=" background: rgba(0,0,0,0); ">
         <div class="container p-0">
             <div class="row m-0">
@@ -172,14 +141,14 @@
                             </div>
                             <div class="authentication-user-body">
                                 <div class="authentication-tab">
-                                    <div class="authentication-tab-item authentication-tab-active" data-authentcation-tab="1"  style="font-size:2rem; color:#000000;">
+                                    <div class="authentication-tab-item authentication-tab-active" data-authentcation-tab="1" style="font-size:2rem; color:#000000;">
                                         <i class="flaticon-user-1"></i>
                                         Login
                                     </div>
                                 </div>
                                 <div class="authentication-tab-details">
                                     <div class="authentication-tab-details-item authentication-tab-details-active" data-authentcation-details="1">
-                                        <div class="authentication-form"  style="opacity : 0.8;">
+                                        <div class="authentication-form" style="opacity : 0.8;">
                                             <div class="row">
                                                 <div class="col-sm-12 col-md-12 col-lg-12">
                                                     <div class="form-group mb-20">
@@ -197,7 +166,7 @@
                                                             <div class="input-group-prepend mr-1">
                                                                 <span class="input-group-text"><i class="flaticon-user"></i></span>
                                                             </div>
-                                                            <input id="password"  type="password" name="password" value="" class="form-control" placeholder="密码" required />
+                                                            <input id="password" type="password" name="password" value="" class="form-control" placeholder="密码" required />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -206,7 +175,7 @@
                                             <div class="col-sm-12 col-md-12 col-lg-12">
                                                 <button id="btn-login" style="width:100%;" type="button" class="btn full-width mb-20" onclick="login();">登 录</button>
                                             </div>
-                                            <label style="width:100%; color:red;font-size:medium;margin-top:10px;text-align:center;" class="tips"></label>
+                                            <label style="width:100%; color:red;font-size:medium;margin-top:10px;text-align:center;" class="tips">&nbsp;</label>
                                         </div>
                                     </div>
                                 </div>
