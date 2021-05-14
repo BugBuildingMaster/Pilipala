@@ -21,6 +21,8 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script>
         function loading() {
+            $('#CategoryList').css('max-height', '0px');
+
             if (document.readyState == "complete") {
                 var div = document.getElementById('loading');
                 div.style.opacity = 1;
@@ -81,6 +83,24 @@
         function goToAnimation(id) {
             var url = "../Animation/details?id=" + id;
             window.location.href = url;
+        }
+
+        function MenuDisplay(a) {
+            setTimeout(function () {
+                $('#CategoryList').addClass('active');
+            }, 50);
+            if (a == 0) {
+                if ($('#CategoryList').css('max-height') == '580px') {
+                    $('#CategoryList').css('max-height', '0px');
+                }
+                else {
+                    $('#CategoryList').css('max-height', '580px');
+                }
+            }
+            else if (a == 1)
+                $('#CategoryList').css('max-height', '580px');
+            else if (a == 2)
+                $('#CategoryList').css('max-height', '0px');
         }
     </script>
     <style>
@@ -216,6 +236,11 @@
             margin: 0px 4px;
             font-size: 12px;
         }
+
+        .theCategoryList {
+            transition-property: max-height;
+            transition-duration: 1s;
+        }
     </style>
 </head>
 <body onload="init()">
@@ -338,12 +363,12 @@
                                     <div class="navbar-main">
                                         <div class="container">
                                             <div class="d-flex align-items-center justify-content-between full-width">
-                                                <div class="navbar-category">
-                                                    <button>
+                                                <div class="navbar-category"  onmouseover="MenuDisplay(1);" onmouseout="MenuDisplay(2);">
+                                                    <button onclick="MenuDisplay(0);">
                                                         <i class="flaticon-menu"></i>
                                                         所有种类
                                                     </button>
-                                                    <div class="navbar-category-dropdown">
+                                                    <div class="navbar-category-dropdown theCategoryList" id="CategoryList">
                                                         <ul v-for="(item,i) in aCategory">
                                                             <li v-on:click="btnCategory(item.Categoryname)"><a href="#category">{{item.Categoryname}}</a></li>
                                                         </ul>
@@ -696,68 +721,68 @@
             <!--番剧结束-->
             <!-- blog-section -->
             @*<section class="blog-section pt-100 pb-70">
-                <div class="container">
-                    <div class="section-title">
-                        <h2>梗百科</h2>
+                    <div class="container">
+                        <div class="section-title">
+                            <h2>梗百科</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-4 pb-30">
+                                <div class="blog-flat">
+                                    <div class="blog-flat-thumb">
+                                        <a href="#">
+                                            <img src="~/public/static/uploads/shouyepicture1/真香.gif" alt="blog">
+                                        </a>
+                                    </div>
+                                    <div class="blog-flat-content" style="padding-top:20px;">
+                                        <ul class="blog-entry">
+                                            <li class="blog-entry-category"></li>
+                                            <li></li>
+                                        </ul>
+                                        <h3>“真香”</h3>
+                                        <p>“真香”这个词是来自于《变形计》节目中王境泽所说。</p>
+                                        <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-4 pb-30">
+                                <div class="blog-flat">
+                                    <div class="blog-flat-thumb">
+                                        <a href="blog-details.html">
+                                            <img src="" alt="blog">
+                                        </a>
+                                    </div>
+                                    <div class="blog-flat-content" style="padding-top:20px;">
+                                        <ul class="blog-entry">
+                                            <li class="blog-entry-category"></li>
+                                            <li></li>
+                                        </ul>
+                                        <h3></h3>
+                                        <p></p>
+                                        <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 offset-md-3 col-md-6 offset-lg-0 col-lg-4 pb-30">
+                                <div class="blog-flat">
+                                    <div class="blog-flat-thumb">
+                                        <a href="blog-details.html">
+                                            <img src="" alt="blog">
+                                        </a>
+                                    </div>
+                                    <div class="blog-flat-content" style="padding-top:20px;">
+                                        <ul class="blog-entry">
+                                            <li class="blog-entry-category"></li>
+                                            <li></li>
+                                        </ul>
+                                        <h3></h3>
+                                        <p></p>
+                                        <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6 col-lg-4 pb-30">
-                            <div class="blog-flat">
-                                <div class="blog-flat-thumb">
-                                    <a href="#">
-                                        <img src="~/public/static/uploads/shouyepicture1/真香.gif" alt="blog">
-                                    </a>
-                                </div>
-                                <div class="blog-flat-content" style="padding-top:20px;">
-                                    <ul class="blog-entry">
-                                        <li class="blog-entry-category"></li>
-                                        <li></li>
-                                    </ul>
-                                    <h3>“真香”</h3>
-                                    <p>“真香”这个词是来自于《变形计》节目中王境泽所说。</p>
-                                    <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6 col-lg-4 pb-30">
-                            <div class="blog-flat">
-                                <div class="blog-flat-thumb">
-                                    <a href="blog-details.html">
-                                        <img src="" alt="blog">
-                                    </a>
-                                </div>
-                                <div class="blog-flat-content" style="padding-top:20px;">
-                                    <ul class="blog-entry">
-                                        <li class="blog-entry-category"></li>
-                                        <li></li>
-                                    </ul>
-                                    <h3></h3>
-                                    <p></p>
-                                    <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 offset-md-3 col-md-6 offset-lg-0 col-lg-4 pb-30">
-                            <div class="blog-flat">
-                                <div class="blog-flat-thumb">
-                                    <a href="blog-details.html">
-                                        <img src="" alt="blog">
-                                    </a>
-                                </div>
-                                <div class="blog-flat-content" style="padding-top:20px;">
-                                    <ul class="blog-entry">
-                                        <li class="blog-entry-category"></li>
-                                        <li></li>
-                                    </ul>
-                                    <h3></h3>
-                                    <p></p>
-                                    <p class="blog-link-redirect"><a href="#">详情查看</a><i class="flaticon-right-arrow-1"></i></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>*@
+                </section>*@
             <!-- 底部 -->
             <footer class="bg-off-white">
                 <div class="footer-upper pt-100 pb-80">
@@ -845,8 +870,62 @@
         <script src="~/Scripts/axioshttp.js"></script>
         <script>
             function Loginout(data) {
-                alert(data)
-                location.reload();
+                var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
+                var id = 'tip-' + random;
+                var winWidth = parseFloat(window.innerWidth) / 2 - 200;
+                var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
+                    'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
+                    'color': 'white',
+                    'height': 'auto',
+                    'min-height': '40px',
+                    'position': 'fixed',
+                    'top': '7%',
+                    'left': winWidth + 'px',
+                    'width': '400px',
+                    'z-index': '3200',
+                    'border': '1px solid white',
+                    'padding': '10px 10px 10px 50px',
+                    'box-shadow': '3px 3px 3px #999999',
+                    'display': 'none',
+                    'opacity': 0.2,
+                }).html(data).attr('id', id);
+                var leftDiv = $('<div>').css({ //图标
+                    'position': 'fixed',
+                    'width': '40px',
+                    'height': '30px',
+                    'margin-top': '-25px',
+                    'margin-left': '-45px',
+                    'border-radius': '3px',
+                    'color': 'black',
+                    'padding': '5px 0px',
+                    'background-image': 'url(../public/static/uploads/img/check-active.svg)',
+                    'background-background-repeat': 'no-repeat',
+                    'background-position': 'center center',
+                    'background-repeat': 'no-repeat',
+                    'opacity': '0.9'
+                }).html('');
+                tip.append(leftDiv);
+                $('body').append(tip.show());
+                document.getElementById(id).animate({
+                    top: '2%',
+                    opacity: '1'
+                }, 500, 'easeOutQuart');
+                setTimeout(function () {
+                    document.getElementById(id).style.top = '2%';
+                    document.getElementById(id).style.opacity = '1';
+                }, 500)
+                setTimeout(function () {
+                    document.getElementById(id).animate({
+                        opacity: '0'
+                    }, 400, 'easeOutQuart');
+                    setTimeout(function () {
+                        document.getElementById(id).remove();
+                    }, 400)
+                }, 800)
+                //alert(data)
+                setTimeout(function () {
+                    location.reload();
+                }, 1300)
             }
         </script>
         <script>
@@ -879,8 +958,8 @@
                 },
                 created() {
                     this.getaJapanList(),
-                    this.getaChinaList(),
-                    this.getaCategory()
+                        this.getaChinaList(),
+                        this.getaCategory()
                 },
                 methods: {
                     //获取日漫信息 向控制器发一个get请求 并将请求到的数据存入aJapanList中

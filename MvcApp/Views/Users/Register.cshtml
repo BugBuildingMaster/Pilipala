@@ -67,7 +67,10 @@
         }
     </script>
     <script>
+        var Interceptor = false;
+
         function register() {
+            var regex = /^[a-zA-Z0-9.! #$%&'*+\/=?^_`{|}~-]+@@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+[a-z]{2,}$/;
             if ($('#username').val().length == 0) {
                 FloatTip(0, '请输入用户名！');
                 $('.tips').html('请输入用户名！');
@@ -80,46 +83,59 @@
             } else if ($('#reSurepassword').val() != $('#password').val()) {
                 FloatTip(0, '两次密码不一致！');
                 $('.tips').html('两次密码不一致！');
+            } else if ($('#email').val().match(regex) == null) {
+                FloatTip(0, '邮箱格式不正确！');
+                $('#tips4').html('邮箱格式不正确！');
             } else {
-                const encrypt = new JSEncrypt();
-                var password = $('#password').val();
-                var pubKey = sessionStorage.getItem('Pub');
-                encrypt.setPublicKey(pubKey);
-                var sendWord = encrypt.encrypt(password);
-                $.ajax({
-                    url: "/users/Register",
-                    type: "post",
-                    data: {
-                        username: $('#username').val(),
-                        password: sendWord,
-                        email: $('#email').val(),
-                    },
-                    success: function (data) {
-                        if (data == "success") {
-                            FloatTip(1, '注册成功！');
-                            $('.tips').html('');
-                            alert("注册成功！")
-                            if (history.length > 1) {
-                                window.history.go(-1);
+                if (Interceptor == false) {
+                    Interceptor = true;
+                    const encrypt = new JSEncrypt();
+                    var password = $('#password').val();
+                    var pubKey = sessionStorage.getItem('Pub');
+                    encrypt.setPublicKey(pubKey);
+                    var sendWord = encrypt.encrypt(password);
+                    $.ajax({
+                        url: "/users/Register",
+                        type: "post",
+                        data: {
+                            username: $('#username').val(),
+                            password: sendWord,
+                            email: $('#email').val(),
+                        },
+                        success: function (data) {
+                            if (data == "success") {
+                                FloatTip(1, '注册成功！');
+                                $('.tips').html('');
+                                alert("注册成功！")
+                                if (history.length > 1) {
+                                    window.history.go(-1);
+                                }
+                                else {
+                                    window.location.href = "..";
+                                }
+                            }
+                            else if (data == "illegalname") {
+                                FloatTip(0, '用户名已被使用！');
+                                $('.tips').html('用户名已被使用！');
+                            }
+                            else if (data == "illEmail") {
+                                FloatTip(0, '邮箱已被使用！');
+                                $('.tips').html('邮箱已被使用！');
                             }
                             else {
-                                window.location.href = "..";
+                                FloatTip(2, '错误！');
+                                $('.tips').html('错误！');
                             }
                         }
-                        else if (data == "illegalname") {
-                            FloatTip(0, '用户名已被使用！');
-                            $('.tips').html('用户名已被使用！');
-                        }
-                        else if (data == "illEmail") {
-                            FloatTip(0, '邮箱已被使用！');
-                            $('.tips').html('邮箱已被使用！');
-                        }
-                        else {
-                            FloatTip(2, '错误！');
-                            $('.tips').html('错误！');
-                        }
-                    }
-                });
+                    });
+                    setTimeout(function () {
+                        Interceptor = false;
+                    }, 1000);
+                }
+                else {
+                    FloatTip(0, '请不要频繁点击！');
+                    $('.tips').html('请不要频繁点击！');
+                }
             }
         }
 
@@ -144,8 +160,8 @@
                 'box-shadow': '3px 3px 3px #999999',
                 'display': 'none',
                 'opacity': 0.2,
-            }).html(text).attr('id', id); //加入提示内容
-            var leftDiv = $('<div>').css({
+            }).html(text).attr('id', id);
+            var leftDiv = $('<div>').css({  //图标
                 'position': 'fixed',
                 'width': '40px',
                 'height': '30px',
@@ -161,7 +177,7 @@
                 'opacity': '0.9'
             }).html('');
             tip.append(leftDiv);
-            $('body').append(tip.show()); //载入div并显示
+            $('body').append(tip.show());
             document.getElementById(id).animate({
                 top: '2%',
                 opacity: '1'
@@ -174,36 +190,44 @@
                 document.getElementById(id).animate({
                     opacity: '0'
                 }, 400, 'easeOutQuart');
-                setTimeout(function () { //移除
+                setTimeout(function () {
                     document.getElementById(id).remove();
                 }, 400)
             }, 800)
         }
     </script>
     <script>
+        var oriName="";
         function checkName() {
             if ($('#username').val().length == 0) {
                 $('#icon1').attr('class', 'glyphicon glyphicon-remove');
                 $('#tips1').html('请输入用户名！');
             }
             else {
-                $.ajax({
-                    url: "/users/IsUsernameUnique",
-                    type: "get",
-                    data: {
-                        name: $('#username').val(),
-                    },
-                    success: function (data) {
-                        if (data == "no") {
-                            $('#icon1').attr('class', 'glyphicon glyphicon-remove');
-                            $('#tips1').html('用户名已被使用！');
+                if (oriName != $('#username').val()) {
+                    oriName = $('#username').val();
+                    $.ajax({
+                        url: "/users/IsUsernameUnique",
+                        type: "get",
+                        data: {
+                            name: $('#username').val(),
+                        },
+                        success: function (data) {
+                            if (data == "no") {
+                                $('#icon1').attr('class', 'glyphicon glyphicon-remove');
+                                $('#tips1').html('用户名已被使用！');
+                            }
+                            else {
+                                $('#icon1').attr('class', 'glyphicon glyphicon-ok');
+                                $('#tips1').html('');
+                            }
                         }
-                        else {
-                            $('#icon1').attr('class', 'glyphicon glyphicon-ok');
-                            $('#tips1').html('');
-                        }
-                    }
-                });
+                    });
+                }
+                else {
+                    $('#icon1').attr('class', 'glyphicon glyphicon-remove');
+                    $('#tips1').html('用户名已被使用！');
+                }
             }
         }
 
@@ -242,6 +266,7 @@
             }
         }
 
+        var oriMail = "";
         function checkMail() {
             if ($('#email').val().length == 0) {
                 $('#icon4').attr('class', 'glyphicon glyphicon-remove');
@@ -254,23 +279,30 @@
                     $('#tips4').html('邮箱格式不正确！');
                 }
                 else {
-                    $.ajax({
-                        url: "/users/IsEmailUnique",
-                        type: "get",
-                        data: {
-                            email: $('#email').val(),
-                        },
-                        success: function (data) {
-                            if (data == "no") {
-                                $('#icon4').attr('class', 'glyphicon glyphicon-remove');
-                                $('#tips4').html('邮箱已被使用！');
+                    if (oriMail != $('#email').val()) {
+                        oriMail = $('#email').val();
+                        $.ajax({
+                            url: "/users/IsEmailUnique",
+                            type: "get",
+                            data: {
+                                email: $('#email').val(),
+                            },
+                            success: function (data) {
+                                if (data == "no") {
+                                    $('#icon4').attr('class', 'glyphicon glyphicon-remove');
+                                    $('#tips4').html('邮箱已被使用！');
+                                }
+                                else {
+                                    $('#icon4').attr('class', 'glyphicon glyphicon-ok');
+                                    $('#tips4').html('');
+                                }
                             }
-                            else {
-                                $('#icon4').attr('class', 'glyphicon glyphicon-ok');
-                                $('#tips4').html('');
-                            }
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        $('#icon4').attr('class', 'glyphicon glyphicon-remove');
+                        $('#tips4').html('邮箱已被使用！');
+                    }
                 }
             }
         }
@@ -286,7 +318,7 @@
         }
     </style>
 </head>
-<body  id="theBody">
+<body id="theBody">
     <script src="~/Scripts/jquery-3.4.1.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Scripts/jsencrypt.min.js"></script>

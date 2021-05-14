@@ -462,6 +462,7 @@ namespace MvcApp.Controllers
                     //Session["Userphoto"] = user.UsersInfo.Portrait;             //保存用户头像路径
                     //Session.Timeout = 120;
 
+                    //生成token
                     string token = gettoken(user.Userid.ToString(), user.UserName, user.UsersInfo.Portrait, DateTime.Now);
                     HttpCookie cookie = new HttpCookie("Login");
                     cookie.Values.Add("Token", token);
