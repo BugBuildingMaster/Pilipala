@@ -431,6 +431,11 @@ namespace MvcApp.Controllers
         {
             try
             {
+                string exists = IsUsernameUnique(username);
+                if (exists == "yes")
+                {
+                    return "fail";
+                }
                 password = password.Replace("\r", "").Replace("\n", "").Replace(" ", "");
                 string priKey;
                 if (Session["Private"] == null)

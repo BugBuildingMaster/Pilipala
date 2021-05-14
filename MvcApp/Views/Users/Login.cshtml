@@ -68,8 +68,10 @@
 
         function login() {
             if ($('#username').val().length == 0) {
-                $('.tips').html('请输入手机号或学号！');
+                FloatTip(0, '请输入用户名！');
+                $('.tips').html('请输入用户名！');
             } else if ($('#password').val().length == 0) {
+                FloatTip(0, '请输入密码！');
                 $('.tips').html('请输入密码！');
             } else {
                 const encrypt = new JSEncrypt();
@@ -87,6 +89,7 @@
                     success: function (data) {
                         if (data == "success") {
                             //alert("恭喜")
+                            FloatTip(1, '登录成功！请稍候！');
                             var theLink = ""
                             if (sessionStorage.getItem('thePass') == null) {
                                 theLink = "/Animation/Index"
@@ -98,13 +101,72 @@
                             window.location.href = theLink
                         }
                         else if (data == "fail") {
-                            $('.tips').html('密码错误！');
+                            FloatTip(0, '用户名或密码错误！');
+                            $('.tips').html('用户名或密码错误！');
                         } else {
+                            FloatTip(2, '出现错误！');
                             $('.tips').html('出现错误！');
                         }
                     }
                 });
             }
+        }
+
+        function FloatTip(type,text) {
+            var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
+            var id = 'tip-' + random;
+            var winWidth = parseFloat(window.innerWidth) / 2 - 200;
+            var list = ['url(../public/static/uploads/img/警告.svg)', 'url(../public/static/uploads/img/check-active.svg)', 'url(../public/static/uploads/img/取消.svg)'];
+            var icon=list[type];
+            var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
+                'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
+                'color': 'white',
+                'height': 'auto',
+                'min-height': '40px',
+                'position': 'fixed',
+                'top': '7%',
+                'left': winWidth + 'px',
+                'width': '400px',
+                'z-index': '3200',
+                'border': '1px solid white',
+                'padding': '10px 10px 10px 50px',
+                'box-shadow': '3px 3px 3px #999999',
+                'display': 'none',
+                'opacity': 0.2,
+            }).html(text).attr('id', id); //加入提示内容
+            var leftDiv = $('<div>').css({
+                'position': 'fixed',
+                'width': '40px',
+                'height': '30px',
+                'margin-top': '-25px',
+                'margin-left': '-45px',
+                'border-radius': '3px',
+                'color': 'black',
+                'padding': '5px 0px',
+                'background-image': icon,
+                'background-background-repeat': 'no-repeat',
+                'background-position': 'center center',
+                'background-repeat': 'no-repeat',
+                'opacity': '0.9'
+            }).html('');
+            tip.append(leftDiv);
+            $('body').append(tip.show()); //载入div并显示
+            document.getElementById(id).animate({
+                top: '2%',
+                opacity: '1'
+            }, 500, 'easeOutQuart');
+            setTimeout(function () {
+                document.getElementById(id).style.top = '2%';
+                document.getElementById(id).style.opacity = '1';
+            }, 500)
+            setTimeout(function () {
+                document.getElementById(id).animate({
+                    opacity: '0'
+                }, 400, 'easeOutQuart');
+                setTimeout(function () { //移除
+                    document.getElementById(id).remove();
+                }, 400)
+            }, 800)
         }
     </script>
     <style>
