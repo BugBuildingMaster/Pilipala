@@ -228,7 +228,7 @@
                                     <input type="hidden" name="dtid" value="@Model.dongtaiid" />
                                     <div class="post-add-comment-text-area d-flex flex-row">
                                         <div>
-                                            <input type="text" name="content" placeholder="写下你的评论..." style="float: left;width: 100%;">
+                                            <input type="text" name="content" placeholder="写下你的评论..." style="float: left;width: 100%;max-width: 90%;">
                                         </div>
                                         <div>
                                             <input style="float: right; width: 90px; background-color: #75e575; border-radius: 5px; color: white;" type="submit" value="发表评论" />
@@ -284,7 +284,7 @@
                 if (res == "login") {
                     alert("请先登录");
                     sessionStorage.setItem('thePass', window.location.href);
-                    window.location.href = "/home/login";
+                    window.location.href = "/Users/Login";
                 } else {
                     $("#like" + id).html(res);
                 }
@@ -303,7 +303,7 @@
                 if (res == "login") {
                     alert("请先登录");
                     sessionStorage.setItem('thePass', window.location.href);
-                    window.location.href = "/home/login";
+                    window.location.href = "/Users/Login";
                 } else {
                     $("#comNum").html(res+" 评论");
                 }

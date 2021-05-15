@@ -100,34 +100,43 @@ namespace MvcApp.Controllers
         [HttpPost]
         public ActionResult EditPic(FormCollection forms)
         {
-            HttpPostedFileBase a = Request.Files["images"];
-            if (a != null)
+            HttpCookie cookie = Request.Cookies["Login"];
+            string tokenContent = cookie.Values["Token"];
+            string pubKey = Request.Cookies["Key"].Value;
+            if (VerToken(tokenContent, pubKey))
             {
-                //获取文件类型
-                string fileExtension = Path.GetExtension(a.FileName);
-                //自定义文件名（时间+唯一标识符+后缀）
-                string fileName = DateTime.Now.ToString("yyyy-MM-dd") + Guid.NewGuid() + fileExtension;
-                //判断是否存在需要的目录，不存在则创建 
-                if (!Directory.Exists(Server.MapPath("~/images/uploads")))
+                HttpPostedFileBase a = Request.Files["images"];
+                if (a != null)
                 {
-                    Directory.CreateDirectory(Server.MapPath("~/images/uploads"));
-                }
-                //拼接保存文件的详细路径
-                string savefilePath = Server.MapPath("~/images/uploads/") + fileName;
-                a.SaveAs(savefilePath);
-                //若扩展名不为空则判断文件是否是指定视频类型
-                if (fileExtension != null)
-                {
-                    if ("(.jpg)|(.png)|(.gif)|(.bmp)".Contains(fileExtension))
+                    //获取文件类型
+                    string fileExtension = Path.GetExtension(a.FileName);
+                    //自定义文件名（时间+唯一标识符+后缀）
+                    string fileName = DateTime.Now.ToString("yyyy-MM-dd") + Guid.NewGuid() + fileExtension;
+                    //判断是否存在需要的目录，不存在则创建 
+                    if (!Directory.Exists(Server.MapPath("~/images/uploads")))
                     {
-                        //拼接返回的Img标签
-                        string dbsrc = "/images/uploads/" + fileName;
+                        Directory.CreateDirectory(Server.MapPath("~/images/uploads"));
+                    }
+                    //拼接保存文件的详细路径
+                    string savefilePath = Server.MapPath("~/images/uploads/") + fileName;
+                    a.SaveAs(savefilePath);
+                    //若扩展名不为空则判断文件是否是指定视频类型
+                    if (fileExtension != null)
+                    {
+                        if ("(.jpg)|(.png)|(.gif)|(.bmp)".Contains(fileExtension))
+                        {
+                            //拼接返回的Img标签
+                            string dbsrc = "/images/uploads/" + fileName;
 
-                        HttpCookie cookie = Request.Cookies["Login"];
-                        JObject name = readtoken(cookie.Values["Token"]);
-                        string username = name["UserName"].ToString();
-                        bool edit = uManager.EditUsersInfo(username, dbsrc);
-                        return edit ? Content(dbsrc) : Content("fail");
+                            JObject name = readtoken(cookie.Values["Token"]);
+                            string username = name["UserName"].ToString();
+                            bool edit = uManager.EditUsersInfo(username, dbsrc);
+                            return edit ? Content(dbsrc) : Content("fail");
+                        }
+                        else
+                        {
+                            return Content("fail");
+                        }
                     }
                     else
                     {
@@ -136,12 +145,14 @@ namespace MvcApp.Controllers
                 }
                 else
                 {
-                    return Content("fail");
+                    return Content("sourcefail");
                 }
             }
             else
             {
-                return Content("sourcefail");
+                string url = Request.Url.ToString();
+                System.Web.HttpContext.Current.Session["thePass"] = url;
+                return RedirectToAction("Login", "Users");
             }
         }
 
@@ -149,17 +160,29 @@ namespace MvcApp.Controllers
         public string EditUserInfo(string name, string gender, DateTime? birthday, string signatures)
         {
             HttpCookie cookie = Request.Cookies["Login"];
-            JObject Username = readtoken(cookie.Values["Token"]);
-            string username = Username["UserName"].ToString();
-            UsersInfo oriInfo = uManager.GetUsersInfo(username);
-            if (oriInfo.Gender == gender && oriInfo.Signatures == signatures && oriInfo.Birthday == birthday)
+            string tokenContent = cookie.Values["Token"];
+            string pubKey = Request.Cookies["Key"].Value;
+            if (VerToken(tokenContent, pubKey))
             {
-                return "re";
+                JObject Username = readtoken(cookie.Values["Token"]);
+                string username = Username["UserName"].ToString();
+                UsersInfo oriInfo = uManager.GetUsersInfo(username);
+                if (oriInfo.Gender == gender && oriInfo.Signatures == signatures && oriInfo.Birthday == birthday)
+                {
+                    return "re";
+                }
+                else
+                {
+                    bool edit = uManager.EditUserInfos(username, gender, birthday, signatures);
+                    return edit ? "success" : "fail";
+                }
             }
             else
             {
-                bool edit = uManager.EditUserInfos(username, gender, birthday, signatures);
-                return edit ? "success" : "fail";
+                string url = Request.Url.ToString();
+                System.Web.HttpContext.Current.Session["thePass"] = url;
+                RedirectToAction("Login", "Users");
+                return null;
             }
         }
 

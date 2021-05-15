@@ -78,8 +78,9 @@ namespace MvcApp.Controllers
             {
                 //从令牌池中移除对应令牌
                 HttpCookie cookie = Request.Cookies["Login"];
-                string sign = readtoken(cookie.Values["Token"])["sign"].ToString();
-                RedisHelper.Remove(sign);
+                string name = readtoken(cookie.Values["Token"])["UserName"].ToString();
+                string redisName = Encryption(name, "");
+                RedisHelper.Remove(redisName);
                 Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
                 Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
                 data = "已注销登录！";
@@ -92,7 +93,6 @@ namespace MvcApp.Controllers
             }
         }
         #endregion
-
 
         #region 验证邮箱唯一
         [HttpGet]
@@ -443,6 +443,7 @@ namespace MvcApp.Controllers
         {
             try
             {
+                //检查是否存在该用户
                 string exists = IsUsernameUnique(username);
                 if (exists == "yes")
                 {
@@ -468,21 +469,22 @@ namespace MvcApp.Controllers
                 if (usersManager.ComparePwd(Encryption(trueValue, salt), username))
                 {
                     Users user = usersManager.GetUser(username);
-
-                    //Session["UserId"] = user.Userid;               //保存用户id
-                    //Session["Username"] = user.UserName;               //保存用户名
-                    //Session["Userphoto"] = user.UsersInfo.Portrait;             //保存用户头像路径
-                    //Session.Timeout = 120;
-
+                    //将用户名加密后作为令牌池的key
+                    string redisName = Encryption(user.UserName, "");
+                    //如果令牌池已存在该用户则移除token重新生成
+                    if (RedisHelper.Exists(redisName))
+                    {
+                        RedisHelper.Remove(redisName);
+                    }
                     //生成token   将token传递到前端
                     string token = gettoken(user.Userid.ToString(), user.UserName, user.UsersInfo.Portrait, DateTime.Now);
                     HttpCookie cookie = new HttpCookie("Login");
                     cookie.Values.Add("Token", token);
                     cookie.Expires = DateTime.Now.AddDays(1);
                     Response.Cookies.Add(cookie);
-                    //将token放入令牌池，作为有效令牌，登录时设置有效期为1天，键名为签名，值为设置时间
-                    string sign = readtoken(cookie.Values["Token"])["sign"].ToString();
-                    RedisHelper.Set(sign, DateTime.Now, false, 1);
+                    //将token放入令牌池，作为有效令牌，登录时设置有效期为1天，键名为用户名，值为签名
+                    string sign = readtoken(token)["sign"].ToString();
+                    RedisHelper.Set(redisName, sign, false, 1);
 
                     return "success";
                 }
@@ -584,7 +586,8 @@ namespace MvcApp.Controllers
         #endregion
 
         #region test
-        [HttpPost]
+        /*  //测试Redis用
+         * [HttpPost]
         public string test(string key, string value, int time)
         {
             try
@@ -642,9 +645,7 @@ namespace MvcApp.Controllers
 
                 return "no";
             }
-        }
-        #endregion
-
+        }*/
 
         /*//签名测试用
         [HttpGet]        //生成并返回密钥对
@@ -667,15 +668,15 @@ namespace MvcApp.Controllers
             tokenInfo.Userphoto = Userphoto;
             //关键字段
             string content = UserId + UserName + Userphoto;
-
+        
             Session["thing"] = content;    //将私钥保存在session中
-
+        
             //对关键字段生成签名
             string sign = Sign(Session["thing"].ToString(), Session["Private"].ToString());
             tokenInfo.sign = sign;
-
+        
             Session["Sign"] = sign;    //将私钥保存在session中
-
+        
             TokenHelper.SecretKey = Session["Private"].ToString();
             string valueToken = TokenHelper.GenToken(tokenInfo);
             return valueToken;
@@ -700,6 +701,7 @@ namespace MvcApp.Controllers
             return result;
         }
         */
+        #endregion
 
     }
 }

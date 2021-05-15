@@ -142,34 +142,53 @@ namespace MvcApp.Controllers
                 JObject list = readtoken(tokenContent);
                 //获取签名
                 string sign = list["sign"].ToString();
-                if (RedisHelper.Exists(sign))    //检查token是否存在于令牌池，不存在则说明该token已被注销
+                string name = list["UserName"].ToString();
+                string redisName = Encryption(name, "");
+                if (RedisHelper.Exists(redisName))    //检查token是否存在于令牌池，不存在则说明该token已被注销
                 {
+                    //检查是否有同一用户重复令牌
+                    if (RedisHelper.Get(redisName).ToString() != sign)
+                    {
+                        return false;
+                    }
                     //比较token有效时间
                     DateTime dateTime = DateTime.Now;
-                    TimeSpan timeSpan = dateTime - (DateTime)list["time"];
-                    double hours = timeSpan.TotalHours;
-                    if (hours < 1)
+                    DateTime Expiration = (DateTime)list["time"];
+                    Expiration=Expiration.AddDays(1);   //令牌有效时间
+                    TimeSpan timeSpan = Expiration - dateTime;  //计算时间间隔
+                    double mineutes = timeSpan.TotalMinutes;
+                    //若间隔小于零则已经过期
+                    if (mineutes > 0)
                     {
-                        if (hours > 0)
+                        //token临近有效期，重新签发token
+                        if (mineutes < 30)
                         {
                             //移除当前token
                             Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
                             //从令牌池中移除对应token
-                            RedisHelper.Remove(sign);
-                            // 更新token
+                            RedisHelper.Remove(redisName);
+                            // 更新token并重新验证
                             string newToken = gettoken(list["UserId"].ToString(), list["UserName"].ToString(), list["Userphoto"].ToString(), DateTime.Now);
-                            HttpCookie cookie = new HttpCookie("Login");
-                            cookie.Values.Add("Token", newToken);
-                            cookie.Expires = DateTime.Now.AddHours(1);
-                            Response.Cookies.Add(cookie);
-                            //将token放入令牌池，作为有效令牌，登录时设置有效期为1小时，键名为签名，值为设置时间
-                            RedisHelper.Set(sign, DateTime.Now, false, 1);
+                            if (VerToken(newToken, pubKey))
+                            {
+                                //验证通过后将新token传递给客户端
+                                HttpCookie cookie = new HttpCookie("Login");
+                                cookie.Values.Add("Token", newToken);
+                                cookie.Expires = DateTime.Now.AddHours(1);
+                                Response.Cookies.Add(cookie);
+                                //将新token放入令牌池，作为有效令牌，登录时设置有效期为1小时，键名为用户名，值为签名
+                                string newsign = readtoken(newToken)["sign"].ToString();
+                                RedisHelper.Set(redisName, newsign, true, 1);
+                                return true;
+                            }
+                            else
+                                return false;
                         }
-                        else
-                        {
-                            //token过期，验证失败
-                            return false;
-                        }
+                    }
+                    else
+                    {
+                        //token过期，验证失败
+                        return false;
                     }
                     //拼接字符串生成关键字段
                     string content = list["UserId"].ToString() + list["UserName"].ToString() + list["Userphoto"].ToString() + list["time"].ToString();
@@ -339,7 +358,7 @@ namespace MvcApp.Controllers
                     if (isHour) //判断是否为延长时间，如果是延长时间则有效期以小时为单位
                         GetDatabase().StringSet(key, Serialize(value), TimeSpan.FromHours(expire));
                     else
-                        GetDatabase().StringSet(key, Serialize(value), TimeSpan.FromMinutes(expire));
+                        GetDatabase().StringSet(key, Serialize(value), TimeSpan.FromDays(expire));
                 }
                 else
                 {
@@ -606,5 +625,20 @@ namespace MvcApp.Controllers
         }
 
         #endregion
+
+        private string Encryption(string value, string salt)    //加密
+        {
+            //将盐混入内容
+            string mix = string.Concat(value, salt);
+            //加密
+            byte[] bytes = Encoding.Default.GetBytes(mix);
+            byte[] hash = SHA256.Create().ComputeHash(bytes);
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                builder.Append(hash[i].ToString("x2"));
+            }
+            return builder.ToString();
+        }
     }
 }

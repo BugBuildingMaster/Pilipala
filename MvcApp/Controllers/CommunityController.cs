@@ -201,14 +201,22 @@ namespace MvcApp.Controllers
                 System.Web.HttpContext.Current.Session["thePass"] = url;
                 return RedirectToAction("Login", "Users");
             }
-            HttpCookie cookie = Request.Cookies["Login"];
-            string tokenContent = cookie.Values["Token"];
-            string pubKey = Request.Cookies["Key"].Value;
-            if (VerToken(tokenContent, pubKey))
+            else
             {
-                return PartialView(cManager.AllShortComment());
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    return PartialView(cManager.AllShortComment());
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return RedirectToAction("Login", "Users");
+                }
             }
-            return RedirectToAction("Login", "Users");
         }
 
         //返回用户头像地址
@@ -217,23 +225,13 @@ namespace MvcApp.Controllers
             if (Request.Cookies["Login"] == null)
             {
                 return Content("https://hbimg.huabanimg.com/0cd238587a0984d24b8688ad35c187da3ace5314317c-KPcKiS_fw658/format/webp");
-
             }
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                string tokenContent = cookie.Values["Token"];
-                string pubKey = Request.Cookies["Key"].Value;
-                if (VerToken(tokenContent, pubKey))
-                {
-                    JObject name = readtoken(cookie.Values["Token"]);
-                    var Portrait = cManager.GetPortrait(name["UserName"].ToString());
-                    return Content(Portrait.ToString());
-                }
-                else
-                {
-                    return Content("https://hbimg.huabanimg.com/0cd238587a0984d24b8688ad35c187da3ace5314317c-KPcKiS_fw658/format/webp");
-                }
+                JObject name = readtoken(cookie.Values["Token"]);
+                var Portrait = cManager.GetPortrait(name["UserName"].ToString());
+                return Content(Portrait.ToString());
             }
         }
 
@@ -246,18 +244,8 @@ namespace MvcApp.Controllers
             }
             else
             {
-                HttpCookie cookie = Request.Cookies["Login"];
-                string tokenContent = cookie.Values["Token"];
-                string pubKey = Request.Cookies["Key"].Value;
-                if (VerToken(tokenContent, pubKey))
-                {
-                    var Portrait = cManager.GetPortrait(name);
-                    return Content(Portrait.ToString());
-                }
-                else
-                {
-                    return Content("https://hbimg.huabanimg.com/0cd238587a0984d24b8688ad35c187da3ace5314317c-KPcKiS_fw658/format/webp");
-                }
+                var Portrait = cManager.GetPortrait(name);
+                return Content(Portrait.ToString());
             }
         }
 
@@ -289,7 +277,9 @@ namespace MvcApp.Controllers
                     if (flag)
                     {
                         var dynamic = cManager.AllDynamic();
-                        return PartialView("AllDynamic", dynamic);
+                        return RedirectToAction("AllDynamic", "Community");
+
+                        //return PartialView("AllDynamic", dynamic);
                     }
                     else
                     {

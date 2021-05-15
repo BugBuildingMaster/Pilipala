@@ -588,7 +588,7 @@
                             }
                         })
                         if (res == "fail") {
-                            console.log(this.Followers[num - 1].isFans);
+                            //console.log(this.Followers[num - 1].isFans);
                             this.Followers[num - 1].isFans = 0;
                         }
                     },
@@ -599,7 +599,7 @@
                             }
                         })
                         if (res1 == "fail") {
-                            console.log(this.Followers[num - 1].isFans);
+                            //console.log(this.Followers[num - 1].isFans);
                             this.Followers[num - 1].isFans = 1;
                         }
                     }
@@ -816,9 +816,6 @@
             name: $("#username").val()
         },
         success: function (res) {
-            //alert('hello')
-            console.log('分割线')
-            console.log(res)
             //选中信息
             $("input:radio[value=" + res.Gender + "]").attr('checked', 'true')
             //填入签名
@@ -950,7 +947,7 @@
             'border-radius': '3px',
             'color': 'black',
             'padding': '5px 0px',
-            'background-image': 'url(../public/static/uploads/img/check-active.svg)',
+            'background-image': 'url(../../public/static/uploads/img/check-active.svg)',
             'background-background-repeat': 'no-repeat',
             'background-position': 'center center',
             'background-repeat': 'no-repeat',

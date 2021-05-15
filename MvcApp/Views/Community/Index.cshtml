@@ -257,7 +257,7 @@
                             <div class="post-new" uk-toggle="target: body ; cls: post-focus">
                                 <div class="post-new-media">
                                     <div class="post-new-media-user">
-                                        <img src="@Html.Action("ThePortrait","Community")" alt="">
+                                        <img src="@Html.Action("ThePortrait","Community")" alt=""  onclick="location='/User/Center/@ViewBag.userid'">
                                     </div>
 
 
@@ -369,7 +369,7 @@
                     if (res == "login") {
                         alert("请先登录");
                         sessionStorage.setItem('thePass', window.location.href);
-                        window.location.href = "/home/login";
+                        window.location.href = "/Users/Login";
                     } else {
                         $("#like" + id).html(res);
                     }
@@ -390,7 +390,7 @@
                     if (res == "login") {
                         alert("请先登录");
                         sessionStorage.setItem('thePass', window.location.href);
-                        window.location.href = "/home/login";
+                        window.location.href = "/Users/Login";
                     } else {
                         $("#EvaLike" + id).html(res);
                     }
@@ -410,7 +410,7 @@
                     if (res == "login") {
                         alert("请先登录");
                         sessionStorage.setItem('thePass', window.location.href);
-                        window.location.href = "/home/login";
+                        window.location.href = "/Users/Login";
                     } else {
                         $("#EvaDislike" + id).html(res);
                     }
@@ -430,7 +430,7 @@
                     if (res == "login") {
                         alert("请先登录");
                         sessionStorage.setItem('thePass', window.location.href);
-                        window.location.href = "/home/login";
+                        window.location.href = "/Users/Login";
                     } else {
                         $("#short" + id).html(res);
                     }
@@ -440,7 +440,9 @@
 
         //删除动态
         function deleteDongtai(id) {
-            var alarm = '确认删除id为' + id + '的动态？';
+            //var alarm = '确认删除id为' + id + '的动态？';
+
+            var alarm = '确认删除该动态？';
             if (confirm(alarm) == true) {
                 $.ajax({
                     type: "post",
@@ -465,7 +467,9 @@
 
         //删除测评
         function deleteEva(id) {
-            var alarm = '确认删除id为' + id + '的测评？';
+            //var alarm = '确认删除id为' + id + '的测评？';
+
+            var alarm = '确认删除该测评？';
             if (confirm(alarm) == true) {
                 $.ajax({
                     type: "post",
@@ -494,14 +498,14 @@
             if (data == "login") {
                 alert("请先登录！");
                 sessionStorage.setItem('thePass', window.location.href);
-                window.location.href = '/home/login';
+                window.location.href = '/Users/Login';
             }
             else if (data == "fail") {
                 alert("评论失败！");
             }
             else {
                 $("#aresult").html(data);
-                alert("评论成功！");
+                alert("发表成功！");
             }
         }
     </script>
