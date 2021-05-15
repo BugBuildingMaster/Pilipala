@@ -49,25 +49,34 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                EComment etc = new EComment
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    UserName = name["UserName"].ToString(),
-                    Animationid = aid,
-                    Evaluationid = id,
-                    Time = DateTime.Now,
-                    Likenum = 0,
-                    content = content
-                };
-                bool add = eManager.AddComment(etc);
-                if (add)
-                {
-                    var comm = eManager.GetEComments(id);
-                    return PartialView("EComment", comm);
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    EComment etc = new EComment
+                    {
+                        UserName = name["UserName"].ToString(),
+                        Animationid = aid,
+                        Evaluationid = id,
+                        Time = DateTime.Now,
+                        Likenum = 0,
+                        content = content
+                    };
+                    bool add = eManager.AddComment(etc);
+                    if (add)
+                    {
+                        var comm = eManager.GetEComments(id);
+                        return PartialView("EComment", comm);
+                    }
+                    else
+                    {
+                        return Content("fail");
+                    }
                 }
                 else
                 {
-                    return Content("fail");
+                    return Content("login");
                 }
             }
         }
@@ -81,8 +90,17 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                return Content(eManager.AddLikeOrDislike(2, id, name["UserName"].ToString()));
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    return Content(eManager.AddLikeOrDislike(2, id, name["UserName"].ToString()));
+                }
+                else
+                {
+                    return Content("login");
+                }
             }
         }
         //测评点踩
@@ -95,20 +113,50 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                return Content(eManager.AddLikeOrDislike(3, id, name["UserName"].ToString()));
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    return Content(eManager.AddLikeOrDislike(3, id, name["UserName"].ToString()));
+                }
+                else
+                {
+                    return Content("login");
+                }
             }
         }
         //添加测评页
         public ActionResult AddEvaluationid(int? id)
         {
-            var e = eManager.GetEvaluation((int)id);
-            HttpCookie cookie = Request.Cookies["Login"];
-            JObject name = readtoken(cookie.Values["Token"]);
-            ViewBag.id = id;
-            ViewBag.Aname = e.Aname;
-            ViewBag.username = name["UserName"].ToString();
-            return View();
+            if (Request.Cookies["Login"] == null)
+            {
+                string url = Request.Url.ToString();
+                System.Web.HttpContext.Current.Session["thePass"] = url;
+                return RedirectToAction("Login", "Users");
+            }
+            else
+            {
+                var e = eManager.GetEvaluation((int)id);
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ViewBag.id = id;
+                    ViewBag.Aname = e.Aname;
+                    ViewBag.username = name["UserName"].ToString();
+                    return View();
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return RedirectToAction("Login", "Users");
+                }
+            }
+
         }
         //添加测评 审核通过后发布
         [HttpPost]

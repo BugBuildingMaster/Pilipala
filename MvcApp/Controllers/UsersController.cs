@@ -56,18 +56,6 @@ namespace MvcApp.Controllers
             return View();
         }
 
-        #region 注销登录
-        public string LoginOut()
-        {
-            //Session["userid"] = null;
-            //Session["username"] = null;
-            string data = "已注销登录！";
-            Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
-            Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
-            return data;
-        }
-        #endregion
-
         #region 验证用户名唯一
         [HttpGet]
         public string IsUsernameUnique(string name)
@@ -81,6 +69,30 @@ namespace MvcApp.Controllers
 
 
         /*----------------------------------------------------------------------------*/
+
+        #region 注销登录
+        public string LoginOut()
+        {
+            string data;
+            try
+            {
+                //从令牌池中移除对应令牌
+                HttpCookie cookie = Request.Cookies["Login"];
+                string sign = readtoken(cookie.Values["Token"])["sign"].ToString();
+                RedisHelper.Remove(sign);
+                Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+                data = "已注销登录！";
+                return data;
+            }
+            catch (Exception)
+            {
+                data = "出现错误！";
+                return data;
+            }
+        }
+        #endregion
+
 
         #region 验证邮箱唯一
         [HttpGet]
@@ -462,12 +474,16 @@ namespace MvcApp.Controllers
                     //Session["Userphoto"] = user.UsersInfo.Portrait;             //保存用户头像路径
                     //Session.Timeout = 120;
 
-                    //生成token
+                    //生成token   将token传递到前端
                     string token = gettoken(user.Userid.ToString(), user.UserName, user.UsersInfo.Portrait, DateTime.Now);
                     HttpCookie cookie = new HttpCookie("Login");
                     cookie.Values.Add("Token", token);
                     cookie.Expires = DateTime.Now.AddDays(1);
                     Response.Cookies.Add(cookie);
+                    //将token放入令牌池，作为有效令牌，登录时设置有效期为1天，键名为签名，值为设置时间
+                    string sign = readtoken(cookie.Values["Token"])["sign"].ToString();
+                    RedisHelper.Set(sign, DateTime.Now, false, 1);
+
                     return "success";
                 }
                 else return "fail";
@@ -566,6 +582,69 @@ namespace MvcApp.Controllers
             return (int)(Math.Abs(BitConverter.ToInt64(array, 0)) / maxValue * length);
         }
         #endregion
+
+        #region test
+        [HttpPost]
+        public string test(string key, string value, int time)
+        {
+            try
+            {
+                RedisHelper.SetCon("127.0.0.1:6379,password=123456,DefaultDatabase=0");
+                RedisHelper.Set(key, value, false, time);
+                return "ok";
+            }
+            catch (Exception)
+            {
+
+                return "no";
+            }
+        }
+
+        [HttpPost]
+        public string test1(string key)
+        {
+            try
+            {
+                if (RedisHelper.Exists(key))
+                {
+                    string a = RedisHelper.Get(key).ToString();
+                    return a;
+                }
+                else
+                {
+                    return "已过期或不存在";
+                }
+            }
+            catch (Exception)
+            {
+
+                return "no";
+            }
+        }
+
+        [HttpPost]
+        public string test2(string key)
+        {
+            try
+            {
+                if (RedisHelper.Exists(key))
+                {
+                    RedisHelper.Remove(key).ToString();
+                    return "ok";
+                }
+                else
+                {
+                    return "已过期或不存在";
+                }
+            }
+            catch (Exception)
+            {
+
+                return "no";
+            }
+        }
+        #endregion
+
 
         /*//签名测试用
         [HttpGet]        //生成并返回密钥对

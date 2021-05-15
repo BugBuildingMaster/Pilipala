@@ -26,9 +26,20 @@ namespace MvcApp.Controllers
                 if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
                 {
                     HttpCookie cookie = Request.Cookies["Login"];
-                    JObject name = readtoken(cookie.Values["Token"]);
-                    ViewBag.username = name["UserName"].ToString();
-                    ViewBag.userid = name["UserId"].ToString();
+                    string tokenContent = cookie.Values["Token"];
+                    string pubKey = Request.Cookies["Key"].Value;
+                    if (VerToken(tokenContent, pubKey))
+                    {
+                        JObject name = readtoken(cookie.Values["Token"]);
+                        ViewBag.username = name["UserName"].ToString();
+                        ViewBag.userid = name["UserId"].ToString();
+                    }
+                    else
+                    {
+                        ViewBag.username = null;
+                        ViewBag.userid = null;
+                    }
+
                 }
             }
             catch (Exception)
@@ -45,7 +56,7 @@ namespace MvcApp.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult Details(int ? id)
+        public ActionResult Details(int? id)
         {
             ViewBag.id = id;
             return View(aManager.GetAnimation((int)id));
@@ -71,9 +82,9 @@ namespace MvcApp.Controllers
         }
         // 分页获取动漫信息
         [HttpGet]
-        public JsonResult GetaByCategory(string name,int num, int currentPage)
+        public JsonResult GetaByCategory(string name, int num, int currentPage)
         {
-            return Json(aManager.GetAnimationByPages(name,num,currentPage),JsonRequestBehavior.AllowGet);
+            return Json(aManager.GetAnimationByPages(name, num, currentPage), JsonRequestBehavior.AllowGet);
         }
         // 获取分页下的动漫数
         public JsonResult GetaCategoryNum(string name)
@@ -83,7 +94,7 @@ namespace MvcApp.Controllers
         //获取动漫下的短评
         public ActionResult ShortComment(int id)
         {
-            return PartialView(aManager.GetShortComments(id,1));
+            return PartialView(aManager.GetShortComments(id, 1));
         }
         //获取动漫的照片墙
         public JsonResult Photoes(int id)
@@ -111,25 +122,34 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                ShortComment sc = new ShortComment
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    UserName = name["UserName"].ToString(),
-                    Animationid = id,
-                    Time = DateTime.Now,
-                    content = content,
-                    Likenum = 0,
-                    Score = score
-                };
-                bool add = aManager.AddComment(sc);
-                if (add)
-                {
-                    var comm = aManager.GetShortComments(id, 1);
-                    return PartialView("ShortComment", comm);
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ShortComment sc = new ShortComment
+                    {
+                        UserName = name["UserName"].ToString(),
+                        Animationid = id,
+                        Time = DateTime.Now,
+                        content = content,
+                        Likenum = 0,
+                        Score = score
+                    };
+                    bool add = aManager.AddComment(sc);
+                    if (add)
+                    {
+                        var comm = aManager.GetShortComments(id, 1);
+                        return PartialView("ShortComment", comm);
+                    }
+                    else
+                    {
+                        return Content("fail");
+                    }
                 }
                 else
                 {
-                    return Content("fail");
+                    return Content("login");
                 }
             }
         }
@@ -143,18 +163,42 @@ namespace MvcApp.Controllers
             }
             else
             {
-                return "success";
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    return "success";
+                }
+                else
+                {
+                    return "login";
+                }
             }
         }
         //短评点赞
         [HttpPost]
         public ActionResult Addlike(int id)
         {
-            HttpCookie cookie = Request.Cookies["Login"];
-            JObject name = readtoken(cookie.Values["Token"]);
-            return (name["UserName"] == null) ?
-                   Content("login") :
-                   Content(aManager.AddCommentLike(id, name["UserName"].ToString()));
+            if (Request.Cookies["Login"] == null)
+            {
+                return Content("login");
+            }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    return Content(aManager.AddCommentLike(id, name["UserName"].ToString()));
+                }
+                else
+                {
+                    return Content("login");
+                }
+            }
         }
 
         /*----------------------------------------------------------------------------------*/
@@ -170,8 +214,17 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                return PartialView(rmanager.GetRecommendAnimation(name["UserName"].ToString()));
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    return PartialView(rmanager.GetRecommendAnimation(name["UserName"].ToString()));
+                }
+                else
+                {
+                    return Content("login");
+                }
             }
         }
 

@@ -38,14 +38,23 @@ namespace MvcApp.Controllers
                 else
                 {
                     HttpCookie cookie = Request.Cookies["Login"];
-                    JObject username = readtoken(cookie.Values["Token"]);
-                    name = username["UserName"].ToString();
-                    ViewBag.username = name;
-                    ViewBag.userid = username["UserId"].ToString();
+                    string tokenContent = cookie.Values["Token"];
+                    string pubKey = Request.Cookies["Key"].Value;
+                    if (VerToken(tokenContent, pubKey))
+                    {
+                        JObject username = readtoken(cookie.Values["Token"]);
+                        name = username["UserName"].ToString();
+                        ViewBag.username = name;
+                        ViewBag.userid = username["UserId"].ToString();
+                    }
+                    else
+                    {
+                        name = "";
+                    }
                 }
                 sManager.Search(KeyWord, name);
                 return View();
-            }  
+            }
         }
 
         //获取测评信息

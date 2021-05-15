@@ -26,18 +26,27 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject username = readtoken(cookie.Values["Token"]);
-                var visitor = username["UserName"].ToString();
-                if (visitor == name)
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    return RedirectToAction("Center", "User", new { id });
+                    JObject username = readtoken(cookie.Values["Token"]);
+                    var visitor = username["UserName"].ToString();
+                    if (visitor == name)
+                    {
+                        return RedirectToAction("Center", "User", new { id });
+                    }
+                    else
+                    {
+                        ViewBag.username = name;
+                        ViewBag.userid = id;
+                        UsersInfo user = uManager.GetUsersInfo((int)id);
+                        return View(user);
+                    }
                 }
                 else
                 {
-                    ViewBag.username = name;
-                    ViewBag.userid = id;
-                    UsersInfo user = uManager.GetUsersInfo((int)id);
-                    return View(user);
+                    return RedirectToAction("Login", "Users");
                 }
             }
         }

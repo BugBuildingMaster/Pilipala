@@ -29,20 +29,29 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject username = readtoken(cookie.Values["Token"]);
-                UsersInfo user = uManager.GetUsersInfo((int)id);
-                string name = user.UserName;
-                var visitor = username["UserName"].ToString();
-                if (visitor == user.UserName)
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    ViewBag.username = name;
-                    ViewBag.userid = id;
-                    //db.PersonalSpace(name, visitor);
-                    return View(user);
+                    JObject username = readtoken(cookie.Values["Token"]);
+                    UsersInfo user = uManager.GetUsersInfo((int)id);
+                    string name = user.UserName;
+                    var visitor = username["UserName"].ToString();
+                    if (visitor == user.UserName)
+                    {
+                        ViewBag.username = name;
+                        ViewBag.userid = id;
+                        //db.PersonalSpace(name, visitor);
+                        return View(user);
+                    }
+                    else
+                    {
+                        return RedirectToAction("TouristCenter", "Tourist", new { id, name });
+                    }
                 }
                 else
                 {
-                    return RedirectToAction("TouristCenter", "Tourist", new { id, name });
+                    return RedirectToAction("Login", "Users");
                 }
             }
         }
@@ -195,9 +204,18 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                rManager.AddWatch(type, id, name["UserName"].ToString());
-                return Json("OK", JsonRequestBehavior.AllowGet);
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    rManager.AddWatch(type, id, name["UserName"].ToString());
+                    return Json("OK", JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json("login", JsonRequestBehavior.AllowGet);
+                }
             }
         }
 
@@ -247,15 +265,24 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                bool falg = uManager.Following(id, name["UserName"].ToString());
-                if (falg)
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    return Content("Success");
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    bool falg = uManager.Following(id, name["UserName"].ToString());
+                    if (falg)
+                    {
+                        return Content("Success");
+                    }
+                    else
+                    {
+                        return Content("fail");
+                    }
                 }
                 else
                 {
-                    return Content("fail");
+                    return Content("login");
                 }
             }
         }

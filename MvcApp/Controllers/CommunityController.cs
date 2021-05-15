@@ -59,8 +59,19 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                ViewBag.userid = name["UserId"].ToString();
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ViewBag.userid = name["UserId"].ToString();
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return RedirectToAction("Login", "Users");
+                }
             }
             return View(cManager.DynamicDetail(id));
         }
@@ -77,8 +88,19 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                ViewBag.username = name["UserName"].ToString();
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ViewBag.username = name["UserName"].ToString();
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return RedirectToAction("Login", "Users");
+                }
             }
             return PartialView(cManager.AllDynamic());
         }
@@ -95,8 +117,19 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                ViewBag.username = name["UserName"].ToString();
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ViewBag.username = name["UserName"].ToString();
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return RedirectToAction("Login", "Users");
+                }
             }
             return PartialView(cManager.DynamicComment((int)id));
         }
@@ -113,8 +146,19 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                ViewBag.username = name["UserName"].ToString();
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ViewBag.username = name["UserName"].ToString();
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return RedirectToAction("Login", "Users");
+                }
             }
             return PartialView(cManager.DynamicReply((int)id));
         }
@@ -131,8 +175,19 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                ViewBag.username = name["UserName"].ToString();
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    ViewBag.username = name["UserName"].ToString();
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return RedirectToAction("Login", "Users");
+                }
             }
             return PartialView(cManager.AllEvaluation());
         }
@@ -146,7 +201,14 @@ namespace MvcApp.Controllers
                 System.Web.HttpContext.Current.Session["thePass"] = url;
                 return RedirectToAction("Login", "Users");
             }
-            return PartialView(cManager.AllShortComment());
+            HttpCookie cookie = Request.Cookies["Login"];
+            string tokenContent = cookie.Values["Token"];
+            string pubKey = Request.Cookies["Key"].Value;
+            if (VerToken(tokenContent, pubKey))
+            {
+                return PartialView(cManager.AllShortComment());
+            }
+            return RedirectToAction("Login", "Users");
         }
 
         //返回用户头像地址
@@ -160,9 +222,18 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                var Portrait = cManager.GetPortrait(name["UserName"].ToString());
-                return Content(Portrait.ToString());
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    var Portrait = cManager.GetPortrait(name["UserName"].ToString());
+                    return Content(Portrait.ToString());
+                }
+                else
+                {
+                    return Content("https://hbimg.huabanimg.com/0cd238587a0984d24b8688ad35c187da3ace5314317c-KPcKiS_fw658/format/webp");
+                }
             }
         }
 
@@ -175,9 +246,19 @@ namespace MvcApp.Controllers
             }
             else
             {
-                var Portrait = cManager.GetPortrait(name);
-                return Content(Portrait.ToString());
-            } 
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    var Portrait = cManager.GetPortrait(name);
+                    return Content(Portrait.ToString());
+                }
+                else
+                {
+                    return Content("https://hbimg.huabanimg.com/0cd238587a0984d24b8688ad35c187da3ace5314317c-KPcKiS_fw658/format/webp");
+                }
+            }
         }
 
         //返回指定用户id
@@ -199,16 +280,27 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                bool flag = cManager.AddDynamic(content, name["UserName"].ToString());
-                if (flag)
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    var dynamic = cManager.AllDynamic();
-                    return PartialView("AllDynamic", dynamic);
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    bool flag = cManager.AddDynamic(content, name["UserName"].ToString());
+                    if (flag)
+                    {
+                        var dynamic = cManager.AllDynamic();
+                        return PartialView("AllDynamic", dynamic);
+                    }
+                    else
+                    {
+                        return Content("fail");
+                    }
                 }
                 else
                 {
-                    return Content("fail");
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return Content("login");
                 }
             }
         }
@@ -225,16 +317,27 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                bool flag = cManager.AddComment(dtid, content, name["UserName"].ToString());
-                if (flag)
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    var comm = cManager.DynamicComment(dtid);
-                    return PartialView("DynamicComment", comm);
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    bool flag = cManager.AddComment(dtid, content, name["UserName"].ToString());
+                    if (flag)
+                    {
+                        var comm = cManager.DynamicComment(dtid);
+                        return PartialView("DynamicComment", comm);
+                    }
+                    else
+                    {
+                        return Content("fail");
+                    }
                 }
                 else
                 {
-                    return Content("fail");
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return Content("login");
                 }
             }
         }
@@ -251,16 +354,27 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                bool flag = cManager.AddCommentReply(id, content, dtid, name["UserName"].ToString());
-                if (flag)
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
                 {
-                    var comm = cManager.DynamicComment(dtid);
-                    return PartialView("DynamicComment", comm);
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    bool flag = cManager.AddCommentReply(id, content, dtid, name["UserName"].ToString());
+                    if (flag)
+                    {
+                        var comm = cManager.DynamicComment(dtid);
+                        return PartialView("DynamicComment", comm);
+                    }
+                    else
+                    {
+                        return Content("fail");
+                    }
                 }
                 else
                 {
-                    return Content("fail");
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return Content("login");
                 }
             }
         }
@@ -322,9 +436,20 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                string i = cManager.AddLike(id, name["UserName"].ToString());
-                return Content(i);
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    string i = cManager.AddLike(id, name["UserName"].ToString());
+                    return Content(i);
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return Content("login");
+                }
             }
         }
 
@@ -341,9 +466,20 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                string i = cManager.ShortCommentAddLike(id, name["UserName"].ToString());
-                return Content(i);
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    string i = cManager.ShortCommentAddLike(id, name["UserName"].ToString());
+                    return Content(i);
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return Content("login");
+                }
             }
         }
 
@@ -360,9 +496,20 @@ namespace MvcApp.Controllers
             else
             {
                 HttpCookie cookie = Request.Cookies["Login"];
-                JObject name = readtoken(cookie.Values["Token"]);
-                string i = cManager.DongtaiCommentAddLike(id, name["UserName"].ToString());
-                return Content(i);
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    string i = cManager.DongtaiCommentAddLike(id, name["UserName"].ToString());
+                    return Content(i);
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return Content("login");
+                }
             }
         }
 
@@ -378,8 +525,20 @@ namespace MvcApp.Controllers
             }
             else
             {
-                string i = cManager.ShortCommentNum(id);
-                return Content(i);
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    string i = cManager.ShortCommentNum(id);
+                    return Content(i);
+                }
+                else
+                {
+                    string url = Request.Url.ToString();
+                    System.Web.HttpContext.Current.Session["thePass"] = url;
+                    return Content("login");
+                }
             }
         }
     }
