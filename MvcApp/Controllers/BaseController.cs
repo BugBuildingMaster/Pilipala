@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 
 namespace MvcApp.Controllers
 {
+    
     public class BaseController : Controller
     {
 
@@ -44,7 +45,7 @@ namespace MvcApp.Controllers
             public static string SecretKey { get; set; }//这个服务端加密秘钥 属于私钥
             private static JavaScriptSerializer myJson = new JavaScriptSerializer();
 
-            public static string GenToken(TokenInfo token)
+            public static string GenToken(TokenInfo token)  //生成token
             {
                 var load = new Dictionary<string, dynamic>
             {
@@ -134,7 +135,7 @@ namespace MvcApp.Controllers
         #endregion
 
         #region 验证token
-        protected bool VerToken(string tokenContent, string pubKey)
+        public bool VerToken(string tokenContent, string pubKey)
         {
             try
             {
@@ -626,6 +627,7 @@ namespace MvcApp.Controllers
 
         #endregion
 
+        #region 加密
         private string Encryption(string value, string salt)    //加密
         {
             //将盐混入内容
@@ -640,5 +642,7 @@ namespace MvcApp.Controllers
             }
             return builder.ToString();
         }
+        #endregion
+
     }
 }

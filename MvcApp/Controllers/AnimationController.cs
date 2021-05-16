@@ -7,6 +7,7 @@ using BLL;
 using Newtonsoft.Json;
 using Models;
 using Newtonsoft.Json.Linq;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -19,6 +20,7 @@ namespace MvcApp.Controllers
         /// 项目首页
         /// </summary>
         /// <returns></returns>
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Index()
         {
             try
@@ -115,7 +117,7 @@ namespace MvcApp.Controllers
         //添加评论
         public ActionResult AddComment(int id, string content, int score)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("login");
             }
@@ -157,7 +159,7 @@ namespace MvcApp.Controllers
         [HttpGet]
         public string isUserLogin()
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return "login";
             }
@@ -180,7 +182,7 @@ namespace MvcApp.Controllers
         [HttpPost]
         public ActionResult Addlike(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("login");
             }
@@ -207,7 +209,7 @@ namespace MvcApp.Controllers
 
         public ActionResult Recommend()
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("login");
             }

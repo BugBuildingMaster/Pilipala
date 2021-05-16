@@ -8,6 +8,7 @@ using BLL;
 using Models;
 using Newtonsoft.Json.Linq;
 using PagedList;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -17,9 +18,10 @@ namespace MvcApp.Controllers
 
         // GET: Tourist
         //游客视角个人中心
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult TouristCenter(int? id, string name)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return RedirectToAction("Login", "Users");
             }

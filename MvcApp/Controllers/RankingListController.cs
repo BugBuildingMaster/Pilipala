@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using BLL;
 using Models;
 using PagedList;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -37,6 +38,7 @@ namespace MvcApp.Controllers
             return Json(Animations, JsonRequestBehavior.AllowGet);
         }
 
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Rankinglist()
         {
             return View();
@@ -60,6 +62,7 @@ namespace MvcApp.Controllers
 
         //返回分布视图
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult GetPartialRank(int id,int page)
         {
             string name = rManager.GetPartialRank(id);

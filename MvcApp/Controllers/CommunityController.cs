@@ -7,6 +7,7 @@ using BLL;
 using Newtonsoft.Json;
 using Models;
 using Newtonsoft.Json.Linq;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -16,6 +17,7 @@ namespace MvcApp.Controllers
         readonly CommunityManager cManager = new CommunityManager();
 
         // GET: Community
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Index()
         {
             if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
@@ -48,9 +50,10 @@ namespace MvcApp.Controllers
         }
 
         //动态详情页
+        [EnableThrottling(PerSecond = 5, PerMinute = 200, PerHour = 500, PerDay = 2000)]
         public ActionResult DynamicDetail(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -79,7 +82,7 @@ namespace MvcApp.Controllers
         //全部动态分布视图
         public ActionResult AllDynamic()
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -108,7 +111,7 @@ namespace MvcApp.Controllers
         //动态评论分布视图
         public ActionResult DynamicComment(int? id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -137,7 +140,7 @@ namespace MvcApp.Controllers
         //评论回复分布视图
         public ActionResult DynamicReply(int? id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -166,7 +169,7 @@ namespace MvcApp.Controllers
         //全部测评分布视图
         public ActionResult AllEvaluation()
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -195,7 +198,7 @@ namespace MvcApp.Controllers
         //全部短评分布视图
         public ActionResult AllShortComment()
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -222,7 +225,7 @@ namespace MvcApp.Controllers
         //返回用户头像地址
         public ActionResult ThePortrait()
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("https://hbimg.huabanimg.com/0cd238587a0984d24b8688ad35c187da3ace5314317c-KPcKiS_fw658/format/webp");
             }
@@ -238,7 +241,7 @@ namespace MvcApp.Controllers
         //返回指定用户头像地址
         public ActionResult GetPortrait(string name)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("https://hbimg.huabanimg.com/0cd238587a0984d24b8688ad35c187da3ace5314317c-KPcKiS_fw658/format/webp");
             }
@@ -257,9 +260,10 @@ namespace MvcApp.Controllers
 
         //添加动态
         [HttpPost]
+        [EnableThrottling(PerSecond = 3, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult AddDynamic(string content)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -296,9 +300,10 @@ namespace MvcApp.Controllers
         }
         //添加评论
         [HttpPost]
+        [EnableThrottling(PerSecond = 3, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult AddComment(int dtid, string content)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -333,9 +338,10 @@ namespace MvcApp.Controllers
         }
         //动态评论回复添加函数
         [HttpPost]
+        [EnableThrottling(PerSecond = 3, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult AddCommentReply(int id, string content, int dtid)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -371,6 +377,7 @@ namespace MvcApp.Controllers
 
         //动态删除
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public JsonResult DeleteDongtai(int id)
         {
             bool flag = cManager.DeleteDynamic(id);
@@ -385,6 +392,7 @@ namespace MvcApp.Controllers
         }
         //删除评论
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult DeleteComment(int dtid)
         {
             bool flag = cManager.DeleteComment(dtid);
@@ -399,6 +407,7 @@ namespace MvcApp.Controllers
         }
         //删除评论回复
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult DeleteReply(int dtid)
         {
             bool flag = cManager.DeleteReply(dtid);
@@ -414,10 +423,11 @@ namespace MvcApp.Controllers
 
         //动态点赞
         [HttpPost]
+        [EnableThrottling(PerSecond = 7, PerMinute = 300, PerHour = 2000, PerDay = 10000)]
         public ActionResult AddLike(int id)
         {
 
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -445,9 +455,10 @@ namespace MvcApp.Controllers
 
         //短评点赞
         [HttpPost]
+        [EnableThrottling(PerSecond = 7, PerMinute = 300, PerHour = 2000, PerDay = 10000)]
         public ActionResult ShortCommentAddLike(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -475,9 +486,10 @@ namespace MvcApp.Controllers
 
         //动态评论点赞
         [HttpPost]
+        [EnableThrottling(PerSecond = 7, PerMinute = 300, PerHour = 2000, PerDay = 10000)]
         public ActionResult DongtaiCommentAddLike(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -505,9 +517,10 @@ namespace MvcApp.Controllers
 
         //动态评论数返回
         [HttpPost]
+        [EnableThrottling(PerSecond = 7, PerMinute = 300, PerHour = 2000, PerDay = 10000)]
         public ActionResult ShortCommentNum(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;

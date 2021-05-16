@@ -8,6 +8,7 @@ using BLL;
 using Models;
 using Newtonsoft.Json.Linq;
 using PagedList;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -20,9 +21,10 @@ namespace MvcApp.Controllers
             return View();
         }
         //个人中心视图
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Center(int? id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return RedirectToAction("Login", "Users");
             }
@@ -91,6 +93,7 @@ namespace MvcApp.Controllers
 
         //获取信息
         [HttpGet]
+        [EnableThrottling(PerSecond = 4, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public JsonResult GetInfo(string name)
         {
             return Json(uManager.GetUsersInfo(name), JsonRequestBehavior.AllowGet);
@@ -98,6 +101,7 @@ namespace MvcApp.Controllers
 
         // 修改用户头像
         [HttpPost]
+        [EnableThrottling(PerSecond = 1, PerMinute = 4, PerHour = 10, PerDay = 20)]
         public ActionResult EditPic(FormCollection forms)
         {
             HttpCookie cookie = Request.Cookies["Login"];
@@ -157,6 +161,7 @@ namespace MvcApp.Controllers
         }
 
         //修改个人信息
+        [EnableThrottling(PerSecond = 1, PerMinute = 4, PerHour = 10, PerDay = 20)]
         public string EditUserInfo(string name, string gender, DateTime? birthday, string signatures)
         {
             HttpCookie cookie = Request.Cookies["Login"];
@@ -217,10 +222,11 @@ namespace MvcApp.Controllers
 
         //添加历史记录
         [HttpGet]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40)]
         public ActionResult AddWatch(string type, int id)
         {
 
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Json("login", JsonRequestBehavior.AllowGet);
             }
@@ -244,16 +250,32 @@ namespace MvcApp.Controllers
 
         //删除历史记录
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 80)]
         public JsonResult DeleteWatch(int id)
         {
-            bool flag = rManager.DeleteWatch(id);
-            if (flag)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
-                return Json("Success");
+                return Json("login", JsonRequestBehavior.AllowGet);
             }
             else
             {
-                return Json("Fail");
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    bool flag = rManager.DeleteWatch(id);
+                    if (flag)
+                    {
+                        return Json("Success");
+                    }
+                    else
+                    {
+                        return Json("Fail");
+                    }
+                }
+                else
+                    return Json("login");
             }
         }
 
@@ -261,27 +283,60 @@ namespace MvcApp.Controllers
         [HttpGet]
         public JsonResult UserFollow(int page)
         {
-            HttpCookie cookie = Request.Cookies["Login"];
-            JObject name = readtoken(cookie.Values["Token"]);
-            IEnumerable<tempFollow> follows = uManager.GetUserFollows(page, name["UserName"].ToString(), name["UserName"].ToString());
-            return Json(follows, JsonRequestBehavior.AllowGet);
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
+            {
+                return Json("login", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    IEnumerable<tempFollow> follows = uManager.GetUserFollows(page, name["UserName"].ToString(), name["UserName"].ToString());
+                    return Json(follows, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json("login", JsonRequestBehavior.AllowGet);
+                }
+            }
         }
 
         //粉丝列表
         [HttpGet]
         public JsonResult UserFans(int page)
         {
-            HttpCookie cookie = Request.Cookies["Login"];
-            JObject name = readtoken(cookie.Values["Token"]);
-            IEnumerable<tempFans> fans = uManager.GetUserFans(page, name["UserName"].ToString(), name["UserName"].ToString());
-            return Json(fans, JsonRequestBehavior.AllowGet);
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
+            {
+                return Json("login", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    JObject name = readtoken(cookie.Values["Token"]);
+                    IEnumerable<tempFans> fans = uManager.GetUserFans(page, name["UserName"].ToString(), name["UserName"].ToString());
+                    return Json(fans, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json("login", JsonRequestBehavior.AllowGet);
+                }
+            }
         }
 
         //关注用户或取消关注用户
         [HttpGet]
+        [EnableThrottling(PerSecond = 4, PerMinute = 150, PerHour = 800, PerDay = 4000)]
         public ActionResult Following(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("login");
             }

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Models;
 using BLL;
 using Newtonsoft.Json.Linq;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -21,6 +22,7 @@ namespace MvcApp.Controllers
         }
 
         //返回一个测评详情页
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Details(int? id)
         {
             var eva = eManager.GetEvaluation((int)id);
@@ -28,6 +30,7 @@ namespace MvcApp.Controllers
         }
         //获取测评内容
         [HttpGet]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public JsonResult GetEvaluation(int id)
         {
             var evaluation = eManager.GetEvaluation(id).Content;
@@ -40,9 +43,10 @@ namespace MvcApp.Controllers
             return PartialView(ec);
         }
         //添加评论
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult AddComment(int aid, int id, string content)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("login");
             }
@@ -81,9 +85,10 @@ namespace MvcApp.Controllers
             }
         }
         //测评点赞
+        [EnableThrottling(PerSecond = 7, PerMinute = 400, PerHour = 3000, PerDay = 10000)]
         public ActionResult Addlike(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("login");
             }
@@ -104,9 +109,10 @@ namespace MvcApp.Controllers
             }
         }
         //测评点踩
+        [EnableThrottling(PerSecond = 7, PerMinute = 400, PerHour = 3000, PerDay = 10000)]
         public ActionResult AddDislike(int id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 return Content("login");
             }
@@ -127,9 +133,10 @@ namespace MvcApp.Controllers
             }
         }
         //添加测评页
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult AddEvaluationid(int? id)
         {
-            if (Request.Cookies["Login"] == null)
+            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
                 string url = Request.Url.ToString();
                 System.Web.HttpContext.Current.Session["thePass"] = url;
@@ -162,6 +169,7 @@ namespace MvcApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
+        [EnableThrottling(PerSecond = 4, PerMinute = 40, PerHour = 300, PerDay = 400)]
         public ActionResult AddEvaluation(int id, string name, Evaluation evaluation)
         {
             //新建待发布测评对象
@@ -189,6 +197,7 @@ namespace MvcApp.Controllers
         }
         //删除测评
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public JsonResult DeleteEvaluation(int id)
         {
             bool de = eManager.DeleteEvaluation(id);

@@ -7,6 +7,7 @@ using BLL;
 using Newtonsoft.Json;
 using Models;
 using Newtonsoft.Json.Linq;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -22,6 +23,7 @@ namespace MvcApp.Controllers
 
         //搜索功能
         [HttpGet]
+        [EnableThrottling(PerSecond = 3, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Search(string KeyWord)
         {
             string name;
@@ -31,7 +33,7 @@ namespace MvcApp.Controllers
             }
             else
             {
-                if (Request.Cookies["Login"] == null)        //未登录时的情况
+                if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)        //未登录时的情况
                 {
                     name = "";
                 }

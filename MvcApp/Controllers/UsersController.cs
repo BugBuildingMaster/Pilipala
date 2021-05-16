@@ -25,6 +25,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Web;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using MvcThrottle;
 
 namespace MvcApp.Controllers
 {
@@ -34,14 +35,14 @@ namespace MvcApp.Controllers
         // GET: Users
         public ActionResult Index()
         {
-            IEnumerable<Users> users = usersManager.GetUsers();
-            return View(users.ToList());
+            return View();
         }
 
         /// <summary>
         /// 登录视图
         /// </summary>
         /// <returns></returns>
+        [EnableThrottling(PerSecond = 4, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Login()
         {
             return View();
@@ -51,6 +52,7 @@ namespace MvcApp.Controllers
         /// 用户注册视图
         /// </summary>
         /// <returns></returns>
+        [EnableThrottling(PerSecond = 4, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Register()
         {
             return View();
@@ -58,6 +60,7 @@ namespace MvcApp.Controllers
 
         #region 验证用户名唯一
         [HttpGet]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string IsUsernameUnique(string name)
         {
             if (usersManager.IsUsernameUnique(name))
@@ -71,6 +74,7 @@ namespace MvcApp.Controllers
         /*----------------------------------------------------------------------------*/
 
         #region 注销登录
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string LoginOut()
         {
             string data;
@@ -96,6 +100,7 @@ namespace MvcApp.Controllers
 
         #region 验证邮箱唯一
         [HttpGet]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string IsEmailUnique(string email)
         {
             if (usersManager.IsEmailUnique(email))
@@ -107,6 +112,7 @@ namespace MvcApp.Controllers
 
         #region 生成公钥私钥
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string setRsa()      //初始化，生成PKCS1密钥对，将私钥保存在session中用于解密接收到的密码密文，将公钥传到前端用于密码加密
         {
             RsaKeyPairGenerator keyGenerator = new RsaKeyPairGenerator();
@@ -387,6 +393,7 @@ namespace MvcApp.Controllers
 
         #region 注册
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string Register(string username, string password, string email)
         {
             try
@@ -439,6 +446,7 @@ namespace MvcApp.Controllers
 
         #region 用户登录
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string Login(string username, string password)
         {
             try
@@ -501,6 +509,7 @@ namespace MvcApp.Controllers
         #region 修改密码
         //修改密码
         [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string EditPassword(string oldPwd, string newPwd)
         {
             try

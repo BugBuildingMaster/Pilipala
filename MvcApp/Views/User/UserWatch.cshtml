@@ -71,12 +71,16 @@
                     },
                     success: function (data) {
                         if (data == 'Success') {
-                            alert('芜湖 没了！')
+                            alert('芜湖 没了！');
                             $(".theWatch" + id).remove();
                             //window.location.reload()
                         }
                         else if (data == 'Fail') {
-                            alert('淦，报错')
+                            alert('淦，报错');
+                        }
+                        else if (data == 'login') {
+                            alert('登录信息验证有误！请重新登录！');
+                            window.location.href = "/Users/Login";
                         }
                     },
                 })
