@@ -84,7 +84,9 @@ namespace MvcApp.Controllers
                 HttpCookie cookie = Request.Cookies["Login"];
                 string name = readtoken(cookie.Values["Token"])["UserName"].ToString();
                 string redisName = Encryption(name, "");
-                RedisHelper.Remove(redisName);
+                string token = cookie.Values["Token"];
+                RedisHelper.KeyDelete(redisName);
+                RedisHelper.KeyDelete(token);
                 Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
                 Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
                 data = "已注销登录！";
@@ -115,37 +117,67 @@ namespace MvcApp.Controllers
         [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public string setRsa()      //初始化，生成PKCS1密钥对，将私钥保存在session中用于解密接收到的密码密文，将公钥传到前端用于密码加密
         {
-            RsaKeyPairGenerator keyGenerator = new RsaKeyPairGenerator();
-            //添加参数
-            RsaKeyGenerationParameters param = new RsaKeyGenerationParameters(BigInteger.ValueOf(3), new SecureRandom(), 1024, 25);
-            //初始化构造器
-            keyGenerator.Init(param);
-            //生成密钥对
-            AsymmetricCipherKeyPair keyPair = keyGenerator.GenerateKeyPair();
-            TextWriter textWriter = new StringWriter();
-            //获取私钥
-            PemWriter pemWriter = new PemWriter(textWriter);
-            pemWriter.WriteObject(keyPair.Private); //获取密钥对的私钥
-            pemWriter.Writer.Flush();   //清空缓存区，防止脏写
-            string priKey = textWriter.ToString();
-            priKey = RsaKeyConvert.PrivateKeyPkcs1ToPkcs8(priKey);
-            Session["Private"] = priKey;    //将私钥保存在session中
-            //将私钥保存在本地
-            StreamWriter streamWriter = new StreamWriter(Server.MapPath("~/priKey.txt"));
-            streamWriter.Write(priKey);
-            streamWriter.Flush();
-            streamWriter.Close();
-            //获取公钥
-            TextWriter textWriter1 = new StringWriter();
-            PemWriter pemWriter1 = new PemWriter(textWriter1);
-            pemWriter1.WriteObject(keyPair.Public); //获取密钥对的公钥
-            pemWriter1.Writer.Flush();   //清空缓存区，防止脏写
-            string pubKey = textWriter1.ToString();
-            //将公钥存入cookie方便读取
-            Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
-            Response.Cookies["Key"].Value = pubKey;
-            Response.Cookies["Key"].Expires = DateTime.Now.AddDays(1);
-            return pubKey;  //将公钥传到前端
+            if (RedisHelper.KeyExists("KeyPool") == false)
+                RedisHelper.StringSet("keyNum", 0);
+            if (RedisHelper.KeyExists("keyNum"))
+            {
+                //当维护的密钥池数量小于50时，继续生成密钥对
+                if (Convert.ToInt32(RedisHelper.StringGet("keyNum")) < 50)
+                {
+                    RedisHelper.StringIncrement("keyNum");  //计数加一
+                    RsaKeyPairGenerator keyGenerator = new RsaKeyPairGenerator();
+                    //添加参数
+                    RsaKeyGenerationParameters param = new RsaKeyGenerationParameters(BigInteger.ValueOf(3), new SecureRandom(), 1024, 25);
+                    //初始化构造器
+                    keyGenerator.Init(param);
+                    //生成密钥对
+                    AsymmetricCipherKeyPair keyPair = keyGenerator.GenerateKeyPair();
+                    TextWriter textWriter = new StringWriter();
+                    //获取私钥
+                    PemWriter pemWriter = new PemWriter(textWriter);
+                    pemWriter.WriteObject(keyPair.Private); //获取密钥对的私钥
+                    pemWriter.Writer.Flush();   //清空缓存区，防止脏写
+                    string priKey = textWriter.ToString();
+                    priKey = RsaKeyConvert.PrivateKeyPkcs1ToPkcs8(priKey);
+                    //获取公钥
+                    TextWriter textWriter1 = new StringWriter();
+                    PemWriter pemWriter1 = new PemWriter(textWriter1);
+                    pemWriter1.WriteObject(keyPair.Public); //获取密钥对的公钥
+                    pemWriter1.Writer.Flush();   //清空缓存区，防止脏写
+                    string pubKey = textWriter1.ToString();
+                    //将密钥对存入redis中的密钥对集合
+                    //pubKey = pubKey.Replace("\r", "").Replace("\n", "").Replace(" ", "");
+                    //priKey = priKey.Replace("\r", "").Replace("\n", "").Replace(" ", "");
+                    RedisHelper.HashSet("KeyPool", pubKey, priKey);
+                    RedisHelper.KeyExpire("KeyPool", TimeSpan.FromDays(1));
+                    //将公钥存入cookie方便读取
+                    Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+                    Response.Cookies["Key"].Value = pubKey;
+                    Response.Cookies["Key"].Expires = DateTime.Now.AddDays(1);
+                    return pubKey;  //将公钥传到前端
+                }
+                else
+                {
+                    //生成的密钥对数量足够，从密钥对池中随机取出公钥进行传递
+                    Dictionary<string, string> keyPairList = RedisHelper.HashGetKeys<string>("KeyPool");
+                    List<string> keyList = new List<string>(keyPairList.Keys);
+                    Random ran = new Random();
+                    string pubKey = keyList[ran.Next(keyList.Count)].ToString();
+                    //将公钥存入cookie方便读取
+                    Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+                    Response.Cookies["Key"].Value = pubKey;
+                    Response.Cookies["Key"].Expires = DateTime.Now.AddDays(1);
+                    return pubKey;
+                }
+
+            }
+            else
+            {
+                RedisHelper.StringSet("keyNum", 0);
+                setRsa();
+                return null;
+            }
+
         }
         #endregion
 
@@ -400,21 +432,12 @@ namespace MvcApp.Controllers
             {
                 //解密
                 password = password.Replace("\r", "").Replace("\n", "").Replace(" ", "");
-                string priKey;
-                if (Session["Private"] == null)
-                {
-                    StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
-                    priKey = sr.ReadToEnd();
-                    sr.Close();
-                    Session["Private"] = priKey;
-                }
-                else
-                {
-                    priKey = Session["Private"].ToString();
-                }
-                string key = priKey;
+                string pubKey = Request.Cookies["Key"].Value;
+                //前后端转义字符转码
+                pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
+                string priKey = RedisHelper.HashGet("KeyPool", pubKey);
                 //使用私钥解密
-                string trueValue = DecryptData(key, password);
+                string trueValue = DecryptData(priKey, password);
                 //生成新盐
                 string salt = CreateSalt(20);
                 //将新盐与密码进行拼接并加密
@@ -458,42 +481,41 @@ namespace MvcApp.Controllers
                     return "fail";
                 }
                 password = password.Replace("\r", "").Replace("\n", "").Replace(" ", "");
-                string priKey;
-                if (Session["Private"] == null)
-                {
-                    StreamReader sr = new StreamReader(System.Web.HttpContext.Current.Server.MapPath(@"\priKey.txt"), System.Text.Encoding.Default);
-                    priKey = sr.ReadToEnd();
-                    sr.Close();
-                    Session["Private"] = priKey;
-                }
-                else
-                {
-                    priKey = Session["Private"].ToString();
-                }
-                string key = priKey;
+                //获取公钥
+                string pubKey = Request.Cookies["Key"].Value;
+                //前后端转义字符转码
+                pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
+                //根据公钥从密钥对池中提取出对应私钥
+                string priKey = RedisHelper.HashGet("KeyPool", pubKey);
                 //使用私钥解密
-                string trueValue = DecryptData(key, password);
+                string trueValue = DecryptData(priKey, password);
                 string salt = usersManager.GetSalt(username);
                 if (usersManager.ComparePwd(Encryption(trueValue, salt), username))
                 {
                     Users user = usersManager.GetUser(username);
                     //将用户名加密后作为令牌池的key
                     string redisName = Encryption(user.UserName, "");
-                    //如果令牌池已存在该用户则移除token重新生成
-                    if (RedisHelper.Exists(redisName))
+                    //如果令牌池已存在该用户则移除token重新生成(单用户登录)
+                    if (RedisHelper.KeyExists(redisName))
                     {
-                        RedisHelper.Remove(redisName);
+                        string OldToken = RedisHelper.StringGet(redisName);
+                        RedisHelper.KeyDelete(redisName);
+                        RedisHelper.KeyDelete(OldToken);
                     }
-                    //生成token   将token传递到前端
-                    string token = gettoken(user.Userid.ToString(), user.UserName, user.UsersInfo.Portrait, DateTime.Now);
+                    //生成token
+                    string token = gettoken(user.Userid.ToString(), user.UserName, user.UsersInfo.Portrait, DateTime.Now, pubKey, priKey);
+                    //将token传递到前端
                     HttpCookie cookie = new HttpCookie("Login");
                     cookie.Values.Add("Token", token);
                     cookie.Expires = DateTime.Now.AddDays(1);
                     Response.Cookies.Add(cookie);
-                    //将token放入令牌池，作为有效令牌，登录时设置有效期为1天，键名为用户名，值为签名
-                    string sign = readtoken(token)["sign"].ToString();
-                    RedisHelper.Set(redisName, sign, false, 1);
-
+                    //将token放入令牌池，作为有效令牌，登录时设置有效期为1天
+                    //添加一个hash表，名称为token，内部放入两个键值对
+                    //一个键名为prikey，值为私钥；另一个键名为name，值为加密后的用户名
+                    RedisHelper.HashSet(token, "prikey", priKey);
+                    RedisHelper.HashSet(token, "name", redisName);
+                    RedisHelper.KeyExpire(token, TimeSpan.FromDays(1));
+                    RedisHelper.StringSet(redisName, token, TimeSpan.FromDays(1));
                     return "success";
                 }
                 else return "fail";
@@ -595,15 +617,13 @@ namespace MvcApp.Controllers
         #endregion
 
         #region test
-        /*  //测试Redis用
-         * [HttpPost]
-        public string test(string key, string value, int time)
+        /*//测试Redis用
+        [HttpPost]
+        public string test(string key)
         {
             try
             {
-                RedisHelper.SetCon("127.0.0.1:6379,password=123456,DefaultDatabase=0");
-                RedisHelper.Set(key, value, false, time);
-                return "ok";
+                return RedisHelper.HashGet("KeyPool", key);
             }
             catch (Exception)
             {
@@ -613,6 +633,27 @@ namespace MvcApp.Controllers
         }
 
         [HttpPost]
+        public JObject test3(string key)
+        {
+            try
+            {
+                JObject result = new JObject();//假设result为数据结构
+                Random ran = new Random();
+                Dictionary<string, string> choose = RedisHelper.HashGetKeys<string>(key);
+                List<string> keyList = new List<string>(choose.Keys);
+                string o = keyList[ran.Next(keyList.Count)].ToString();
+                string list = JsonConvert.SerializeObject(RedisHelper.HashGetKeys<string>(key));
+                result = (JObject)JsonConvert.DeserializeObject(list);
+                return result;
+            }
+            catch (Exception)
+            {
+
+                return (JObject)"no";
+            }
+        }*/
+
+        /*[HttpPost]
         public string test1(string key)
         {
             try
@@ -641,6 +682,7 @@ namespace MvcApp.Controllers
             {
                 if (RedisHelper.Exists(key))
                 {
+                    return RedisHelper.Type(key);
                     RedisHelper.Remove(key).ToString();
                     return "ok";
                 }

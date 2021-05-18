@@ -200,6 +200,8 @@
     <Compile Include="Controllers\CommunityController.cs" />
     <Compile Include="Controllers\EvaluationidController.cs" />
     <Compile Include="Controllers\RankingListController.cs" />
+    <Compile Include="Controllers\RedisConnectionHelp.cs" />
+    <Compile Include="Controllers\RedisHelper.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\TouristController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -523,7 +525,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Interceptor\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
