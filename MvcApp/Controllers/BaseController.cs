@@ -140,71 +140,64 @@ public class BaseController : Controller
             string redisName = Encryption(name, "");
             if (RedisHelper.KeyExists(redisName) && RedisHelper.KeyExists(tokenContent))    //检查token是否存在于令牌池，不存在则说明该token已被注销
             {
-                /*//检查是否有同一用户重复令牌
-                if (RedisHelper.KeyExists(redisName).ToString() != sign){return false;}*/
-
+                pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
                 //比较token有效时间
                 DateTime dateTime = DateTime.Now;
                 DateTime Expiration = (DateTime)list["time"];
                 Expiration = Expiration.AddDays(1);   //令牌有效时间
                 TimeSpan timeSpan = Expiration - dateTime;  //计算时间间隔
                 double mineutes = timeSpan.TotalMinutes;
-                //若间隔小于零则已经过期
-                if (mineutes > 0)
+                //拼接字符串生成关键字段
+                string content = list["UserId"].ToString() + list["UserName"].ToString() + list["Userphoto"].ToString() + list["time"].ToString();
+                //验证token内容是否被篡改
+                bool result = verify(content, sign, pubKey);
+                if (result == true)
                 {
-                    //token临近有效期，验证成功后重新签发token
-                    if (mineutes < 30)
+                    //若间隔小于零则已经过期
+                    if (mineutes > 0)
                     {
-                        //拼接字符串生成关键字段
-                        string TheContent = list["UserId"].ToString() + list["UserName"].ToString() + list["Userphoto"].ToString() + list["time"].ToString();
-                        //验证token内容是否被篡改
-                        bool TheResult = verify(TheContent, sign, pubKey);
-                        if (TheResult == true)
+                        //token临近有效期，重新签发token
+                        if (mineutes < 30)
                         {
-                            //移除当前token
-                            Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
                             //从令牌池中移除对应token
                             RedisHelper.KeyDelete(redisName);
                             RedisHelper.KeyDelete(tokenContent);
                             //根据公钥获取对应私钥
                             string priKey = RedisHelper.HashGet("KeyPool", pubKey);
-                            // 更新token并重新验证
+                            // 更新token并进行发放
                             string newToken = gettoken(list["UserId"].ToString(), list["UserName"].ToString(), list["Userphoto"].ToString(), DateTime.Now, pubKey, priKey);
-                            if (VerToken(newToken, pubKey))
-                            {
-                                //验证通过后将新token传递给客户端
-                                HttpCookie cookie = new HttpCookie("Login");
-                                cookie.Values.Add("Token", newToken);
-                                cookie.Expires = DateTime.Now.AddHours(1);
-                                Response.Cookies.Add(cookie);
-                                //将新token放入令牌池，作为有效令牌，登录时设置有效期为1小时，键名为用户名，值为签名
-                                string newsign = readtoken(newToken)["sign"].ToString();
-                                RedisHelper.HashSet(newToken, "prikey", priKey);
-                                RedisHelper.HashSet(newToken, "name", redisName);
-                                RedisHelper.KeyExpire(newToken, TimeSpan.FromDays(1));
-                                RedisHelper.StringSet(redisName, newToken, TimeSpan.FromDays(1));
-                                return true;
-                            }
-                            else
-                                return false;
+                            //验证通过后将新token传递给客户端
+                            HttpCookie cookie = Request.Cookies["Login"];
+                            cookie.Values["Token"] = newToken;
+                            cookie.Expires = DateTime.Now.AddHours(1);
+                            Response.AppendCookie(cookie);
+                            //将新token放入令牌池，作为有效令牌，登录时设置有效期为1小时，键名为用户名，值为签名
+                            RedisHelper.HashSet(newToken, "prikey", priKey);
+                            RedisHelper.HashSet(newToken, "name", redisName);
+                            RedisHelper.KeyExpire(newToken, TimeSpan.FromDays(1));
+                            RedisHelper.StringSet(redisName, newToken, TimeSpan.FromDays(1));
+                            return true;
                         }
                         else
-                            return false;
+                            return true;
+                    }
+                    else
+                    {
+                        //token过期，验证失败
+                        return false;
                     }
                 }
                 else
                 {
-                    //token过期，验证失败
+                    //信息被篡改，验证失败
                     return false;
                 }
-                //拼接字符串生成关键字段
-                string content = list["UserId"].ToString() + list["UserName"].ToString() + list["Userphoto"].ToString() + list["time"].ToString();
-                //验证token内容是否被篡改
-                bool result = verify(content, sign, pubKey);
-                return result;
             }
             else
             {
+                RedisHelper.KeyDelete(redisName);
+                RedisHelper.KeyDelete(tokenContent);
+                //token已被注销，验证失败
                 return false;
             }
         }

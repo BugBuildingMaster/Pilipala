@@ -291,6 +291,7 @@
     <Content Include="public\static\uploads\img\authentication.png" />
     <Content Include="public\static\uploads\img\cancel.png" />
     <Content Include="public\static\uploads\img\chat.svg" />
+    <Content Include="public\static\uploads\img\check-active.svg" />
     <Content Include="public\static\uploads\img\collect_back2.png" />
     <Content Include="public\static\uploads\img\dislike %281%29.png" />
     <Content Include="public\static\uploads\img\dislike.png" />
@@ -305,6 +306,7 @@
     <Content Include="public\static\uploads\img\line_b.gif" />
     <Content Include="public\static\uploads\img\line_t.gif" />
     <Content Include="public\static\uploads\img\load.gif" />
+    <Content Include="public\static\uploads\img\loading.gif" />
     <Content Include="public\static\uploads\img\loading.jpg" />
     <Content Include="public\static\uploads\img\lock.png" />
     <Content Include="public\static\uploads\img\mailbox.png" />
@@ -316,6 +318,7 @@
     <Content Include="public\static\uploads\img\分 享-3.png" />
     <Content Include="public\static\uploads\img\分 享.png" />
     <Content Include="public\static\uploads\img\叉.png" />
+    <Content Include="public\static\uploads\img\取消.svg" />
     <Content Include="public\static\uploads\img\员工表.png" />
     <Content Include="public\static\uploads\img\图 片-1.png" />
     <Content Include="public\static\uploads\img\头像.jpg" />
@@ -332,6 +335,7 @@
     <Content Include="public\static\uploads\img\箭头上.svg" />
     <Content Include="public\static\uploads\img\粉丝.png" />
     <Content Include="public\static\uploads\img\聊天 气泡.png" />
+    <Content Include="public\static\uploads\img\警告.svg" />
     <Content Include="public\static\uploads\img\评 论.png" />
     <Content Include="public\static\uploads\img\详情背景.jpg" />
     <Content Include="public\static\uploads\img\辉夜.jpg" />

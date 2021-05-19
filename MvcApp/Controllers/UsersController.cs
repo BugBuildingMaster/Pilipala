@@ -45,7 +45,24 @@ namespace MvcApp.Controllers
         [EnableThrottling(PerSecond = 4, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Login()
         {
-            return View();
+            if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    return RedirectToAction("Index", "Animation");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            else
+            {
+                return View();
+            }
         }
 
         /// <summary>
@@ -55,7 +72,24 @@ namespace MvcApp.Controllers
         [EnableThrottling(PerSecond = 4, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Register()
         {
-            return View();
+            if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    return RedirectToAction("Index", "Animation");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            else
+            {
+                return View();
+            }
         }
 
         #region 验证用户名唯一
@@ -536,24 +570,35 @@ namespace MvcApp.Controllers
         {
             try
             {
+                oldPwd = oldPwd.Replace("\r", "").Replace("\n", "").Replace(" ", "");
+                newPwd = newPwd.Replace("\r", "").Replace("\n", "").Replace(" ", "");
+                //获取公钥
+                string pubKey = Request.Cookies["Key"].Value;
+                //前后端转义字符转码
+                pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
+                //根据公钥从密钥对池中提取出对应私钥
+                string priKey = RedisHelper.HashGet("KeyPool", pubKey);
+                //使用私钥解密
+                string oldTrueValue = DecryptData(priKey, oldPwd);
+                string newTrueValue = DecryptData(priKey, newPwd);
                 //获取用户的盐
                 HttpCookie cookie = Request.Cookies["Login"];
                 JObject username = readtoken(cookie.Values["Token"]);
                 string name = username["UserName"].ToString();
                 string salt = usersManager.GetSalt(name);
                 //验证旧密码是否正确
-                if (usersManager.ComparePwd(Encryption(oldPwd, salt), name))
+                if (usersManager.ComparePwd(Encryption(oldTrueValue, salt), name))
                 {
                     //验证新密码是否与旧密码一样
-                    if (Encryption(oldPwd, salt) == Encryption(newPwd, salt))
+                    if (Encryption(oldTrueValue, salt) == Encryption(newTrueValue, salt))
                     {
                         return "re";
                     }
                     else
                     {
-                        string thePast = Encryption(oldPwd, salt);
+                        string thePast = Encryption(oldTrueValue, salt);
                         string newSalt = CreateSalt(20);
-                        string theNew = Encryption(newPwd, newSalt);
+                        string theNew = Encryption(newTrueValue, newSalt);
                         return usersManager.EditPassword(thePast, theNew, name, newSalt);
                     }
                 }

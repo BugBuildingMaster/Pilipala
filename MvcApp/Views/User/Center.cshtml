@@ -12,6 +12,7 @@
 <script src="~/Scripts/vue.js"></script>
 <script src="~/Scripts/axios.js"></script>
 <script src="~/Scripts/axioshttp.js"></script>
+<script src="~/Scripts/jsencrypt.min.js"></script>
 <style>
     input {
         outline: none;
@@ -779,16 +780,16 @@
         @*测评*@
         <div class="pull-right pright" style="display:none;">
 
-            @Html.Action("UserEvaluation", "User", new { name = ViewBag.username})
+            @Html.Action("UserEvaluation", "User", new { name = ViewBag.username })
 
         </div>
         @*短评*@
         <div class="pull-right pright" style="display:none">
-            @Html.Action("UserShortComment", "User", new { name = ViewBag.username})
+            @Html.Action("UserShortComment", "User", new { name = ViewBag.username })
         </div>
         @*动态*@
         <div class="pull-right pright" style="display:none;">
-            @Html.Action("UserDynamic", "User", new { name = ViewBag.username})
+            @Html.Action("UserDynamic", "User", new { name = ViewBag.username })
         </div>
         @*浏览记录*@
         <div class="pull-right pright" style="display:none;">

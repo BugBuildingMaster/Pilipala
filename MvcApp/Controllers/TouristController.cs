@@ -33,8 +33,9 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject username = readtoken(cookie.Values["Token"]);
+                    id = id ?? Convert.ToInt32(username["UserId"]);
                     var visitor = username["UserName"].ToString();
-                    if (visitor == name)
+                    if (visitor == name || id==Convert.ToInt32(username["UserId"]))
                     {
                         return RedirectToAction("Center", "User", new { id });
                     }

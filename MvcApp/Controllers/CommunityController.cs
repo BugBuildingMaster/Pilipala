@@ -111,59 +111,75 @@ namespace MvcApp.Controllers
         //动态评论分布视图
         public ActionResult DynamicComment(int? id)
         {
-            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
+            try
             {
-                string url = Request.Url.ToString();
-                System.Web.HttpContext.Current.Session["thePass"] = url;
-                return RedirectToAction("Login", "Users");
-            }
-            else
-            {
-                HttpCookie cookie = Request.Cookies["Login"];
-                string tokenContent = cookie.Values["Token"];
-                string pubKey = Request.Cookies["Key"].Value;
-                if (VerToken(tokenContent, pubKey))
-                {
-                    JObject name = readtoken(cookie.Values["Token"]);
-                    ViewBag.username = name["UserName"].ToString();
-                }
-                else
+                if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
                 {
                     string url = Request.Url.ToString();
                     System.Web.HttpContext.Current.Session["thePass"] = url;
                     return RedirectToAction("Login", "Users");
                 }
+                else
+                {
+                    HttpCookie cookie = Request.Cookies["Login"];
+                    string tokenContent = cookie.Values["Token"];
+                    string pubKey = Request.Cookies["Key"].Value;
+                    if (VerToken(tokenContent, pubKey))
+                    {
+                        JObject name = readtoken(cookie.Values["Token"]);
+                        ViewBag.username = name["UserName"].ToString();
+                    }
+                    else
+                    {
+                        string url = Request.Url.ToString();
+                        System.Web.HttpContext.Current.Session["thePass"] = url;
+                        return RedirectToAction("Login", "Users");
+                    }
+                }
+                return PartialView(cManager.DynamicComment((int)id));
             }
-            return PartialView(cManager.DynamicComment((int)id));
+            catch (Exception)
+            {
+                return RedirectToAction("Community", "Index");
+            }
+
         }
 
         //评论回复分布视图
         public ActionResult DynamicReply(int? id)
         {
-            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
+            try
             {
-                string url = Request.Url.ToString();
-                System.Web.HttpContext.Current.Session["thePass"] = url;
-                return RedirectToAction("Login", "Users");
-            }
-            else
-            {
-                HttpCookie cookie = Request.Cookies["Login"];
-                string tokenContent = cookie.Values["Token"];
-                string pubKey = Request.Cookies["Key"].Value;
-                if (VerToken(tokenContent, pubKey))
-                {
-                    JObject name = readtoken(cookie.Values["Token"]);
-                    ViewBag.username = name["UserName"].ToString();
-                }
-                else
+                if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
                 {
                     string url = Request.Url.ToString();
                     System.Web.HttpContext.Current.Session["thePass"] = url;
                     return RedirectToAction("Login", "Users");
                 }
+                else
+                {
+                    HttpCookie cookie = Request.Cookies["Login"];
+                    string tokenContent = cookie.Values["Token"];
+                    string pubKey = Request.Cookies["Key"].Value;
+                    if (VerToken(tokenContent, pubKey))
+                    {
+                        JObject name = readtoken(cookie.Values["Token"]);
+                        ViewBag.username = name["UserName"].ToString();
+                    }
+                    else
+                    {
+                        string url = Request.Url.ToString();
+                        System.Web.HttpContext.Current.Session["thePass"] = url;
+                        return RedirectToAction("Login", "Users");
+                    }
+                }
+                return PartialView(cManager.DynamicReply((int)id));
             }
-            return PartialView(cManager.DynamicReply((int)id));
+            catch (Exception)
+            {
+                return RedirectToAction("Community", "Index");
+            }
+
         }
 
         //全部测评分布视图

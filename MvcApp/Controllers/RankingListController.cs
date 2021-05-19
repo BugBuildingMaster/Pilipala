@@ -19,10 +19,7 @@ namespace MvcApp.Controllers
         [HttpGet]
         public JsonResult TheRankingList(int? type, int page)
         {
-            if (type == null)
-            {
-                type = 1;
-            }
+            type = type ?? 1;
             //调用存储过程更新视图数据
             if (type == 1)
             {
@@ -63,7 +60,7 @@ namespace MvcApp.Controllers
         //返回分布视图
         [HttpPost]
         [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
-        public ActionResult GetPartialRank(int id,int page)
+        public ActionResult GetPartialRank(int id, int page)
         {
             string name = rManager.GetPartialRank(id);
             rManager.UpdateRankingList(name, 1);

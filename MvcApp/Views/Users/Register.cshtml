@@ -25,19 +25,22 @@
     @Scripts.Render("~/bundles/bootstrap")
     <script>
         document.onreadystatechange = function () {
+            $(".loading-div").hide();
             if (document.readyState == "complete") {
-                $.ajax({
-                    url: "/Users/setRsa",
-                    type: "post",
-                    data: {
-                    },
-                    success: function (data) {
-                        sessionStorage.setItem('Pub', data);
-                        //调试用
-                        //console.log(data);
-                    }
-                });
-
+                var reg = /Key/;
+                if (sessionStorage.getItem("Pub") == null || document.cookie.match(reg) == null) {
+                    $.ajax({
+                        url: "/Users/setRsa",
+                        type: "post",
+                        data: {
+                        },
+                        success: function (data) {
+                            sessionStorage.setItem('Pub', data);
+                            //调试用
+                            //console.log(data);
+                        }
+                    });
+                }
             }
             if (document.readyState != "complete") {
                 var list = ['url(../public/static/uploads/login$regist/背景4.jpg)  no-repeat center center', 'url(../public/static/uploads/login$regist/背景5.jpg)  no-repeat center center'];
@@ -50,7 +53,6 @@
         }
     </script>
     <script>
-
         document.onmousemove = function (e) {
             var mouX = event.clientX;
             var mouY = event.clientY;
@@ -88,6 +90,7 @@
                 $('#tips4').html('邮箱格式不正确！');
             } else {
                 if (Interceptor == false) {
+                    $(".loading-div").show();
                     Interceptor = true;
                     const encrypt = new JSEncrypt();
                     var password = $('#password').val();
@@ -103,6 +106,7 @@
                             email: $('#email').val(),
                         },
                         success: function (data) {
+                            $(".loading-div").hide();
                             if (data == "success") {
                                 FloatTip(1, '注册成功！');
                                 $('.tips').html('');
@@ -133,6 +137,7 @@
                     }, 1000);
                 }
                 else {
+                    $(".loading-div").hide();
                     FloatTip(0, '请不要频繁点击！');
                     $('.tips').html('请不要频繁点击！');
                 }
@@ -211,7 +216,7 @@
         }
     </script>
     <script>
-        var oriName="";
+        var oriName = "";
         function checkName() {
             if ($('#username').val().length == 0) {
                 $('#icon1').attr('class', 'glyphicon glyphicon-remove');
@@ -327,8 +332,28 @@
             height: 100%;
         }
 
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
         input {
             max-width: 70%;
+        }
+
+        .loading-div {
+            width: 100%;
+            height: 100%;
+            background-color: #0000006b;
+            overflow: hidden;
+            position: absolute;
+            text-align: center;
+            z-index: 10000;
+        }
+
+        .img {
+            margin-top: 45rem;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -341,6 +366,9 @@
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
 
+    <div class="loading-div" id="loading">
+        <img class="img" id="opening" src="~/public/static/uploads/img/loading.gif">
+    </div>
     <div class="authentication-section" id="app" style=" background: rgba(0,0,0,0); ">
         <div class="container p-0">
             <div class="row m-0">

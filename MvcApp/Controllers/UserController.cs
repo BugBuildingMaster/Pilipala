@@ -36,6 +36,7 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject username = readtoken(cookie.Values["Token"]);
+                    id = id ?? Convert.ToInt32(username["UserId"]);
                     UsersInfo user = uManager.GetUsersInfo((int)id);
                     string name = user.UserName;
                     var visitor = username["UserName"].ToString();

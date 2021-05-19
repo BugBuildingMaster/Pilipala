@@ -25,19 +25,22 @@
     @Scripts.Render("~/bundles/bootstrap")
     <script>
         document.onreadystatechange = function () {
+            $(".loading-div").hide();
             if (document.readyState == "complete") {
-                $.ajax({
-                    url: "/Users/setRsa",
-                    type: "post",
-                    data: {
-                    },
-                    success: function (data) {
-                        sessionStorage.setItem('Pub', data);
-                        //调试用
-                        //console.log(data);
-                    }
-                });
-
+                var reg = /Key/;
+                if (sessionStorage.getItem("Pub") == null || document.cookie.match(reg) == null) {
+                    $.ajax({
+                        url: "/Users/setRsa",
+                        type: "post",
+                        data: {
+                        },
+                        success: function (data) {
+                            sessionStorage.setItem('Pub', data);
+                            //调试用
+                            //console.log(data);
+                        }
+                    });
+                }
             }
             if (document.readyState != "complete") {
                 var list = ['url(../public/static/uploads/login$regist/背景2.jpg)', 'url(../public/static/uploads/login$regist/背景3.jpg)'];
@@ -78,6 +81,7 @@
             } else {
                 //防止多次提交
                 if (Interceptor == false) {
+                    $(".loading-div").show();
                     Interceptor = true;
                     const encrypt = new JSEncrypt();
                     var password = $('#password').val();
@@ -92,6 +96,7 @@
                             password: sendWord
                         },
                         success: function (data) {
+                            $(".loading-div").hide();
                             if (data == "success") {
                                 //alert("恭喜")
                                 FloatTip(1, '登录成功！请稍候！');
@@ -119,6 +124,7 @@
                     }, 1000);
                 }
                 else {
+                    $(".loading-div").hide();
                     FloatTip(0, '请不要频繁点击！');
                     $('.tips').html('请不要频繁点击！');
                 }
@@ -141,61 +147,61 @@
         })
 
         function FloatTip(type, text) {
-                var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
-                var id = 'tip-' + random;
-                var winWidth = parseFloat(window.innerWidth) / 2 - 200;
-                var list = ['url(../public/static/uploads/img/警告.svg)', 'url(../public/static/uploads/img/check-active.svg)', 'url(../public/static/uploads/img/取消.svg)'];
-                var icon = list[type];
-                var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
-                    'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
-                    'color': 'white',
-                    'height': 'auto',
-                    'min-height': '40px',
-                    'position': 'fixed',
-                    'top': '7%',
-                    'left': winWidth + 'px',
-                    'width': '400px',
-                    'z-index': '3200',
-                    'border': '1px solid white',
-                    'padding': '10px 10px 10px 50px',
-                    'box-shadow': '3px 3px 3px #999999',
-                    'display': 'none',
-                    'opacity': 0.2,
-                }).html(text).attr('id', id);
-                var leftDiv = $('<div>').css({ //图标
-                    'position': 'fixed',
-                    'width': '40px',
-                    'height': '30px',
-                    'margin-top': '-25px',
-                    'margin-left': '-45px',
-                    'border-radius': '3px',
-                    'color': 'black',
-                    'padding': '5px 0px',
-                    'background-image': icon,
-                    'background-background-repeat': 'no-repeat',
-                    'background-position': 'center center',
-                    'background-repeat': 'no-repeat',
-                    'opacity': '0.9'
-                }).html('');
-                tip.append(leftDiv);
-                $('body').append(tip.show());
+            var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
+            var id = 'tip-' + random;
+            var winWidth = parseFloat(window.innerWidth) / 2 - 200;
+            var list = ['url(../public/static/uploads/img/警告.svg)', 'url(../public/static/uploads/img/check-active.svg)', 'url(../public/static/uploads/img/取消.svg)'];
+            var icon = list[type];
+            var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
+                'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
+                'color': 'white',
+                'height': 'auto',
+                'min-height': '40px',
+                'position': 'fixed',
+                'top': '7%',
+                'left': winWidth + 'px',
+                'width': '400px',
+                'z-index': '3200',
+                'border': '1px solid white',
+                'padding': '10px 10px 10px 50px',
+                'box-shadow': '3px 3px 3px #999999',
+                'display': 'none',
+                'opacity': 0.2,
+            }).html(text).attr('id', id);
+            var leftDiv = $('<div>').css({ //图标
+                'position': 'fixed',
+                'width': '40px',
+                'height': '30px',
+                'margin-top': '-25px',
+                'margin-left': '-45px',
+                'border-radius': '3px',
+                'color': 'black',
+                'padding': '5px 0px',
+                'background-image': icon,
+                'background-background-repeat': 'no-repeat',
+                'background-position': 'center center',
+                'background-repeat': 'no-repeat',
+                'opacity': '0.9'
+            }).html('');
+            tip.append(leftDiv);
+            $('body').append(tip.show());
+            document.getElementById(id).animate({
+                top: '2%',
+                opacity: '1'
+            }, 500, 'easeOutQuart');
+            setTimeout(function () {
+                document.getElementById(id).style.top = '2%';
+                document.getElementById(id).style.opacity = '1';
+            }, 500)
+            setTimeout(function () {
                 document.getElementById(id).animate({
-                    top: '2%',
-                    opacity: '1'
-                }, 500, 'easeOutQuart');
+                    opacity: '0'
+                }, 400, 'easeOutQuart');
                 setTimeout(function () {
-                    document.getElementById(id).style.top = '2%';
-                    document.getElementById(id).style.opacity = '1';
-                }, 500)
-                setTimeout(function () {
-                    document.getElementById(id).animate({
-                        opacity: '0'
-                    }, 400, 'easeOutQuart');
-                    setTimeout(function () {
-                        document.getElementById(id).remove();
-                    }, 400)
-                }, 800)
-            }
+                    document.getElementById(id).remove();
+                }, 400)
+            }, 800)
+        }
     </script>
     <style>
         html {
@@ -203,12 +209,33 @@
             height: 100%;
         }
 
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
         input {
             max-width: 100%;
+        }
+
+        .loading-div {
+            width: 100%;
+            height: 100%;
+            background-color: #0000006b;
+            overflow: hidden;
+            position: absolute;
+            text-align: center;
+            z-index: 10000;
+        }
+
+        .img {
+            margin-top: 45rem;
+            object-fit: cover;
         }
     </style>
 </head>
 <body id="theBody">
+
     <script src="~/Scripts/jquery-3.4.1.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Scripts/jsencrypt.min.js"></script>
@@ -216,6 +243,10 @@
 
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <div class="loading-div" id="loading">
+        <img class="img" id="opening" src="~/public/static/uploads/img/loading.gif">
+    </div>
     <div class="authentication-section" style=" background: rgba(0,0,0,0); ">
         <div class="container p-0">
             <div class="row m-0">
