@@ -66,6 +66,7 @@ namespace MvcApp.Controllers
                 string pubKey = Request.Cookies["Key"].Value;
                 if (VerToken(tokenContent, pubKey))
                 {
+                    AddWatch("Dongtai", id);
                     JObject name = readtoken(cookie.Values["Token"]);
                     ViewBag.userid = name["UserId"].ToString();
                 }

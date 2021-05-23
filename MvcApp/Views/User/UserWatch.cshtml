@@ -16,7 +16,65 @@
     .row div {
         margin-bottom: 10px;
     }
+
+    .hisDyn {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hisPro {
+        border-radius: 60px;
+        width: 40px;
+        height: 40px;
+        float: left;
+    }
+
+    .hisMar {
+        font-size: 16px;
+        line-height: 1;
+        display: inline-block;
+        max-width: 680px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 </style>
+
+<script>
+    function deleteWatch(id) {
+        var alarm = "确认删除id为" + id + "的浏览记录？";
+        if (confirm(alarm) == true) {
+            $.ajax({
+                type: "post",
+                url: "/User/DeleteWatch",
+                data: {
+                    id: id,
+                },
+                success: function (data) {
+                    if (data == 'Success') {
+                        alert('芜湖 没了！');
+                        $(".theWatch" + id).remove();
+                        //window.location.reload()
+                    }
+                    else if (data == 'Fail') {
+                        alert('淦，报错');
+                    }
+                    else if (data == 'login') {
+                        alert('登录信息验证有误！请重新登录！');
+                        window.location.href = "/Users/Login";
+                    }
+                },
+            })
+        }
+        else {
+            return;
+        }
+
+    }
+
+</script>
+
 
 <div id="watch">
     <div class="container d-flex flex-column align-items-center justify-content-around">
@@ -40,7 +98,7 @@
                     <div>类型： 动漫</div>
                     @Html.Action("UserWatchAnimation", "User", new { id = item.id })
                     <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                        <label style="float:right;">评论时间：@item.Time</label>
+                        <label style="float:right;">浏览时间：@item.Time</label>
                         <button class="btn btn-primary" onclick="deleteWatch(@item.Watchid)">删除此条记录</button>
                     </div>
                 </div>
@@ -48,50 +106,27 @@
             else if (item.Type == "Evaluation")
             {
                 <div class="row d-flex flex-column UserWatch @("theWatch"+item.Watchid)">
-                    <div>类型： 动漫</div>
+                    <div>类型： 测评</div>
                     @Html.Action("UserWatchEvaluation", "User", new { id = item.id })
                     <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                        <label style="float:right;">评论时间：@item.Time</label>
+                        <label style="float:right;">浏览时间：@item.Time</label>
+                        <button class="btn btn-primary" onclick="deleteWatch(@item.Watchid)">删除此条记录</button>
+                    </div>
+                </div>
+            }
+            else if (item.Type == "Dongtai")
+            {
+                <div class="row d-flex flex-column UserWatch @("theWatch"+item.Watchid)">
+                    <div>类型： 动态</div>
+                    @Html.Action("UserWatchDynamic", "User", new { id = item.id })
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <label style="float:right;">浏览时间：@item.Time</label>
                         <button class="btn btn-primary" onclick="deleteWatch(@item.Watchid)">删除此条记录</button>
                     </div>
                 </div>
             }
         }
     </div>
-
-    <script>
-        function deleteWatch(id) {
-            var alarm = "确认删除id为" + id + "的浏览记录？";
-            if (confirm(alarm) == true) {
-                $.ajax({
-                    type: "post",
-                    url: "/User/DeleteWatch",
-                    data: {
-                        id: id,
-                    },
-                    success: function (data) {
-                        if (data == 'Success') {
-                            alert('芜湖 没了！');
-                            $(".theWatch" + id).remove();
-                            //window.location.reload()
-                        }
-                        else if (data == 'Fail') {
-                            alert('淦，报错');
-                        }
-                        else if (data == 'login') {
-                            alert('登录信息验证有误！请重新登录！');
-                            window.location.href = "/Users/Login";
-                        }
-                    },
-                })
-            }
-            else {
-                return;
-            }
-
-        }
-    </script>
-
 
     <div class="page-list">
         @Html.PagedListPager(Model, page => Url.Action("UserWatch", "User", new { page }),

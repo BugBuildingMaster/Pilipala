@@ -60,8 +60,18 @@ namespace MvcApp.Controllers
         /// <returns></returns>
         public ActionResult Details(int? id)
         {
-            ViewBag.id = id;
-            return View(aManager.GetAnimation((int)id));
+            //ViewBag.id = id;
+            //return View(aManager.GetAnimation((int)id));
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Animation");
+            }
+            else
+            {
+                AddWatch("Animation", (int)id);
+                ViewBag.id = id;
+                return View(aManager.GetAnimation((int)id));
+            }
         }
 
         // 获取日本动漫
@@ -207,11 +217,12 @@ namespace MvcApp.Controllers
 
         readonly RecommendManager rmanager = new RecommendManager();
 
+        //推荐分布视图
         public ActionResult Recommend()
         {
             if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
             {
-                return Content("login");
+                return null;
             }
             else
             {
@@ -225,7 +236,7 @@ namespace MvcApp.Controllers
                 }
                 else
                 {
-                    return Content("login");
+                    return null;
                 }
             }
         }

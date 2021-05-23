@@ -525,6 +525,7 @@
     <Content Include="Views\Tourist\TouristShortComment.cshtml" />
     <Content Include="Views\Tourist\TouristDynamic.cshtml" />
     <Content Include="Views\RankingList\Rankinglist.cshtml" />
+    <Content Include="Views\User\UserWatchDynamic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

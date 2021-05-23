@@ -197,6 +197,7 @@ namespace MvcApp.Controllers
 
 
         readonly RecommendManager rManager = new RecommendManager();
+        readonly CommunityManager cManger = new CommunityManager();
 
         //历史记录分布视图
         public ActionResult UserWatch(int? page)
@@ -218,35 +219,13 @@ namespace MvcApp.Controllers
         //测评分布视图
         public ActionResult UserWatchEvaluation(int id)
         {
+            ViewBag.aid = id;
             return PartialView(uManager.GetUserHistoryEvaluation(id));
         }
-
-        //添加历史记录
-        [HttpGet]
-        [EnableThrottling(PerSecond = 2, PerMinute = 40)]
-        public ActionResult AddWatch(string type, int id)
+        //动态分布视图
+        public ActionResult UserWatchDynamic(int id)
         {
-
-            if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
-            {
-                return Json("login", JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                HttpCookie cookie = Request.Cookies["Login"];
-                string tokenContent = cookie.Values["Token"];
-                string pubKey = Request.Cookies["Key"].Value;
-                if (VerToken(tokenContent, pubKey))
-                {
-                    JObject name = readtoken(cookie.Values["Token"]);
-                    rManager.AddWatch(type, id, name["UserName"].ToString());
-                    return Json("OK", JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json("login", JsonRequestBehavior.AllowGet);
-                }
-            }
+            return PartialView(cManger.DynamicDetail(id));
         }
 
         //删除历史记录

@@ -25,10 +25,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 
 using RedisHelp;
+using MvcThrottle;
 
 public class BaseController : Controller
 {
     public static RedisHelper RedisHelper = new RedisHelper(0, "127.0.0.1:6379,password=123456,DefaultDatabase=0");
+    readonly RecommendManager rManager = new RecommendManager();
 
     #region token类
     protected class TokenInfo
@@ -265,6 +267,35 @@ public class BaseController : Controller
             builder.Append(hash[i].ToString("x2"));
         }
         return builder.ToString();
+    }
+    #endregion
+
+    #region 添加历史记录
+    //添加历史记录
+    [EnableThrottling(PerSecond = 2, PerMinute = 40)]
+    public ActionResult AddWatch(string type, int id)
+    {
+
+        if (Request.Cookies["Login"] == null || Request.Cookies["Key"] == null)
+        {
+            return Json("login", JsonRequestBehavior.AllowGet);
+        }
+        else
+        {
+            HttpCookie cookie = Request.Cookies["Login"];
+            string tokenContent = cookie.Values["Token"];
+            string pubKey = Request.Cookies["Key"].Value;
+            if (VerToken(tokenContent, pubKey))
+            {
+                JObject name = readtoken(cookie.Values["Token"]);
+                rManager.AddWatch(type, id, name["UserName"].ToString());
+                return Json("OK", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json("login", JsonRequestBehavior.AllowGet);
+            }
+        }
     }
     #endregion
 

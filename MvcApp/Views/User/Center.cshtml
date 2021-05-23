@@ -327,6 +327,27 @@
             document.getElementById('logoimg').src = ranLogo;
         });
     }
+
+    function loadPre(id) {
+        $.ajax({
+            type: "get",
+            url: '/Search/GetEvaluation',
+            data: {
+                id: id,
+                type: 2
+            },
+            success: function (data) {         //隐藏部分
+                var cdata = data.replace(/\\n/g, '<br/>'); //\为转义字符 g表示全局
+                cdata = cdata.substring(0, 100);
+                $("#ed" + id).html(cdata + "...");
+            }
+        })
+    }
+
+    function loadPlo(id, data) {
+        var cdata = data.replace(/\\n/g, '<br/>'); //\为转义字符 g表示全局
+        $("#po" + id).html(cdata);
+    }
 </script>
 
 <div class="bgf5 clearfix">

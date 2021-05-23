@@ -12,8 +12,10 @@
 <div> <a href="../Animation/details?id=@Model.Animationid">@Model.Aname</a> </div>
 <div>
     <label>评分：@Model.Score</label>
-    <label>@Model.Awriter</label>
+    <label style="margin-left:2rem;">@Model.Awriter</label>
 </div>
-
+<div id="@("po" + Model.Animationid)" onclick="window.location.href= '../../Animation/details?id=@Model.Animationid'">
+    <img src="~/images/uploads/2021-01-03112e2883-1aad-40e2-938f-c3f62821154b.jpg" alt="Alternate Text" onload="loadPlo(@Model.Animationid,'@Model.Aplot');" />
+</div>
 
 

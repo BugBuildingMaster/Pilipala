@@ -25,8 +25,16 @@ namespace MvcApp.Controllers
         [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Details(int? id)
         {
-            var eva = eManager.GetEvaluation((int)id);
-            return View(eva);
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Animation");
+            }
+            else
+            {
+                AddWatch("Evaluation", (int)id);
+                var eva = eManager.GetEvaluation((int)id);
+                return View(eva);
+            }
         }
         //获取测评内容
         [HttpGet]

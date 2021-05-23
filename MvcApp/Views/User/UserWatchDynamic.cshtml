@@ -1,0 +1,19 @@
+﻿@model Models.dongtai
+<div class="c-header hisDyn">
+    <img src="@Html.Action("GetPortrait","Community",new {name=Model.UserName })" alt="Alternate Text" class="hisPro" />
+    <div class="lcontent">
+        <a href="../User/Center/@Html.Action("GetID","Community",new { name=Model.UserName})" target="_blank" class="hisMar">
+            <span class="name">@Model.UserName</span>
+        </a>
+        <small class="desc">@Model.Time</small>
+    </div>
+    <div class="c-content">
+        @*文字内容*@
+        <div class="content-full" onclick="window.location.href='../../Community/DynamicDetail/@Model.dongtaiid'" style="width: 100%; height: 100%;">
+            <a href='../../Community/DynamicDetail/@Model.dongtaiid' style="color:black; text-decoration:none">
+                @Model.Content
+            </a>
+        </div>
+
+    </div>
+</div>

@@ -5,8 +5,13 @@
     <a href="../evaluationid/details/@Model.Evaluationid">@Model.Title</a>
 </div>
 <div>
-    作者：@Model.UserName
+    作者：<a href="../../User/Center/@Html.Action("GetID","Community",new { name=Model.UserName})"> @Model.UserName</a>
 </div>
-
-
+<div id="@("ed" + Model.Evaluationid)" onclick="window.location.href='../../evaluationid/details/@Model.Evaluationid'">
+    <img src="~/images/uploads/2021-01-03112e2883-1aad-40e2-938f-c3f62821154b.jpg" alt="Alternate Text" onload="loadPre(@Model.Evaluationid);"/>
+    &nbsp;
+</div>
+<div>
+    <a href="../Animation/details?id=@ViewBag.aid" style="float:right;margin-right:0.5rem;">——@Model.Aname</a>
+</div>
 

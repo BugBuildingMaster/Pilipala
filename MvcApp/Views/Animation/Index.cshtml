@@ -1026,13 +1026,6 @@
                     },
                     //点击图片根据id跳转至详情页面
                     async aDetailsUrl(id) {
-                        const type = 'Animation'
-                        const { data: res } = await axios.get('/User/AddWatch', {
-                            params: {
-                                type: type,
-                                id: id
-                            }
-                        })
                         window.location.href = '/Animation/details?id=' + id
                     },
                     //返回星星数量

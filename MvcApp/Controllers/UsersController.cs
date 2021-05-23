@@ -26,6 +26,7 @@ using System.Web;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using MvcThrottle;
+using System.Collections.Specialized;
 
 namespace MvcApp.Controllers
 {
@@ -662,6 +663,45 @@ namespace MvcApp.Controllers
         #endregion
 
         #region test
+        /*[HttpPost]
+        public void test()
+        {
+
+            Response.Write(Request.RequestContext.HttpContext.Request);
+            //Response.Write(Request.Url);
+
+            int loop1;
+            NameValueCollection coll;
+
+            ////Load Form variables into NameValueCollection variable.
+            //coll = Request.Form;
+            //// Get names of all forms into a string array.
+            //String[] arr1 = coll.AllKeys;
+            //for (loop1 = 0; loop1 < arr1.Length; loop1++)
+            //{
+            //    Response.Write("Form: " + arr1[loop1] + "<br>");
+            //}
+
+            //header信息输出
+            int loop1, loop2;
+            NameValueCollection coll;
+            // Load Header collection into NameValueCollection object.
+            coll = Request.Headers;
+
+            // Put the names of all keys into a string array.
+            String[] arr1 = coll.AllKeys;
+            for (loop1 = 0; loop1 < arr1.Length; loop1++)
+            {
+                Response.Write("Key: " + arr1[loop1] + "<br>");
+                // Get all values under this key.
+                String[] arr2 = coll.GetValues(arr1[loop1]);
+                for (loop2 = 0; loop2 < arr2.Length; loop2++)
+                {
+                    Response.Write("Value " + loop2 + ": " + Server.HtmlEncode(arr2[loop2]) + "<br>");
+                }
+            }
+        }*/
+
         /*//测试Redis用
         [HttpPost]
         public string test(string key)
