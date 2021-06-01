@@ -40,9 +40,10 @@ namespace IDAL
 
 
         /*-------------------------------------------------------------------*/
+        string EmailToName(string email);    //通过邮箱获取用户名
         bool IsEmailUnique(string email);    //判断邮箱是否存在
-        //添加某用户
-        int AddUser(string username, string pwd, string email, string salt);
+        string ResetPwd(string name,string pwd, string salt); //忘记密码重设
+        int AddUser(string username, string pwd, string email, string salt);    //添加某用户
         IEnumerable<Watch> GetUserHistory(string name);    //获取用户浏览记录
         Animation GetUserHistoryAnimation(int id);    //获取用户浏览记录中的动漫
         Evaluation GetUserHistoryEvaluation(int id);    //获取用户浏览记录中的测评

@@ -1,0 +1,384 @@
+﻿
+@{
+    ViewBag.Title = "ResetPwd";
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html lang="zxx">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Pilipala 找回密码</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Luba">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="HiBootstrap">
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <link href="~/assets/css/Style.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        document.onreadystatechange = function () {
+            $(".loading-div").hide();
+            if (document.readyState == "complete") {
+                var reg = /Key/;
+                if (sessionStorage.getItem("Pub") == null || document.cookie.match(reg) == null) {
+                    $.ajax({
+                        url: "/Users/setRsa",
+                        type: "post",
+                        data: {
+                        },
+                        success: function (data) {
+                            sessionStorage.setItem('Pub', data);
+                            //调试用
+                            //console.log(data);
+                        }
+                    });
+                }
+            }
+            if (document.readyState != "complete") {
+                var list = ['url(../public/static/uploads/login$regist/背景4.jpg)  no-repeat center center', 'url(../public/static/uploads/login$regist/背景5.jpg)  no-repeat center center'];
+                var back = list[Math.round(Math.random())];
+                //$("body").removeAttr("style");
+                $("body").css("background", back);
+                $("body").css("background-size", "cover");
+                $("body").css("background-attachment", "fixed");
+            }
+        }
+    </script>
+    <script>
+        document.onmousemove = function (e) {
+            var mouX = event.clientX;
+            var mouY = event.clientY;
+            var winHight = window.innerHeight;
+            var winWidth = window.innerWidth;
+            mouX = parseFloat(mouX);
+            mouY = parseFloat(mouY);
+            winHight = parseFloat(winHight);
+            winWidth = parseFloat(winWidth);
+            var x = Math.round((mouX / winWidth) * 10000) / 100.0 + "%";
+            var y = Math.round((mouY / winHight) * 10000) / 100.0 + "%";
+            document.getElementById("theBody").style.backgroundPositionX = x;
+            document.getElementById("theBody").style.backgroundPositionY = y;
+        }
+    </script>
+    <script>
+        var Interceptor = false;
+        function reset() {
+            if ($('#password').val().length == 0) {
+                FloatTip(0, '请输入密码！');
+                $('.tips').html('请输入密码！');
+            } else if ($('#reSurepassword').val() != $('#password').val()) {
+                FloatTip(0, '两次密码不一致！');
+                $('.tips').html('两次密码不一致！');
+            } else {
+                if (Interceptor == false) {
+                    $(".loading-div").show();
+                    Interceptor = true;
+                    const encrypt = new JSEncrypt();
+                    var password = $('#password').val();
+                    var pubKey = sessionStorage.getItem('Pub');
+                    encrypt.setPublicKey(pubKey);
+                    var sendWord = encrypt.encrypt(password);
+                    $.ajax({
+                        url: "/users/setPwd",
+                        type: "post",
+                        data: {
+                            name: $('#username').val(),
+                            pwd: sendWord
+                        },
+                        success: function (data) {
+                            $(".loading-div").hide();
+                            if (data == "success") {
+                                FloatTip(1, '重设成功！');
+                                $('.tips').html('');
+                                alert("重设成功！")
+                                if (history.length > 1) {
+                                    window.history.go(-1);
+                                }
+                                else {
+                                    window.location.href = "..";
+                                }
+                            }
+                            else if (data == "re") {
+                                FloatTip(0, '密码不能与原密码相同！');
+                                $('.tips').html('密码不能与原密码相同！');
+                            }
+                            else {
+                                FloatTip(2, '错误！');
+                                $('.tips').html('错误！');
+                            }
+                        }
+                    });
+                    setTimeout(function () {
+                        Interceptor = false;
+                    }, 1000);
+                }
+                else {
+                    $(".loading-div").hide();
+                    FloatTip(0, '请不要频繁点击！');
+                    $('.tips').html('请不要频繁点击！');
+                }
+            }
+        }
+
+        window.addEventListener('keypress', function (e) {
+            if (window.event) // IE
+            {
+                keynum = e.keyCode
+            }
+            else if (e.which) // Netscape/Firefox/Opera
+            {
+                keynum = e.which
+            }
+            if (keynum == 13) {  //等于13代表 回车键
+                register();
+            }
+        })
+
+        function FloatTip(type, text) {
+            var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
+            var id = 'tip-' + random;
+            var winWidth = parseFloat(window.innerWidth) / 2 - 200;
+            var list = ['url(../public/static/uploads/img/警告.svg)', 'url(../public/static/uploads/img/check-active.svg)', 'url(../public/static/uploads/img/取消.svg)'];
+            var icon = list[type];
+            var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
+                'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
+                'color': 'white',
+                'height': 'auto',
+                'min-height': '40px',
+                'position': 'fixed',
+                'top': '7%',
+                'left': winWidth + 'px',
+                'width': '400px',
+                'z-index': '3200',
+                'border': '1px solid white',
+                'padding': '10px 10px 10px 50px',
+                'box-shadow': '3px 3px 3px #999999',
+                'display': 'none',
+                'opacity': 0.2,
+            }).html(text).attr('id', id);
+            var leftDiv = $('<div>').css({  //图标
+                'position': 'fixed',
+                'width': '40px',
+                'height': '30px',
+                'margin-top': '-25px',
+                'margin-left': '-45px',
+                'border-radius': '3px',
+                'color': 'black',
+                'padding': '5px 0px',
+                'background-image': icon,
+                'background-background-repeat': 'no-repeat',
+                'background-position': 'center center',
+                'background-repeat': 'no-repeat',
+                'opacity': '0.9'
+            }).html('');
+            tip.append(leftDiv);
+            $('body').append(tip.show());
+            document.getElementById(id).animate({
+                top: '2%',
+                opacity: '1'
+            }, 500, 'easeOutQuart');
+            setTimeout(function () {
+                document.getElementById(id).style.top = '2%';
+                document.getElementById(id).style.opacity = '1';
+            }, 500)
+            setTimeout(function () {
+                document.getElementById(id).animate({
+                    opacity: '0'
+                }, 400, 'easeOutQuart');
+                setTimeout(function () {
+                    document.getElementById(id).remove();
+                }, 400)
+            }, 800)
+        }
+    </script>
+    <script>
+        function checkPsw() {
+            if ($('#password').val().length == 0) {
+                $('#icon2').attr('class', 'glyphicon glyphicon-remove');
+                $('#tips2').html('请输入密码！');
+            }
+            else {
+                var regex = /[\^%&',;=?$\\]+/;
+                if ($('#password').val().match(regex) == null) {
+                    $('#icon2').attr('class', 'glyphicon glyphicon-ok');
+                    $('#tips2').html('');
+                }
+                else {
+                    $('#icon2').attr('class', 'glyphicon glyphicon-remove');
+                    $('#tips2').html('含有非法字符！');
+                }
+            }
+        }
+
+        function ReCheckPsw() {
+            if ($('#reSurepassword').val().length == 0) {
+                $('#icon3').attr('class', 'glyphicon glyphicon-remove');
+                $('#tips3').html('请确认密码！');
+            }
+            else {
+                if ($('#password').val() != $('#reSurepassword').val()) {
+                    $('#icon3').attr('class', 'glyphicon glyphicon-remove');
+                    $('#tips3').html('两次密码不一致！');
+                }
+                else {
+                    $('#icon3').attr('class', 'glyphicon glyphicon-ok');
+                    $('#tips3').html('');
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        input {
+            max-width: 70%;
+        }
+
+        .loading-div {
+            width: 100%;
+            height: 100%;
+            background-color: #0000006b;
+            overflow: hidden;
+            position: absolute;
+            text-align: center;
+            z-index: 10000;
+        }
+
+        .img {
+            margin-top: 45rem;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body id="theBody">
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <link href="~/assets/css/Style.css" rel="stylesheet" />
+
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <div class="loading-div" id="loading">
+        <img class="img" id="opening" src="~/public/static/uploads/img/loading.gif">
+    </div>
+    <div class="authentication-section" id="app" style=" background: rgba(0,0,0,0); ">
+        <div class="container p-0">
+            <div class="row m-0">
+                <div class="col-lg-2 p-0">
+                </div>
+                <div class="col-sm-12 col-lg-8 p-0" style=" background: rgba(0,0,0,0); ">
+                    <div class="authentication-item bg-white" style="height:500px; background: rgba(0,0,0,0);">
+                        <div class="authentication-user-panel" style="margin-top:20rem;">
+                            <div class="authentication-user-header">
+                                <a href="..">
+                                    <p style=" font-size: 2rem; margin: 0; color: #77acf1; font-weight: 600;">首页</p>
+                                </a>
+                                <h1 style=" font-size: 4rem; color: #0df4ff; font-weight: 600; margin-top: 20px;">Welcome To Pilipala</h1>
+                            </div>
+                            <div class="authentication-user-body">
+                                <div class="authentication-tab">
+                                    <div class="authentication-tab-item authentication-tab" data-authentcation-tab="1" style="font-size:2rem; color:#fbeaf4;">
+                                        <i class="flaticon-checklist"></i>
+                                        Reset
+                                    </div>
+                                </div>
+                                <div class="authentication-tab-details">
+                                    <div class="authentication-tab-details-item authentication-tab-details-active" data-authentcation-details="1">
+                                        <div class="authentication-form" style="opacity : 0.8;">
+                                            @*<form>*@
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group mb-20">
+                                                        <div class="input-group" style="background-color:#e8f0fe;">
+                                                            <div class="input-group-prepend mr-1">
+                                                                <span class="input-group-text"><i class="flaticon-user"></i></span>
+                                                            </div>
+                                                            <input id="username" name="name" value="@ViewBag.username" readonly="readonly" class="form-control" placeholder="用户名" />
+                                                            <div>
+                                                                <span id="icon1"></span>
+                                                                <label id="tips1"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group mb-20">
+                                                        <div class="input-group" style="background-color:#e8f0fe;">
+                                                            <div class="input-group-prepend mr-1">
+                                                                <span class="input-group-text"><i class="flaticon-email"></i></span>
+                                                            </div>
+                                                            <input id="email" style="opacity:1;" value="@ViewBag.email" readonly="readonly" name="email" class="form-control" placeholder="邮箱地址" required />
+                                                            <div>
+                                                                <span id="icon4"></span>
+                                                                <label id="tips4"></label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group mb-20">
+                                                        <div class="input-group" style="background-color:#e8f0fe;">
+                                                            <div class="input-group-prepend mr-1">
+                                                                <span class="input-group-text"><i class="flaticon-login"></i></span>
+                                                            </div>
+                                                            <input id="password" type="password" name="password" value="" class="form-control" onblur="checkPsw();ReCheckPsw();" placeholder="密码" />
+                                                            <div>
+                                                                <span id="icon2"></span>
+                                                                <label id="tips2"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="form-group mb-20">
+                                                        <div class="input-group" style="background-color:#e8f0fe;">
+                                                            <div class="input-group-prepend mr-1">
+                                                                <span class="input-group-text"><i class="flaticon-logistics"></i></span>
+                                                            </div>
+                                                            <input id="reSurepassword" type="password" name="reSurepassword" value="" onblur="ReCheckPsw();" class="form-control" placeholder="确认密码" required />
+                                                            <div>
+                                                                <span id="icon3"></span>
+                                                                <label id="tips3"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                    <button id="btn-register" class="btn full-width mb-20" onclick="reset();">修改密码</button>
+                                                </div>
+                                                <label style="width:100%; color:red;font-size:medium;margin-top:10px;text-align:center;" class="tips">&nbsp;</label>
+                                            </div>
+                                            @*</form>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 p-0">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,298 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html lang="zxx">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Pilipala 忘记密码</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Luba">
+    <meta name="keywords" content="HTML,CSS,JavaScript">
+    <meta name="author" content="HiBootstrap">
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <link href="~/assets/css/Style.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        document.onreadystatechange = function () {
+            $(".loading-div").hide();
+            if (document.readyState != "complete") {
+                var list = ['url(../public/static/uploads/login$regist/背景4.jpg)  no-repeat center center', 'url(../public/static/uploads/login$regist/背景5.jpg)  no-repeat center center'];
+                var back = list[Math.round(Math.random())];
+                //$("body").removeAttr("style");
+                $("body").css("background", back);
+                $("body").css("background-size", "cover");
+                $("body").css("background-attachment", "fixed");
+            }
+        }
+    </script>
+    <script>
+        document.onmousemove = function (e) {
+            var mouX = event.clientX;
+            var mouY = event.clientY;
+            var winHight = window.innerHeight;
+            var winWidth = window.innerWidth;
+            mouX = parseFloat(mouX);
+            mouY = parseFloat(mouY);
+            winHight = parseFloat(winHight);
+            winWidth = parseFloat(winWidth);
+            var x = Math.round((mouX / winWidth) * 10000) / 100.0 + "%";
+            var y = Math.round((mouY / winHight) * 10000) / 100.0 + "%";
+            document.getElementById("theBody").style.backgroundPositionX = x;
+            document.getElementById("theBody").style.backgroundPositionY = y;
+        }
+    </script>
+    <script>
+        var Interceptor = false;
+        function SentMail() {
+            var regex = /^[a-zA-Z0-9.! #$%&'*+\/=?^_`{|}~-]+@@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+[a-z]{2,}$/;
+            if ($('#email').val().length == 0) {
+                FloatTip(0, '请输入邮箱！');
+                $('.tips').html('请输入邮箱！');
+            } else if ($('#email').val().match(regex) == null) {
+                FloatTip(0, '邮箱格式不正确！');
+                $('#tips4').html('邮箱格式不正确！');
+            } else {
+                if (Interceptor == false) {
+                    $(".loading-div").show();
+                    Interceptor = true;
+                    $.ajax({
+                        url: "/users/GetMail",
+                        type: "post",
+                        data: {
+                            Mail: $('#email').val()
+                        },
+                        success: function (data) {
+                            $(".loading-div").hide();
+                            if (data == "ok") {
+                                FloatTip(1, '验证码发送成功！请在邮箱点击链接进行密码重置！');
+                                $('.tips').html('验证码发送成功！请在邮箱点击链接进行密码重置！');
+                            } else if (data == "noexist") {
+                                FloatTip(0, '邮箱不存在！');
+                                $('.tips').html('邮箱不存在！');
+                            } else if (data =='repeat') {
+                                FloatTip(0, '已经发送验证码，请不要重复提交！');
+                                $('.tips').html('已经发送验证码，请不要重复提交！');
+                            }
+                            else {
+                                FloatTip(2, '错误！');
+                                $('.tips').html('错误！');
+                            }
+                        }
+                    });
+                    setTimeout(function () {
+                        Interceptor = false;
+                    }, 1000);
+                }
+                else {
+                    $(".loading-div").hide();
+                    FloatTip(0, '请不要频繁点击！');
+                    $('.tips').html('请不要频繁点击！');
+                }
+            }
+        }
+
+
+        window.addEventListener('keypress', function (e) {
+            if (window.event) // IE
+            {
+                keynum = e.keyCode
+            }
+            else if (e.which) // Netscape/Firefox/Opera
+            {
+                keynum = e.which
+            }
+            if (keynum == 13) {  //等于13代表 回车键
+                register();
+            }
+        })
+
+        function FloatTip(type, text) {
+            var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
+            var id = 'tip-' + random;
+            var winWidth = parseFloat(window.innerWidth) / 2 - 200;
+            var list = ['url(../public/static/uploads/img/警告.svg)', 'url(../public/static/uploads/img/check-active.svg)', 'url(../public/static/uploads/img/取消.svg)'];
+            var icon = list[type];
+            var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
+                'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
+                'color': 'white',
+                'height': 'auto',
+                'min-height': '40px',
+                'position': 'fixed',
+                'top': '7%',
+                'left': winWidth + 'px',
+                'width': '400px',
+                'z-index': '3200',
+                'border': '1px solid white',
+                'padding': '10px 10px 10px 50px',
+                'box-shadow': '3px 3px 3px #999999',
+                'display': 'none',
+                'opacity': 0.2,
+            }).html(text).attr('id', id);
+            var leftDiv = $('<div>').css({  //图标
+                'position': 'fixed',
+                'width': '40px',
+                'height': '30px',
+                'margin-top': '-25px',
+                'margin-left': '-45px',
+                'border-radius': '3px',
+                'color': 'black',
+                'padding': '5px 0px',
+                'background-image': icon,
+                'background-background-repeat': 'no-repeat',
+                'background-position': 'center center',
+                'background-repeat': 'no-repeat',
+                'opacity': '0.9'
+            }).html('');
+            tip.append(leftDiv);
+            $('body').append(tip.show());
+            document.getElementById(id).animate({
+                top: '2%',
+                opacity: '1'
+            }, 500, 'easeOutQuart');
+            setTimeout(function () {
+                document.getElementById(id).style.top = '2%';
+                document.getElementById(id).style.opacity = '1';
+            }, 500)
+            setTimeout(function () {
+                document.getElementById(id).animate({
+                    opacity: '0'
+                }, 400, 'easeOutQuart');
+                setTimeout(function () {
+                    document.getElementById(id).remove();
+                }, 400)
+            }, 800)
+        }
+    </script>
+    <script>
+        function checkMail() {
+            if ($('#email').val().length == 0) {
+                $('#icon4').attr('class', 'glyphicon glyphicon-remove');
+                $('#tips4').html('请输入邮箱！');
+            }
+            else {
+                var regex = /^[a-zA-Z0-9.! #$%&'*+\/=?^_`{|}~-]+@@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+[a-z]{2,}$/;
+                if ($('#email').val().match(regex) == null) {
+                    $('#icon4').attr('class', 'glyphicon glyphicon-remove');
+                    $('#tips4').html('邮箱格式不正确！');
+                }
+                else {
+                    $('#icon4').attr('class', 'glyphicon glyphicon-ok');
+                    $('#tips4').html('');
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        input {
+            max-width: 70%;
+        }
+
+        .loading-div {
+            width: 100%;
+            height: 100%;
+            background-color: #0000006b;
+            overflow: hidden;
+            position: absolute;
+            text-align: center;
+            z-index: 10000;
+        }
+
+        .img {
+            margin-top: 45rem;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body id="theBody">
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jsencrypt.min.js"></script>
+    <link href="~/assets/css/Style.css" rel="stylesheet" />
+
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <div class="loading-div" id="loading">
+        <img class="img" id="opening" src="~/public/static/uploads/img/loading.gif">
+    </div>
+    <div class="authentication-section" id="app" style=" background: rgba(0,0,0,0); ">
+        <div class="container p-0">
+            <div class="row m-0">
+                <div class="col-lg-2 p-0">
+                </div>
+                <div class="col-sm-12 col-lg-8 p-0" style=" background: rgba(0,0,0,0); ">
+                    <div class="authentication-item bg-white" style="height:500px; background: rgba(0,0,0,0);">
+                        <div class="authentication-user-panel" style="margin-top:20rem;">
+                            <div class="authentication-user-header">
+                                <a href="..">
+                                    <p style=" font-size: 2rem; margin: 0; color: #77acf1; font-weight: 600;">首页</p>
+                                </a>
+                                <h1 style=" font-size: 4rem; color: #0df4ff; font-weight: 600; margin-top: 20px;">Welcome To Pilipala</h1>
+                            </div>
+                            <div class="authentication-user-body">
+                                <div class="authentication-tab">
+                                    <div class="authentication-tab-item authentication-tab" data-authentcation-tab="1" style="font-size:2rem; color:#fbeaf4;">
+                                        <i class="flaticon-checklist"></i>
+                                        Find Password
+                                    </div>
+                                </div>
+                                <div class="authentication-tab-details">
+                                    <div class="authentication-tab-details-item authentication-tab-details-active" data-authentcation-details="1">
+                                        <div class="authentication-form" style="opacity : 0.8;">
+
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <div class="form-group mb-20">
+                                                    <div class="input-group" style="background-color:#e8f0fe;">
+                                                        <div class="input-group-prepend mr-1">
+                                                            <span class="input-group-text"><i class="flaticon-email"></i></span>
+                                                        </div>
+                                                        <input id="email" style="opacity:1;" value="" name="email" onblur="checkMail();" class="form-control" placeholder="邮箱地址" required />
+                                                        <div>
+                                                            <span id="icon4"></span>
+                                                            <label id="tips4"></label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <button id="btn-register" class="btn full-width mb-20" onclick="SentMail();">修改密码</button>
+                                            </div>
+                                            <div><a href="Register" style="margin-left: 2rem;">没有账号？点击注册</a> <a href="Login" style=" float: right; margin-right: 2rem;">已有账号？点击登录</a></div>
+                                            <label style="width:100%; color:red;font-size:medium;margin-top:10px;text-align:center;" class="tips">&nbsp;</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 p-0">
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

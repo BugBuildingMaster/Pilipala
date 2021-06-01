@@ -375,7 +375,7 @@
                        OnSuccess = "Loginout"
                    }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
                         <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
-                            <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" title="@ViewBag.username"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                            <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" title="@ViewBag.username"><img id="imgPortrait" src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
                         </div>
                     }
                 }
@@ -446,7 +446,7 @@
                     </div>
                 </div>
                 <div>
-                    @using (Ajax.BeginForm("editpic", "admin", null, new AjaxOptions() { HttpMethod = "post", OnSuccess = "UpSuccess" }, new { enctype = "multipart/form-data" }))
+                    @using (Ajax.BeginForm("editpic", "user", null, new AjaxOptions() { HttpMethod = "post", OnSuccess = "UpSuccess" }, new { enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="user-form-group">
@@ -800,9 +800,7 @@
         </div>
         @*测评*@
         <div class="pull-right pright" style="display:none;">
-
             @Html.Action("UserEvaluation", "User", new { name = ViewBag.username })
-
         </div>
         @*短评*@
         <div class="pull-right pright" style="display:none">
@@ -933,8 +931,8 @@
     // 修改头像回调函数
     function UpSuccess(res) {
         if (res != "fail") {
+            $("#imgPortrait").attr('src', res);
             $("#Portrait").attr('src', res);
-            $("#indexPortrait").attr('src', res);
         }
         else { alert("出bug了") }
     }

@@ -112,19 +112,26 @@ namespace BLL
         }
         #endregion
 
+        #region 根据邮箱获取用户名
+        public string EmailToName(string email)
+        {
+            return iuser.EmailToName(email);
+        }
+        #endregion
+
         #region 用户注册
         public string Register(string username, string pwd, string email, string salt)
         {
             string data;
             if (iuser.IsUsernameUnique(username) == false)
             {
-                int v = iuser.AddUser(username,pwd,email,salt);
+                int v = iuser.AddUser(username, pwd, email, salt);
                 if (v == 1)
                     data = "success";
-                else if(v==-2)
+                else if (v == -2)
                     data = "illEmail";  //-2代表邮箱已存在
                 else
-                    data="fail";
+                    data = "fail";
             }
             // 用户名已存在时返回 "illegalname"
             else
@@ -132,6 +139,13 @@ namespace BLL
                 data = "illegalname";
             }
             return data;
+        }
+        #endregion
+
+        #region 重设密码
+        public string ResetPwd(string name, string pwd, string salt)
+        {
+            return iuser.ResetPwd(name, pwd, salt);
         }
         #endregion
 

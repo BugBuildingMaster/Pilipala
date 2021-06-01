@@ -102,7 +102,7 @@ namespace MvcApp.Controllers
 
         // 修改用户头像
         [HttpPost]
-        [EnableThrottling(PerSecond = 1, PerMinute = 4, PerHour = 10, PerDay = 20)]
+        //[EnableThrottling(PerSecond = 1, PerMinute = 4, PerHour = 100, PerDay = 200)]
         public ActionResult EditPic(FormCollection forms)
         {
             HttpCookie cookie = Request.Cookies["Login"];

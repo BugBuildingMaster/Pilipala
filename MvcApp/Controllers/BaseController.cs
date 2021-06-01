@@ -41,6 +41,9 @@ public class BaseController : Controller
         public string sign { get; set; }
         public DateTime time { get; set; }
         public string pubkey { get; set; }
+        public string email { get; set; }
+        public string psw { get; set; }
+        public string salt { get; set; }
     }
 
     protected class TokenHelper
@@ -55,6 +58,22 @@ public class BaseController : Controller
                 {"UserId",token.UserId },
                 { "UserName",token.UserName },
                 { "Userphoto",token.Userphoto },
+                { "sign",token.sign },
+                {"time",token.time },
+                {"pubkey",token.pubkey }
+            };
+            IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
+            IJsonSerializer serializer = new JsonNetSerializer();
+            IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+            IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
+            return encoder.Encode(load, SecretKey);
+        }
+
+        public static string VerEmailToken(TokenInfo token)  //生成邮箱验证token
+        {
+            var load = new Dictionary<string, dynamic>
+            {
+                { "email",token.email },
                 { "sign",token.sign },
                 {"time",token.time },
                 {"pubkey",token.pubkey }
@@ -85,6 +104,24 @@ public class BaseController : Controller
         tokenInfo.pubkey = pubKey;
         TokenHelper.SecretKey = priKey;
         string valueToken = TokenHelper.GenToken(tokenInfo);
+        return valueToken;
+    }
+
+    //邮箱验证token生成
+    protected string getVerToken(string email, DateTime time, string pubKey, string priKey)
+    {
+        TokenInfo tokenInfo = new TokenInfo();
+        //向token添加信息
+        tokenInfo.email = email;
+        tokenInfo.time = time;
+        //生成关键字段
+        string content = email + time.ToString();
+        //对关键字段生成签名
+        string sign = Sign(content, priKey);
+        tokenInfo.sign = sign;
+        tokenInfo.pubkey = pubKey;
+        TokenHelper.SecretKey = priKey;
+        string valueToken = TokenHelper.VerEmailToken(tokenInfo);
         return valueToken;
     }
     #endregion
@@ -207,8 +244,54 @@ public class BaseController : Controller
         {
             return false;
         }
+    }
+
+    public bool VerMailToken(string tokenContent)   //找回密码验证用
+    {
+        try
+        {
+            //读取token内容，返回json对象
+            JObject list = readtoken(tokenContent);
+            //获取签名
+            string sign = list["sign"].ToString();
+            string pubKey = list["pubkey"].ToString();
+            if (RedisHelper.KeyExists(tokenContent))    //检查token是否存在于令牌池，不存在则说明当前token无效
+            {
+                //比较token有效时间
+                DateTime dateTime = DateTime.Now;
+                DateTime Expiration = (DateTime)list["time"];
+                Expiration = Expiration.AddMinutes(5);   //令牌有效时间
+                TimeSpan timeSpan = Expiration - dateTime;  //计算时间间隔
+                double seconds = timeSpan.TotalSeconds;
+                //若间隔小于零则已经过期
+                if (seconds > 0)
+                {
+                    //拼接字符串生成关键字段
+                    string content = list["email"].ToString() + list["time"].ToString();
+                    //验证token内容是否被篡改
+                    bool result = verify(content, sign, pubKey);
+                    if (result == true)
+                        return true;
+                    else
+                        return false;   //信息被篡改，验证失败
+                }
+                else
+                    return false;   //token过期，验证失败
+            }
+            else
+            {
+                RedisHelper.KeyDelete(tokenContent);
+                //token已被注销，验证失败
+                return false;
+            }
+        }
+        catch (Exception)
+        {
+            return false;
+        }
 
     }
+
     #endregion
 
     #region 签名

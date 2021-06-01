@@ -292,5 +292,34 @@ namespace SqlDAL
             return value;
         }
         #endregion
+
+        #region 根据邮箱获取用户名
+        public string EmailToName(string email)
+        {
+            return db.Users.Where(a => a.Email == email).FirstOrDefault().UserName;
+        }
+        #endregion
+
+        #region 重设密码
+        public string ResetPwd(string name, string pwd, string salt)
+        {
+            db.Users.Find(name).Pwd = pwd;
+            db.Users.Find(name).Salt = salt;
+            int change = db.SaveChanges();
+            if (change > 0)
+            {
+                return "success";
+            }
+            else if (change == 0)
+            {
+                return "re";
+            }
+            else
+            {
+                return "fail";
+            }
+        }
+        #endregion
+
     }
 }

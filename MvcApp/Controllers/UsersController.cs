@@ -28,6 +28,9 @@ using Newtonsoft.Json;
 using MvcThrottle;
 using System.Collections.Specialized;
 
+using System.Net.Mail;
+using System.Net;
+
 namespace MvcApp.Controllers
 {
     public class UsersController : BaseController
@@ -221,6 +224,7 @@ namespace MvcApp.Controllers
         protected static string DecryptData(string key, string data)
         {
             key = key.Replace("\r", "").Replace("\n", "").Replace(" ", "");
+            key = key.Replace("\"", "");
             key = key.Replace("-----BEGINPRIVATEKEY-----", "").Replace("-----ENDPRIVATEKEY-----", "");
             //加载解密数据
             byte[] valueByte = Convert.FromBase64String(data);
@@ -582,6 +586,8 @@ namespace MvcApp.Controllers
                 //使用私钥解密
                 string oldTrueValue = DecryptData(priKey, oldPwd);
                 string newTrueValue = DecryptData(priKey, newPwd);
+                if (oldTrueValue == newTrueValue)
+                    return "re";    //验证新密码是否与旧密码一样
                 //获取用户的盐
                 HttpCookie cookie = Request.Cookies["Login"];
                 JObject username = readtoken(cookie.Values["Token"]);
@@ -590,18 +596,10 @@ namespace MvcApp.Controllers
                 //验证旧密码是否正确
                 if (usersManager.ComparePwd(Encryption(oldTrueValue, salt), name))
                 {
-                    //验证新密码是否与旧密码一样
-                    if (Encryption(oldTrueValue, salt) == Encryption(newTrueValue, salt))
-                    {
-                        return "re";
-                    }
-                    else
-                    {
-                        string thePast = Encryption(oldTrueValue, salt);
-                        string newSalt = CreateSalt(20);
-                        string theNew = Encryption(newTrueValue, newSalt);
-                        return usersManager.EditPassword(thePast, theNew, name, newSalt);
-                    }
+                    string thePast = Encryption(oldTrueValue, salt);
+                    string newSalt = CreateSalt(20);
+                    string theNew = Encryption(newTrueValue, newSalt);
+                    return usersManager.EditPassword(thePast, theNew, name, newSalt);
                 }
                 else
                 {
@@ -613,6 +611,186 @@ namespace MvcApp.Controllers
                 return "fail";
             }
 
+        }
+        #endregion
+
+        #region 忘记密码
+        /// <summary>
+        /// 重设密码界面
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 100, PerDay = 1000)]
+        public ActionResult ResetPwd(string link)
+        {
+            try
+            {
+                if (VerMailToken(link))
+                {
+                    JObject token = readtoken(link);
+                    string email = token["email"].ToString();
+                    ViewBag.username = usersManager.EmailToName(email);
+                    ViewBag.email = email;
+                    RedisHelper.KeyDelete(link);
+                    RedisHelper.KeyDelete(email);
+                    return View();
+                }
+                else
+                {
+                    return Content("验证失败！请重试！");
+                }
+            }
+            catch (Exception)
+            {
+                return Content("验证失败！请重试！");
+            }
+
+        }
+
+        /// <summary>
+        /// 忘记密码界面
+        /// </summary>
+        /// <returns></returns>
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
+        public ActionResult ForgetPwd()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 验证邮箱
+        /// </summary>
+        /// <param name="Mail"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
+        public ActionResult GetMail(string Mail)
+        {
+            try
+            {
+                //判断邮箱是否存在
+                string exist = IsEmailUnique(Mail);
+                if (exist == "no")
+                {
+                    //如果申请忘记密码的邮箱仍在维护状态，则不再发送邮件
+                    if (RedisHelper.KeyExists(Mail))
+                        return Content("repeat");
+                    string pubKey = Request.Cookies["Key"].Value;
+                    pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
+                    string priKey = RedisHelper.HashGet("KeyPool", pubKey);
+                    //生成验证token并将token附入邮件
+                    string tokenContent = getVerToken(Mail, DateTime.Now, pubKey, priKey);
+                    if (SendMail(Mail,usersManager.EmailToName(Mail) , tokenContent))
+                    {
+                        //邮件成功送出，将送出的token放入redis中维护
+                        RedisHelper.HashSet(tokenContent, "prikey", priKey);
+                        RedisHelper.HashSet(tokenContent, "mail", Mail);
+                        //设置有效时间，超过期限则过期不再维护，token失效
+                        RedisHelper.KeyExpire(tokenContent, TimeSpan.FromMinutes(5));
+                        RedisHelper.StringSet(Mail, tokenContent, TimeSpan.FromMinutes(5));
+                        return Content("ok");
+                    }
+                    else
+                        return Content("fail");
+                }
+                else
+                {
+                    return Content("noexist");
+                }
+            }
+            catch (Exception)
+            {
+                return Content("error");
+            }
+        }
+
+        /// <summary>
+        /// 重设密码
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
+        public ActionResult setPwd(string name, string pwd)
+        {
+            try
+            {
+                pwd = pwd.Replace("\r", "").Replace("\n", "").Replace(" ", "");
+                //获取公钥
+                string pubKey = Request.Cookies["Key"].Value;
+                //前后端转义字符转码
+                pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
+                //根据公钥从密钥对池中提取出对应私钥
+                string priKey = RedisHelper.HashGet("KeyPool", pubKey);
+                //使用私钥解密
+                string TrueValue = DecryptData(priKey, pwd);
+                //获取用户的盐
+                string salt = usersManager.GetSalt(name);
+                //验证新旧密码是否一样
+                if (usersManager.ComparePwd(Encryption(TrueValue, salt), name))
+                {
+                    //新旧密码一样，不再重设
+                    return Content("re");
+                }
+                else
+                {
+                    string newSalt = CreateSalt(20);
+                    string Value = Encryption(TrueValue, newSalt);
+                    return Content(usersManager.ResetPwd(name, Value, newSalt));
+                }
+            }
+            catch (Exception)
+            {
+                return Content("fail");
+            }
+        }
+
+        /// <summary>
+        /// 发送邮件
+        /// </summary>
+        /// <param name="SendMail"></param>
+        /// <param name="name"></param>
+        /// <param name="link"></param>
+        /// <returns></returns>
+        private bool SendMail(string SendMail, string name, string link)
+        {
+            try
+            {
+                string fromMail = "pilipalastudio@163.com";
+                string AuthorizationgCode = "LROKVRDXCNQVTQFU";
+                MailMessage mailMessage = new MailMessage();
+                //设置邮件优先级为normal
+                mailMessage.Priority = MailPriority.Normal;
+                //设定发件人邮箱地址
+                mailMessage.From = new MailAddress(fromMail);
+                //设定收件人邮箱地址
+                mailMessage.To.Add(new MailAddress(SendMail));
+                //设定邮箱编码
+                mailMessage.SubjectEncoding = Encoding.GetEncoding(65001);
+                mailMessage.IsBodyHtml = true;
+                mailMessage.Subject = "找回密码";
+                mailMessage.Body = "<!doctype html><html lang=\"en-US\"><head><meta charset=\"UTF-8\"><title></title></head><body><table width=\"700\" border=\"0\" align=\"center\" cellspacing=\"0\" style=\"width:700px;\"><tbody><tr><td><div style=\"width:700px;margin:0 auto;border-bottom:1px solid #ccc;margin-bottom:30px;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"700\" height=\"39\" style=\"font:12px Tahoma, Arial, 宋体;\"><tbody><tr><td width=\"210\"></td></tr></tbody></table></div><div style=\"width:680px;padding:0 10px;margin:0 auto;\"><div style=\"line-height:1.5;font-size:14px;margin-bottom:25px;color:#4d4d4d;\"><strong style=\"display:block;margin-bottom:15px;\">亲爱的" +
+                    name + "：<span style=\"color:#f60;font-size: 16px;\"></span>您好！</strong><strong style=\"display:block;margin-bottom:15px;\">您正在修改找回密码，请在五分钟内点击以下链接进行密码重置：<a style=\"text-decoration:none;color:#f60;font-size: 24px\" " +
+                    "href=\"https://localhost:44372/Users/ResetPwd?link=" + link + "\">" + link.Substring(0, 30) + "..." +
+                    "</a>，以完成操作。</strong></div><div style=\"margin-bottom:30px;\"><small style=\"display:block;margin-bottom:20px;font-size:12px;\"><p style=\"color:#747474;\">注意：此操作可能会修改您的密码。如非本人操作，请及时登录并修改密码以保证帐户安全<br>（工作人员不会向你索取此链接，请勿泄漏！)</p></small></div></div><div style=\"width:700px;margin:0 auto;\"><div style=\"padding:10px 10px 0;border-top:1px solid #ccc;color:#747474;margin-bottom:20px;line-height:1.3em;font-size:12px;\"><p>此为系统邮件，请勿回复<br>请保管好您的邮箱，避免账号被他人盗用</p><p>PilipalaStudio 2020-2021</p></div></div></td></tr></tbody></table></body></html>";
+                SmtpClient client = new SmtpClient();
+                client.Host = "smtp.163.com";
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential(fromMail, AuthorizationgCode);
+                mailMessage.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
+                client.Send(mailMessage);
+                //Response.Write("OK");
+                return true;
+
+            }
+            catch (Exception)
+            {
+                //Response.Write("Fail");
+                return false;
+            }
         }
         #endregion
 

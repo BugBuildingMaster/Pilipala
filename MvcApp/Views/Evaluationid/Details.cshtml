@@ -100,7 +100,7 @@
 
         </div>
         <div id="aresult" class="comment">
-            @*@Html.Action("EComment", "Evaluationid", new { id = Model.Evaluationid })*@
+            @Html.Action("EComment", "Evaluationid", new { id = Model.Evaluationid })
         </div>
         <div class="addcomment">
             @using (Ajax.BeginForm("AddComment", "Evaluationid", new AjaxOptions { HttpMethod = "post", OnSuccess = "addComment", UpdateTargetId = "aresult" }))
