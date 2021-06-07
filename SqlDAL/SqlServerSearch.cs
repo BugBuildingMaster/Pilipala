@@ -37,16 +37,6 @@ namespace SqlDAL
             return db.Evaluation.Find(id).Content;
         }
 
-        public IEnumerable<tempSearchEvaluation> SearchEvaluation()
-        {
-            return db.tempSearchEvaluation;
-        }
-
-        public IEnumerable<tempSearchAnimation> SearchAnimation()
-        {
-            return db.tempSearchAnimation;
-        }
-
         public IEnumerable<tempSearchUsers> SearchUsers()
         {
             return db.tempSearchUsers;

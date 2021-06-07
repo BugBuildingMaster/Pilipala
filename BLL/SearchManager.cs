@@ -21,20 +21,6 @@ namespace BLL
         }
         #endregion
 
-        #region 搜索测评分布视图
-        public IEnumerable<tempSearchEvaluation> SearchEvaluation()
-        {
-            return isearch.SearchEvaluation();
-        }
-        #endregion
-
-        #region 搜索动漫分布视图
-        public IEnumerable<tempSearchAnimation> SearchAnimation()
-        {
-            return isearch.SearchAnimation();
-        }
-        #endregion
-
         #region 搜索用户分布视图
         public IEnumerable<tempSearchUsers> SearchUsers()
         {

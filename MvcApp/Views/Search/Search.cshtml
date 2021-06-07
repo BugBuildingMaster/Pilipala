@@ -119,7 +119,7 @@
             margin-right: 2px;
             width: 33.3%;
             text-align: center;
-            /* text-align-last: justify; */
+            cursor: pointer;
             color: black;
         }
 
@@ -134,6 +134,204 @@
         .smallChoice:hover {
             color: #0d60f7;
             border-bottom: 3px solid;
+        }
+    </style>
+    <style>
+        .review-item {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            color: rgb(17, 17, 17);
+            margin: 0;
+            padding: 20px 0px;
+            position: relative;
+        }
+
+        .subject-img {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            cursor: pointer;
+            color: #666699;
+            text-decoration: none;
+            display: block;
+            float: left;
+            margin-right: 20px;
+            max-width: 75px;
+            max-height: 107px;
+        }
+
+        .imagePic {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            cursor: pointer;
+            color: #666699;
+            border: 0;
+            border-width: 0;
+            vertical-align: middle;
+            max-width: 100%;
+        }
+
+        .main-hd {
+            font: 12px Helvetica,Arial,sans-serif;
+            position: relative;
+            line-height: 1.4;
+            color: rgb(153, 153, 153);
+            overflow: hidden;
+            padding: 0px;
+            margin-bottom: 0px;
+            height: 24px;
+            font-size: 0px;
+        }
+
+        .ThePortrait {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.4;
+            font-size: 0px;
+            cursor: pointer;
+            color: #666699;
+            width: 24px;
+            height: 24px;
+            border: 0;
+            border-width: 0;
+            vertical-align: middle;
+            max-width: 100%;
+        }
+
+        .name {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.4;
+            cursor: pointer;
+            color: #666699;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+            .name:hover {
+                text-decoration: none;
+            }
+
+        .main-meta {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.4;
+            margin: 0px 0px 0px 5px;
+            font-weight: 300;
+            color: rgb(153, 153, 153);
+            font-size: 13px;
+            margin-left: 10px;
+            vertical-align: middle;
+            float: right;
+        }
+
+        .main-bd {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            color: rgb(17, 17, 17);
+            overflow-wrap: break-word;
+            margin: 10px 0px 0px;
+            padding: 0px 10px 0px 100px;
+        }
+
+        h2 {
+            overflow-wrap: break-word;
+            padding: 0;
+            font: 15px Arial, Helvetica, sans-serif;
+            color: #072;
+            margin: 0 0 12px 0;
+            line-height: 150%;
+            font-size: 14px;
+            margin-bottom: 10px;
+            margin-top: 0px;
+        }
+
+        .review-short {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            overflow-wrap: break-word;
+            padding: 0;
+            color: rgb(73, 73, 73);
+            overflow: hidden;
+            word-break: break-word;
+            margin: 0px;
+            cursor: pointer;
+        }
+
+        .short-content {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            overflow-wrap: break-word;
+            color: rgb(73, 73, 73);
+            word-break: break-word;
+            cursor: pointer;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hidden {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            color: rgb(17, 17, 17);
+            overflow-wrap: break-word;
+            margin: 0;
+            padding: 0;
+            display: none;
+        }
+
+        .action {
+            font: 12px Helvetica,Arial,sans-serif;
+            line-height: 1.62;
+            font-size: 13px;
+            color: rgb(17, 17, 17);
+            overflow-wrap: break-word;
+            margin: 0;
+            padding: 0;
+            margin-top: 18px;
+        }
+
+        .Thetitle {
+            margin-bottom: 0rem;
+            font-weight: 500;
+            line-height: 1.2;
+            font-size: 1.2rem;
+        }
+
+        .ToDo {
+            cursor: pointer;
+        }
+
+        .suggest {
+            width: 35.5rem;
+            margin-top: -0.24rem;
+            border-bottom-color: #d6d6d6;
+            cursor: default;
+        }
+
+        .sugChi {
+            background-color: #efefef;
+            border: 1px solid #00000005;
+        }
+
+        .sugPar {
+            border: 2px solid grey !important;
+            border-top: 2px solid #ffffff00 !important;
+        }
+
+        .ctotop {
+            position: fixed;
+            right: 9rem;
+            bottom: 6rem;
+            cursor: pointer;
+        }
+
+        .fold:hover {
+            text-decoration: none;
         }
     </style>
 </head>
@@ -151,16 +349,17 @@
                 document.getElementById('logoimg').src = ranLogo;
             });
         }
-        addEventListener('mousewheel', function () {
+        addEventListener('scroll', function () {
             var height = document.documentElement.scrollTop || document.body.scrollTop;
             var StatusBarheight = 20;
             if (height > StatusBarheight) {
                 $(".TopStatusBar").addClass("theShadow");
                 $(".TopStatusBar").css('position', 'fixed');
+                $("#totop").show();
             } else {
                 $(".TopStatusBar").removeClass("theShadow");
                 $(".TopStatusBar").css('position', 'initial');
-
+                $("#totop").hide();
             }
         })
 
@@ -173,13 +372,14 @@
                 $(".showResult").addClass("setMiddle");
                 $(".showResult").css('width', '45rem');
                 $(".showResult").css('margin-left', 'auto');
-
+                $("#totop").css('right', '9rem');
             }
             else {
                 $(".leftBox").removeClass("setMiddle");
                 $(".choiceBox").removeClass("setMiddle");
                 $(".choiceBox").css('margin-left', '8rem');
                 $(".showResult").css('margin-left', '8rem');
+                $("#totop").css('right', '3rem');
             }
         }
 
@@ -197,12 +397,83 @@
             </div>
             <div class="mainForm">
                 <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
-                    <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
-                    <input type="hidden" name="sid" value="">
-                    <input class="inp_sub" type="submit" value="搜索" id="sub">
+                    <div id="theSearch">
+                        <input class="search_input" type="text" placeholder="" name="keyword" autocomplete="off" id="input_text" v-on:input="setSug()" v-on:porpertychange="setSug()" v-on:blur="changeSug(0)" v-on:focus="changeSug(1);setSug();">
+                        <input type="hidden" name="sid" value="">
+                        <input class="inp_sub" type="submit" value="搜索" id="sub">
+                        <div id="suggestion" class="suggest" style="display:none;position: absolute;z-index: 100;">
+                            <ul class="list-group sugPar">
+                                <li id="listabc" class="list-group-item sugChi" v-for="(single,i) in suggestions" v-on:mouseover="light($event)" v-on:mouseout="dark($event)" onmousedown="addSearch();">{{single}}</li>
+                            </ul>
+                        </div>
+                    </div>
                 </form>
                 <iframe id="iframe" name="iframe" style="display:none;"></iframe>
             </div>
+            <script>
+                var sug = null;
+                const searching = new Vue({
+                    el: "#theSearch",
+                    data: {
+                        suggestions: []
+                    },
+                    created() {
+                        this.changeSug(0)
+                    },
+                    mouted() {
+
+                    },
+                    methods: {
+                        //搜索提示
+                        async suggest() {
+                            const { data: res } = await axios.get('/Search/getSuggest', {
+                                params: {
+                                    keyWord: $('#input_text').val()
+                                }
+                            })
+                            this.suggestions = res["suggestion"];
+                            //console.log(this.suggestions);
+                            this.changeSug(1)
+                        },
+                        //提示防抖
+                        async setSug() {
+                            clearTimeout(sug);
+                            sug = setTimeout(this.suggest, 150);
+                        },
+                        //提示框样式改变
+                        async changeSug(num) {
+                            var input = document.getElementById("input_text");
+                            var suggestion = document.getElementById("suggestion");
+                            if (num == 0) {
+                                suggestion.style.display = "none";
+                                input.style.borderBottomColor = "grey";
+                                input.style.borderRadius = "10px";
+                            }
+                            else {
+                                if (this.suggestions.length != 0) {
+                                    suggestion.style.display = "block";
+                                    input.style.borderBottomColor = "#d6d6d6";
+                                    input.style.borderRadius = "10px 10px 0px 0px";
+                                }
+                                else {
+                                    suggestion.style.display = "none";
+                                    input.style.borderBottomColor = "grey";
+                                    input.style.borderRadius = "10px";
+                                }
+                            }
+                        },
+                        //鼠标悬浮选项样式改变
+                        async light(event) {
+                            $(event.target).addClass('active');
+                            $('#input_text').val(event.target.innerText);
+                        },
+                        async dark(event) {
+                            $(event.target).removeClass('active');
+                        }
+                    }
+                })
+            </script>
+
         </div>
         @* 登录 *@
         <div class="navbar-top-action-item navbar-top-right">
@@ -233,7 +504,7 @@
                                OnSuccess = "Loginout"
                            }, new { @class = "fa fa-sign-out", @style = "line-height:65px;" })
                                 <div class="navbar-right-action-item navbar-right-wishlist navbar-option-item">
-                                    <a href="@Url.Action("Center","User",new { id=ViewBag.userid})" title="@ViewBag.username"><img src="@Html.Action("ThePortrait","Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
+                                    <a href="@Url.Action("Center", "User", new { id = ViewBag.userid })" title="@ViewBag.username"><img src="@Html.Action("ThePortrait", "Community")" alt="photo" style="width:40px;height:40px;border-radius:50%;vertical-align:-20%;" /></a>
                                 </div>
                             }
                         }
@@ -245,25 +516,434 @@
     @* 选项栏 *@
     <div class="choiceBoxBack">
         <div class="user-center__nav choiceBox d-flex justify-content-around text-white">
-            <div class="smallChoice p-2">测评</div>
+            <div class="smallChoice p-2 highlight">测评</div>
 
             <div class="smallChoice p-2">动漫</div>
 
             <div class="smallChoice p-2">用户</div>
         </div>
     </div>
+    @* 回到顶部 *@
+    <div class="ctotop" id="totop">
+        <img src="~/public/static/uploads/img/back2top.svg" alt="回到顶部" />
+    </div>
     <div class="showResult">
-        <div class="theEvaluationSearch pright">
-            @Html.Action("SearchEvaluation", "Search")
+        <div class="theEvaluationSearch pright" id="Evas">
+            @*@Html.Action("SearchEvaluation", "Search")*@
+            <div v-for="(singleEva,i) in Evaluations" v-bind:class="'E' + singleEva.source.evaluationid">
+                <div class="main review-item" v-bind:id="'E' +singleEva.source.evaluationid">
+                    <a class="subject-img" href="javascript:void(0);" v-on:click="AnimationUrl(singleEva.source.animationid)">
+                        <img class="imagePic" v-bind:alt="singleEva.source.aname" title="singleEva.source.aname" v-bind:src="singleEva.source.aimagepic">
+                    </a>
+                    <header class="main-hd">
+                        <a href="javascript:void(0)" v-on:click="UsersUrl(singleEva.source.userid)" class="avator">
+                            <img class="ThePortrait" width="24" height="24" v-bind:src="singleEva.source.portrait">
+                        </a>
+                        <template v-if="singleEva.highlight.username">
+                            <a href="javascript:void(0)" v-on:click="UsersUrl(singleEva.source.userid)" class="name" v-html="singleEva.highlight.username[0]">{{singleEva.highlight.username[0]}}</a>
+                        </template>
+                        <template v-else>
+                            <a href="javascript:void(0)" v-on:click="UsersUrl(singleEva.source.userid)" class="name">{{singleEva.source.username}}</a>
+                        </template>
+                        <span v-bind:content="singleEva.source.time" class="main-meta">{{handleScroe(singleEva.source.score)}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{to_reverse_time(singleEva.source.time)}}</span>
+                    </header>
+                    <div class="main-bd">
+                        <template v-if="singleEva.highlight.title">
+                            <a href="javascript:void(0);" v-on:click="EvaluationsUrl(singleEva.source.evaluationid)" class="Thetitle" v-bind:id="'ET'+singleEva.source.evaluationid" v-html="singleEva.highlight.title[0]">{{singleEva.highlight.title[0]}}</a>
+                        </template>
+                        <template v-else>
+                            <a href="javascript:void(0);" v-on:click="EvaluationsUrl(singleEva.source.evaluationid)" class="Thetitle">{{singleEva.source.title}}</a>
+                        </template>
+                        <div class="review-short">
+                            <template v-if="singleEva.highlight.content">
+                                <div v-bind:id="'ShortValue'+singleEva.source.evaluationid" style="cursor:default;" class="short-content" v-html="handleHighlight(singleEva.highlight.content)">
+                                    {{handleHighlight(singleEva.highlight.content)}}
+                                    &nbsp;
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div v-bind:id="'ShortValue'+singleEva.source.evaluationid" style="cursor:default;" class="short-content" v-html="handleContent(singleEva.source.content)">
+                                    {{handleContent(singleEva.source.content)}}
+                                    &nbsp;
+                                </div>
+                            </template>
+                            <div v-bind:id="'LongValue'+singleEva.source.evaluationid" class="full-content" style="cursor:default; display:none;" v-html="handle(singleEva.source.content)">
+                                {{handle(singleEva.source.content)}}
+                            </div>
+                            <a v-on:click="openList(singleEva.source.evaluationid)" v-bind:class="'unfold'+singleEva.source.evaluationid" class="fold" title="展开">展开</a>
+                        </div>
+                        @*<div class="hidden">
+                        <div v-bind:id="'LongValue'+singleEva.source.evaluationid" class="full-content">{{singleEva.source.content}}</div>
+                    </div>*@
+                        <div class="action">
+                            <span class="ToDo" v-on:click="addlike(singleEva.source.evaluationid)" style=" margin-right: 2rem;">
+                                <img src="~/public/static/uploads/img/点赞.png">
+                                <span v-bind:id="'TheLikeNmum'+singleEva.source.evaluationid">
+                                    {{singleEva.source.likenum}}
+                                </span>
+                            </span>
+                            <span class="ToDo" v-on:click="adddislike(singleEva.source.evaluationid)">
+                                <img src="~/public/static/uploads/img/点踩.png">
+                                <span v-bind:id="'TheDislikeNmum'+singleEva.source.evaluationid">
+                                    {{singleEva.source.dislikenum}}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span v-if="EvaluationsMoreLoad==false" style="width: 100%;
+        font-size: 1.2rem;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        height: 5rem;
+        font-weight: bolder;
+    ">没有了哟~</span>
         </div>
-        <div class="theAnimationSearch pright" style="display:none">
-            @Html.Action("SearchAnimation", "Search")
+        <script>
+            const app = new Vue({
+                el: "#Evas",
+                data: {
+                    Evaluations: [],              //储存对象
+                    tempEvaluations: [],          //临时储存对象
+                    EvaluationsMoreLoad: false,   // 标记是否还有更多数据
+                    loadingEvaluations: false,    // 标记是否正在加载
+                    counterE: 0,                 // 加载页数
+                    keyword: ""
+                },
+                created() {
+                    this.init()
+                },
+                mounted() {
+                    var _this = this;
+                    window.addEventListener('scroll', function () {
+                        //theHeight();      //测试页面高度的测试代码
+                        if (_this.loadingEvaluations) {
+                            //当正在加载时直接返回，防止多次加载
+                            return;
+                        }
+                        var EvaluationsBody = document.getElementById("Evas");
+                        //检测关注界面是否打开，未打开则直接返回
+                        if (EvaluationsBody.style.display != "none") {
+                            var scr = document.body.scrollTop;                  // 滚动的高度
+                            var clientHeight = document.body.clientHeight;      // 屏幕静态下的高度
+                            var scrHeight = document.body.scrollHeight || document.body.scrollHeight; // 整个网页的实际高度，兼容Pc端
+                            if (scr + clientHeight + 100 >= scrHeight) {
+                                if (_this.EvaluationsMoreLoad) {       // 如果还有更多数据的标记为true，则将正在加载的标记置为true，将页数传给数据获取函数
+                                    _this.loadingEvaluations = true;
+                                    if (_this.counterE == 0)
+                                        _this.counterE = _this.counterE + 19;
+                                    else
+                                        _this.counterE = _this.counterE + 20;
+                                    _this.buildEvaluations(_this.counterE, _this.keyword);
+                                } else {
+                                    this.loadingEvaluations = false;   //未加载直接将正在加载标记置为false
+                                    return;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    });
+                },
+                methods: {
+                    async init() {
+                        var url = window.location.search;
+                        url = url.substring(1, url.length);
+                        var arr = url.split("&");
+                        var obj = new Object();
+                        for (var i = 0; i < arr.length; i++) {
+                            var temp_arr = arr[i].split("=");
+                            obj[decodeURIComponent(temp_arr[0])] = decodeURIComponent(temp_arr[1]);
+                        }
+                        this.keyword = obj['KeyWord'];
+                        $('#input_text').val(this.keyword);
+                        this.buildEvaluations(0, this.keyword);
+                        document.title = this.keyword + "_Pilipala搜索";
+                    },
+                    async buildEvaluations(PageNum, keyword) {
+                        if (PageNum == null) {
+                            PageNum = 0;
+                        }
+                        // 获取数据
+                        const { data: res } = await axios.get('/Search/getEva', {
+                            params: {
+                                page: PageNum,
+                                keyWord: keyword
+                            }
+                        })
+                        // this.tempEvaluations是临时对象，用于对下一步操作进行进一步判断
+                        this.tempEvaluations = res.result;
+
+                        //console.log(res.result);
+                        //console.log(0);
+                        //console.log(res.count);
+                        //console.log(1);
+                        //console.log(this.tempEvaluations);
+                        //console.log(2);
+                        //console.log(typeof (res.result));
+                        if (res.count != 0 && res.count == 20) {
+                            //此时不是最后一页，正常加载
+                            this.Evaluations = this.Evaluations.concat(this.tempEvaluations); //将临时对象的内容与粉丝对象进行拼接
+                            this.EvaluationsMoreLoad = true;                              //将还有更多的标记置为true
+                        } else if (res.count != 0 && res.count < 20) {
+                            //此时已经是最后一页，将还有更多的标记置为false
+                            this.Evaluations = this.Evaluations.concat(this.tempEvaluations);
+                            this.EvaluationsMoreLoad = false;
+                        } else {
+                            //其他情况直接置false
+                            this.EvaluationsMoreLoad = false;
+                        }
+                        //加载结束，将正在加载标记置false
+                        this.loadingEvaluations = false;
+                        //console.log(this.Evaluations);
+                    },
+                    async AnimationUrl(id) {
+                        window.open('../Animation/details?id=' + id);
+                    },
+                    async UsersUrl(id) {
+                        window.open('../User/Center/?id=' + id);
+                    },
+                    async EvaluationsUrl(id) {
+                        window.open('../Evaluationid/Details/' + id);
+                    },
+                    async addlike(id) {
+                        const { data: res } = await axios.get('/Evaluationid/AddLike', {
+                            params: {
+                                id: id
+                            }
+                        })
+                        if (res == "login") {
+                            alert("请先登录")
+                            sessionStorage.setItem('thePass', window.location.href);
+                            window.location.href = "/Users/Login";
+                        } else {
+                            $("#TheLikeNmum" + id).html(res);
+                        }
+                    },
+                    async adddislike(id) {
+                        const { data: res } = await axios.get('/Evaluationid/AdddisLike', {
+                            params: {
+                                id: id
+                            }
+                        })
+                        if (res == "login") {
+                            alert("请先登录")
+                            sessionStorage.setItem('thePass', window.location.href);
+                            window.location.href = "/Users/Login";
+                        } else {
+                            $("#TheDislikeNmum" + id).html(res);
+                        }
+                    },
+                    to_reverse_time: function (time) {
+                        var date = new Date(time);
+                        var year = date.getFullYear();
+                        /* 在日期格式中，月份是从0开始的，因此要加0
+                         * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+                         * */
+                        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+                        var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                        var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                        var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                        var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+                        // 拼接
+                        return year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+                    },
+                    handleHighlight: function (content) {
+                        if (typeof (content) == "object") {
+                            var value = "";
+                            for (var i = 0; i < content.length; i++) {
+                                value += content[i] + "……";
+                            }
+                            value = value.replace(/\\n/g, '<br/>');
+                            return value;
+                        }
+                        else {
+                            return null;
+                        }
+                    },
+                    handleContent: function (content) {
+                        content = content.replace(/\\n/g, '<br/>');
+                        content = content.substring(0, 300);
+                        return content;
+                    },
+                    handle: function (content) {
+                        content = content.replace(/\\n/g, '<br/>');
+                        return content;
+                    },
+                    handleScroe: function (content) {
+                        if (content == null)
+                            return "未评分";
+                        else
+                            return content + "分";
+                    },
+                    async openList(id) {
+                        if ($(".unfold" + id).attr("title") == "展开") {
+                            $("#LongValue" + id).show();
+                            $("#ShortValue" + id).hide();
+                            $(".unfold" + id).text("收起");
+                            $(".unfold" + id).attr("title", "收起");
+                        }
+                        else {
+                            $("#LongValue" + id).hide();
+                            $("#ShortValue" + id).show();
+                            $(".unfold" + id).text("展开");
+                            $(".unfold" + id).attr("title", "展开");
+                            $("html, body").animate({ scrollTop: $(".E" + id).offset().top - 80 }, 800);
+                        }
+                    }
+                }
+            })
+        </script>
+        <div class="theAnimationSearch pright" style="display:none" id="Ani">
+            @*@Html.Action("SearchAnimation", "Search")*@
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-4 element-item pb-30 lighting" v-for="(singleAni,i) in Animations">
+                    <div class="trending-product-card">
+                        <a href="javascript:void(0);" v-on:click="AnimationUrl(singleAni.animationid)">
+                            <div class="product-card-thumb">
+                                <img v-bind:src="singleAni.aimagepic" v-bind:alt="singleAni.aname" class="product-main-thumb">
+                                <img v-bind:src="singleAni.aimagepic" v-bind:alt="singleAni.aname" class="product-hover-thumb">
+                            </div>
+                            <div class="product-card-content">
+                                <h3>{{singleAni.aname}}</h3>
+                            </div>
+                        </a>
+                        <div class="product-card-button">
+                            <ul>
+                                <li>
+                                    <div class="quickview-redirect inline-popup-1">
+                                        <a href="javascript:void(0);" v-on:click="AnimationUrl(singleAni.animationid)" data-effect="mfp-zoom-in">
+                                            <i class="flaticon-eye"></i>
+                                        </a>
+                                        <p class="product-tooltip">浏览</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <span v-if="AnimationsMoreLoad==false" style="width: 100%;
+        font-size: 1.2rem;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        height: 5rem;
+        font-weight: bolder;
+    ">没有了哟~</span>
         </div>
+        <script>
+            const app1 = new Vue({
+                el: "#Ani",
+                data: {
+                    Animations: [],              //储存对象
+                    tempAnimations: [],          //临时储存对象
+                    AnimationsMoreLoad: false,   // 标记是否还有更多数据
+                    loadingAnimations: false,    // 标记是否正在加载
+                    counterA: 0,                 // 加载页数
+                    keyword: ""
+                },
+                created() {
+                    this.init()
+                },
+                mounted() {
+                    var _this = this;
+                    window.addEventListener('scroll', function () {
+                        //theHeight();      //测试页面高度的测试代码
+                        if (_this.loadingAnimations) {
+                            //当正在加载时直接返回，防止多次加载
+                            return;
+                        }
+                        var AnimationsBody = document.getElementById("Ani");
+                        //检测关注界面是否打开，未打开则直接返回
+                        if (AnimationsBody.style.display != "none") {
+                            var scr = document.body.scrollTop;                  // 滚动的高度
+                            var clientHeight = document.body.clientHeight;      // 屏幕静态下的高度
+                            var scrHeight = document.body.scrollHeight || document.body.scrollHeight; // 整个网页的实际高度，兼容Pc端
+                            if (scr + clientHeight + 100 >= scrHeight) {
+                                if (_this.AnimationsMoreLoad) {       // 如果还有更多数据的标记为true，则将正在加载的标记置为true，将页数传给数据获取函数
+                                    _this.loadingAnimations = true;
+                                    if (_this.counterA == 0)
+                                        _this.counterA = _this.counterA + 19;
+                                    else
+                                        _this.counterA = _this.counterA + 20;
+                                    _this.buildAnimations(_this.counterA, _this.keyword);
+                                } else {
+                                    this.loadingAnimations = false;   //未加载直接将正在加载标记置为false
+                                    return;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    });
+                },
+                methods: {
+                    async init() {
+                        var url = window.location.search;
+                        url = url.substring(1, url.length);
+                        var arr = url.split("&");
+                        var obj = new Object();
+                        for (var i = 0; i < arr.length; i++) {
+                            var temp_arr = arr[i].split("=");
+                            obj[decodeURIComponent(temp_arr[0])] = decodeURIComponent(temp_arr[1]);
+                        }
+                        this.keyword = obj['KeyWord'];
+                        this.buildAnimations(0, this.keyword);
+                    },
+                    async buildAnimations(PageNum, keyword) {
+                        if (PageNum == null) {
+                            PageNum = 0;
+                        }
+                        // 获取数据
+                        const { data: res } = await axios.get('/Search/getAni', {
+                            params: {
+                                page: PageNum,
+                                keyWord: keyword
+                            }
+                        })
+                        // this.tempAnimations是临时对象，用于对下一步操作进行进一步判断
+                        this.tempAnimations = res.result;
+                        //console.log(res.result);
+                        //console.log(0);
+                        //console.log(res);
+                        //console.log(1);
+                        //console.log(this.tempAnimations);
+                        //console.log(2);
+                        //console.log(typeof (res.result));
+                        if (res.count != 0 && res.count == 20) {
+                            //此时不是最后一页，正常加载
+                            this.Animations = this.Animations.concat(this.tempAnimations); //将临时对象的内容与粉丝对象进行拼接
+                            this.AnimationsMoreLoad = true;                              //将还有更多的标记置为true
+                        } else if (res.count != 0 && res.count < 20) {
+                            //此时已经是最后一页，将还有更多的标记置为false
+                            this.Animations = this.Animations.concat(this.tempAnimations);
+                            this.AnimationsMoreLoad = false;
+                        } else {
+                            //其他情况直接置false
+                            this.AnimationsMoreLoad = false;
+                        }
+                        //加载结束，将正在加载标记置false
+                        this.loadingAnimations = false;
+                        //console.log(this.Animations);
+                    },
+                    async AnimationUrl(id) {
+                        window.open('../Animation/details?id=' + id);
+                    }
+                }
+            })
+        </script>
         <div class="theUsersSearch pright" style="display:none">
             @Html.Action("SearchUsers", "Search")
         </div>
     </div>
     <script>
+        $("#totop").click(function () {
+            $("html, body").animate({ scrollTop: $("body").offset().top }, 800);
+        })
+
         function Loginout(data) {
             var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
             var id = 'tip-' + random;

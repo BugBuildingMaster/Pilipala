@@ -485,7 +485,7 @@
                     <li class="list-item clearfix" v-for="(singleFollow, i) in Followers">
                         <div v-if="singleFollow.RowNum" v-bind:class="'cF'+singleFollow.RowNum" style=" display: flex; flex-direction: row; ">
                             <div>
-                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" class="cover1">
+                                <a href=";" v-on:click="UsersUrl(singleFollow.Userid)" class="cover1">
                                     <img v-bind:src="singleFollow.Portrait" v-bind:alt="singleFollow.FollowerName">
                                 </a>
                             </div>
@@ -773,7 +773,7 @@
                             }
                         })
                         if (res == "fail") {
-                            console.log(this.Fans[num - 1].isFans);
+                            //console.log(this.Fans[num - 1].isFans);
                             this.Fans[num - 1].isFans = 0;
                         }
                     },
@@ -784,7 +784,7 @@
                             }
                         })
                         if (res1 == "fail") {
-                            console.log(this.Fans[num - 1].isFans);
+                            //console.log(this.Fans[num - 1].isFans);
                             this.Fans[num - 1].isFans = 1;
                         }
                     }

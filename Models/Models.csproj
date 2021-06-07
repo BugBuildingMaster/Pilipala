@@ -186,12 +186,6 @@
     <Compile Include="tempRecommendAnimation.cs">
       <DependentUpon>Pilipala.tt</DependentUpon>
     </Compile>
-    <Compile Include="tempSearchAnimation.cs">
-      <DependentUpon>Pilipala.tt</DependentUpon>
-    </Compile>
-    <Compile Include="tempSearchEvaluation.cs">
-      <DependentUpon>Pilipala.tt</DependentUpon>
-    </Compile>
     <Compile Include="tempSearchUsers.cs">
       <DependentUpon>Pilipala.tt</DependentUpon>
     </Compile>

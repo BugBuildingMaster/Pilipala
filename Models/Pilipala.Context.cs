@@ -65,8 +65,6 @@ namespace Models
         public virtual DbSet<tempCommunityShortComment> tempCommunityShortComment { get; set; }
         public virtual DbSet<tempEvaluationList> tempEvaluationList { get; set; }
         public virtual DbSet<tempRankingList> tempRankingList { get; set; }
-        public virtual DbSet<tempSearchAnimation> tempSearchAnimation { get; set; }
-        public virtual DbSet<tempSearchEvaluation> tempSearchEvaluation { get; set; }
         public virtual DbSet<tempSearchUsers> tempSearchUsers { get; set; }
         public virtual DbSet<tempDongtai> tempDongtai { get; set; }
         public virtual DbSet<tempEvaluation> tempEvaluation { get; set; }

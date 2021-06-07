@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="91788d5bd21048eb87e3837af91c091b" Name="Diagram1">
+      <Diagram DiagramId="91788d5bd21048eb87e3837af91c091b" Name="Diagram1" ZoomLevel="21">
         <EntityTypeShape EntityType="PiliPalaModel.Animation" Width="1.5" PointX="3.75" PointY="19.625" IsExpanded="true" />
         <EntityTypeShape EntityType="PiliPalaModel.AnimationPhoto" Width="1.5" PointX="6" PointY="20.125" IsExpanded="true" />
         <EntityTypeShape EntityType="PiliPalaModel.Buzzword" Width="1.5" PointX="5.75" PointY="15.5" IsExpanded="true" />
@@ -43,8 +43,6 @@
         <EntityTypeShape EntityType="PiliPalaModel.tempCommunityShortComment" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="PiliPalaModel.tempEvaluationList" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="PiliPalaModel.tempRankingList" Width="1.5" PointX="2.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PiliPalaModel.tempSearchAnimation" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PiliPalaModel.tempSearchEvaluation" Width="1.5" PointX="4.75" PointY="8.75" IsExpanded="true" />
         <EntityTypeShape EntityType="PiliPalaModel.tempSearchUsers" Width="1.5" PointX="6.75" PointY="8.75" IsExpanded="true" />
         <AssociationConnector Association="PiliPalaModel.FK__Animation__Anima__33D4B598" ManuallyRouted="false" />
         <AssociationConnector Association="PiliPalaModel.FK__Animation__Anima__398D8EEE" ManuallyRouted="false" />
@@ -96,11 +94,11 @@
         <AssociationConnector Association="PiliPalaModel.FK__UserLikeE__UserN__4AB81AF0" ManuallyRouted="false" />
         <AssociationConnector Association="PiliPalaModel.FK__UsersInfo__UserN__489AC854" ManuallyRouted="false" />
         <AssociationConnector Association="PiliPalaModel.FK__Watch__UserName__740F363E" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="PiliPalaModel.tempDongtai" Width="1.5" PointX="13.375" PointY="4.75" />
-        <EntityTypeShape EntityType="PiliPalaModel.tempEvaluation" Width="1.5" PointX="14.375" PointY="8.75" />
-        <EntityTypeShape EntityType="PiliPalaModel.tempFans" Width="1.5" PointX="15.375" PointY="4.75" />
-        <EntityTypeShape EntityType="PiliPalaModel.tempFollow" Width="1.5" PointX="15.375" PointY="12.75" />
-        <EntityTypeShape EntityType="PiliPalaModel.tempShortComment" Width="1.5" PointX="16.375" PointY="0.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempDongtai" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempEvaluation" Width="1.5" PointX="9" PointY="8.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempFans" Width="1.5" PointX="6.625" PointY="4.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempFollow" Width="1.5" PointX="8.75" PointY="4.75" />
+        <EntityTypeShape EntityType="PiliPalaModel.tempShortComment" Width="1.5" PointX="10.875" PointY="0.75" />
         <EntityTypeShape EntityType="PiliPalaModel.BanSpeech" Width="1.5" PointX="3" PointY="42.375" />
         <AssociationConnector Association="PiliPalaModel.FK__BanSpeech__BanNa__0862A9B3" />
       </Diagram>

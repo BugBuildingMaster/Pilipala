@@ -569,44 +569,6 @@
           <Property Name="Score" Type="float" />
         </EntityType>
         <!--生成过程中发现错误:
-警告 6002: 表/视图“PiliPala.dbo.tempSearchAnimation”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
-        <EntityType Name="tempSearchAnimation">
-          <Key>
-            <PropertyRef Name="Animationid" />
-            <PropertyRef Name="Aname" />
-          </Key>
-          <Property Name="Animationid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Aname" Type="nvarchar" MaxLength="150" Nullable="false" />
-          <Property Name="AimagePic" Type="varchar" MaxLength="100" />
-          <Property Name="Aplot" Type="varchar" MaxLength="1000" />
-          <Property Name="Score" Type="float" />
-        </EntityType>
-        <!--生成过程中发现错误:
-警告 6002: 表/视图“PiliPala.dbo.tempSearchEvaluation”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
-        <EntityType Name="tempSearchEvaluation">
-          <Key>
-            <PropertyRef Name="Evaluationid" />
-            <PropertyRef Name="Aname" />
-            <PropertyRef Name="UserName" />
-            <PropertyRef Name="Title" />
-            <PropertyRef Name="Time" />
-            <PropertyRef Name="Content" />
-          </Key>
-          <Property Name="Evaluationid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Userid" Type="int" />
-          <Property Name="Animationid" Type="int" />
-          <Property Name="Aname" Type="nvarchar" MaxLength="150" Nullable="false" />
-          <Property Name="AimagePic" Type="varchar" MaxLength="100" />
-          <Property Name="Portrait" Type="nvarchar" MaxLength="500" />
-          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="Time" Type="datetime" Nullable="false" />
-          <Property Name="Content" Type="text" Nullable="false" />
-          <Property Name="Score" Type="float" />
-          <Property Name="Likenum" Type="int" />
-          <Property Name="Dislikenum" Type="int" />
-        </EntityType>
-        <!--生成过程中发现错误:
 警告 6002: 表/视图“PiliPala.dbo.tempSearchUsers”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="tempSearchUsers">
           <Key>
@@ -1536,32 +1498,6 @@
     [tempRankingList].[Score] AS [Score]
     FROM [dbo].[tempRankingList] AS [tempRankingList]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="tempSearchAnimation" EntityType="Self.tempSearchAnimation" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [tempSearchAnimation].[Animationid] AS [Animationid], 
-    [tempSearchAnimation].[Aname] AS [Aname], 
-    [tempSearchAnimation].[AimagePic] AS [AimagePic], 
-    [tempSearchAnimation].[Aplot] AS [Aplot], 
-    [tempSearchAnimation].[Score] AS [Score]
-    FROM [dbo].[tempSearchAnimation] AS [tempSearchAnimation]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="tempSearchEvaluation" EntityType="Self.tempSearchEvaluation" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [tempSearchEvaluation].[Evaluationid] AS [Evaluationid], 
-    [tempSearchEvaluation].[Userid] AS [Userid], 
-    [tempSearchEvaluation].[Animationid] AS [Animationid], 
-    [tempSearchEvaluation].[Aname] AS [Aname], 
-    [tempSearchEvaluation].[AimagePic] AS [AimagePic], 
-    [tempSearchEvaluation].[Portrait] AS [Portrait], 
-    [tempSearchEvaluation].[UserName] AS [UserName], 
-    [tempSearchEvaluation].[Title] AS [Title], 
-    [tempSearchEvaluation].[Time] AS [Time], 
-    [tempSearchEvaluation].[Content] AS [Content], 
-    [tempSearchEvaluation].[Score] AS [Score], 
-    [tempSearchEvaluation].[Likenum] AS [Likenum], 
-    [tempSearchEvaluation].[Dislikenum] AS [Dislikenum]
-    FROM [dbo].[tempSearchEvaluation] AS [tempSearchEvaluation]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="tempSearchUsers" EntityType="Self.tempSearchUsers" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [tempSearchUsers].[Userid] AS [Userid], 
@@ -2350,40 +2286,6 @@
           <Property Name="Score" Type="Double" />
           <Property Name="RowNum" Type="Int64" />
         </EntityType>
-        <EntityType Name="tempSearchAnimation">
-          <Key>
-            <PropertyRef Name="Animationid" />
-            <PropertyRef Name="Aname" />
-          </Key>
-          <Property Name="Animationid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Aname" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AimagePic" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Aplot" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="Score" Type="Double" />
-        </EntityType>
-        <EntityType Name="tempSearchEvaluation">
-          <Key>
-            <PropertyRef Name="Evaluationid" />
-            <PropertyRef Name="Aname" />
-            <PropertyRef Name="UserName" />
-            <PropertyRef Name="Title" />
-            <PropertyRef Name="Time" />
-            <PropertyRef Name="Content" />
-          </Key>
-          <Property Name="Evaluationid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Userid" Type="Int32" />
-          <Property Name="Animationid" Type="Int32" />
-          <Property Name="Aname" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AimagePic" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Portrait" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Score" Type="Double" />
-          <Property Name="Likenum" Type="Int32" />
-          <Property Name="Dislikenum" Type="Int32" />
-        </EntityType>
         <EntityType Name="tempSearchUsers">
           <Key>
             <PropertyRef Name="Userid" />
@@ -3039,8 +2941,6 @@
           <EntitySet Name="tempCommunityShortComment" EntityType="Self.tempCommunityShortComment" />
           <EntitySet Name="tempEvaluationList" EntityType="Self.tempEvaluationList" />
           <EntitySet Name="tempRankingList" EntityType="Self.tempRankingList" />
-          <EntitySet Name="tempSearchAnimation" EntityType="Self.tempSearchAnimation" />
-          <EntitySet Name="tempSearchEvaluation" EntityType="Self.tempSearchEvaluation" />
           <EntitySet Name="tempSearchUsers" EntityType="Self.tempSearchUsers" />
           <AssociationSet Name="FK__Animation__Anima__33D4B598" Association="Self.FK__Animation__Anima__33D4B598">
             <End Role="Animation" EntitySet="Animation" />
@@ -3937,36 +3837,6 @@
                 <ScalarProperty Name="Anickname" ColumnName="Anickname" />
                 <ScalarProperty Name="Aplot" ColumnName="Aplot" />
                 <ScalarProperty Name="Score" ColumnName="Score" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tempSearchAnimation">
-            <EntityTypeMapping TypeName="PiliPalaModel.tempSearchAnimation">
-              <MappingFragment StoreEntitySet="tempSearchAnimation">
-                <ScalarProperty Name="Animationid" ColumnName="Animationid" />
-                <ScalarProperty Name="Aname" ColumnName="Aname" />
-                <ScalarProperty Name="AimagePic" ColumnName="AimagePic" />
-                <ScalarProperty Name="Aplot" ColumnName="Aplot" />
-                <ScalarProperty Name="Score" ColumnName="Score" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tempSearchEvaluation">
-            <EntityTypeMapping TypeName="PiliPalaModel.tempSearchEvaluation">
-              <MappingFragment StoreEntitySet="tempSearchEvaluation">
-                <ScalarProperty Name="Evaluationid" ColumnName="Evaluationid" />
-                <ScalarProperty Name="Userid" ColumnName="Userid" />
-                <ScalarProperty Name="Animationid" ColumnName="Animationid" />
-                <ScalarProperty Name="Aname" ColumnName="Aname" />
-                <ScalarProperty Name="AimagePic" ColumnName="AimagePic" />
-                <ScalarProperty Name="Portrait" ColumnName="Portrait" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Time" ColumnName="Time" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="Score" ColumnName="Score" />
-                <ScalarProperty Name="Likenum" ColumnName="Likenum" />
-                <ScalarProperty Name="Dislikenum" ColumnName="Dislikenum" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

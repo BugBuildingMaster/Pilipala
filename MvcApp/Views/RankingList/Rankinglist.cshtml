@@ -16,6 +16,8 @@
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/axios.js"></script>
     <script src="~/Scripts/axioshttp.js"></script>
+
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         header .head_user .opts_account > img {
             width: 50px;
@@ -233,6 +235,8 @@
             height: 2.8rem;
             font-size: 1rem;
         }
+
+        <link href="~/assets/css/style.css" rel="stylesheet" / >
     </style>
     <style>
         header .head_user .opts_account > img {
@@ -436,6 +440,32 @@
             overflow: hidden;
             border: hidden;
         }
+
+        .suggest {
+            width: 20.5rem;
+            margin-top: -0.24rem;
+            border-bottom-color: #d6d6d6;
+            cursor: default;
+        }
+
+        .sugChi {
+            background-color: #efefef;
+            border: 1px solid #00000005;
+        }
+
+        .sugPar {
+            width:100%;
+            border: 2px solid grey !important;
+            border-top: 2px solid #ffffff00 !important;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+        }
+            .sugPar li {
+                width: 100%;
+                margin-left: 0px;
+            }
     </style>
 </head>
 <div class="main_content">
@@ -444,28 +474,8 @@
     <div class="main_header">
         <header>
             <div class="header-innr">
-                <!-- 搜索-->
-                <div class="head_search">
-                    <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
-                        <input class="search_input" type="text" placeholder="" name="keyword" id="input_text">
-                        <input type="hidden" name="sid" value="">
-                        <input class="inp_sub" type="submit" value="搜索" id="sub">
-                    </form>
-                    <iframe id="iframe" name="iframe" style="display:none;"></iframe>
-                </div>
-                <script>
-                    function addSearch() {
-                        if ($('#input_text').val() == "") {
-                            window.location.href = "/Search/OriginSearch";
-                        }
-                        else {
-                            const url = "/Search/Search?KeyWord=" + $('#input_text').val()
-                            window.location.href = url;
-                        }
-                    }
-                </script>
                 <!--导航栏-->
-                <div class="nav nav-a fr" style="margin-left: 3rem;">
+                <div class="nav nav-a">
                     <ul style="display: flex; width: 100%;">
                         <li data-cid="0">
                             <span> @Html.ActionLink("首页", "Index", "Animation")</span>
@@ -481,6 +491,33 @@
                         </li>
                     </ul>
                 </div>
+                <!-- 搜索-->
+                <div class="head_search" style="margin-left: 18rem;">
+                    <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
+                        <div id="theSearch">
+                            <input class="search_input" type="text" placeholder="" name="keyword" autocomplete="off" id="input_text" v-on:input="setSug()" v-on:porpertychange="setSug()" v-on:blur="changeSug(0)" v-on:focus="changeSug(1)">
+                            <input type="hidden" name="sid" value="">
+                            <input class="inp_sub" type="submit" value="搜索" id="sub">
+                            <div id="suggestion" class="suggest" style="display:none;position: absolute;z-index: 100;">
+                                <ul class="list-group sugPar">
+                                    <li class="list-group-item sugChi" v-for="(single,i) in suggestions" v-on:mouseover="light($event)" v-on:mouseout="dark($event)" onmousedown="addSearch();">{{single}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <iframe id="iframe" name="iframe" style="display:none;"></iframe>
+                </div>
+                <script>
+                    function addSearch() {
+                        if ($('#input_text').val() == "") {
+                            window.location.href = "/Search/OriginSearch";
+                        }
+                        else {
+                            const url = "/Search/Search?KeyWord=" + $('#input_text').val()
+                            window.location.href = url;
+                        }
+                    }
+                </script>
             </div>
             <!-- 头部内容结束 -->
         </header>
@@ -501,7 +538,7 @@
             <div id="aresult" class="mainBody">
                 <div id="Div1" style="text-align: center; white-space: nowrap;">
                     <div class="grayborder">
-                        <div class="top-title">
+                        <div class="top-title" style="height: 1.7rem;">
                             <h2>今日动漫评分排行榜</h2>
                         </div>
                         <table class="list-table" v-for="(singleAnimation, i) in Rankinglist">
@@ -657,3 +694,66 @@
 
     </div>
 </div>
+<script>
+    var sug = null;
+    const searching = new Vue({
+        el: "#theSearch",
+        data: {
+            suggestions: []
+        },
+        created() {
+            this.changeSug(0)
+        },
+        mouted() {
+
+        },
+        methods: {
+            //搜索提示
+            async suggest() {
+                const { data: res } = await axios.get('/Search/getSuggest', {
+                    params: {
+                        keyWord: $('#input_text').val()
+                    }
+                })
+                this.suggestions = res["suggestion"];
+                //console.log(this.suggestions);
+                this.changeSug(1)
+            },
+            //提示防抖
+            async setSug() {
+                clearTimeout(sug);
+                sug = setTimeout(this.suggest, 150);
+            },
+            //提示框样式改变
+            async changeSug(num) {
+                var input = document.getElementById("input_text");
+                var suggestion = document.getElementById("suggestion");
+                if (num == 0) {
+                    suggestion.style.display = "none";
+                    input.style.borderBottomColor = "grey";
+                    input.style.borderRadius = "10px";
+                }
+                else {
+                    if (this.suggestions.length != 0) {
+                        suggestion.style.display = "block";
+                        input.style.borderBottomColor = "#d6d6d6";
+                        input.style.borderRadius = "10px 10px 0px 0px";
+                    }
+                    else {
+                        suggestion.style.display = "none";
+                        input.style.borderBottomColor = "grey";
+                        input.style.borderRadius = "10px";
+                    }
+                }
+            },
+            //鼠标悬浮选项样式改变
+            async light(event) {
+                $(event.target).addClass('active');
+                $('#input_text').val(event.target.innerText);
+            },
+            async dark(event) {
+                $(event.target).removeClass('active');
+            }
+        }
+    })
+</script>
