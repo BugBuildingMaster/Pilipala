@@ -35,12 +35,13 @@ namespace MvcApp.Controllers
                     JObject username = readtoken(cookie.Values["Token"]);
                     id = id ?? Convert.ToInt32(username["UserId"]);
                     var visitor = username["UserName"].ToString();
-                    if (visitor == name || id==Convert.ToInt32(username["UserId"]))
+                    if (visitor == name || id == Convert.ToInt32(username["UserId"]))
                     {
                         return RedirectToAction("Center", "User", new { id });
                     }
                     else
                     {
+                        InitUpdater();
                         ViewBag.username = name;
                         ViewBag.userid = id;
                         UsersInfo user = uManager.GetUsersInfo((int)id);

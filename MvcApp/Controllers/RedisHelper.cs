@@ -1075,6 +1075,19 @@ namespace RedisHelp
             return redisKeys.Select(redisKey => (RedisKey)redisKey).ToArray();
         }
 
+        /// <summary>
+        /// 模糊查找keys
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string[] ToGet(string key)
+        {
+            var redisresult = GetDatabase().ScriptEvaluate(LuaScript.Prepare(
+                "local res=redis.call('KEYS',@keypattern)" +
+                "return res"), new { @keypattern = key });
+            string[] preRes = (string[])redisresult;
+            return preRes;
+        }
         #endregion 辅助方法
     }
 }

@@ -44,20 +44,49 @@ namespace SqlDAL
             return db.SaveChanges() > 0;
         }
 
-        //测评点赞or点踩
-        public string AddLikeOrDislike(int num, int id, string username)
+        //测评点赞
+        public string AddLike(int id, string username, DateTime time)
         {
-            db.LikeOrDislike(num, id, username, DateTime.Now);
-            if (num == 2)
+            Elike like = new Elike
             {
-                return db.Evaluation.Find(id).Likenum.ToString();
-            }
-            else if (num == 3)
-            {
-                return db.Evaluation.Find(id).Dislikenum.ToString();
-            }
-            return null;
+                UserName = username,
+                Evaluationid = id,
+                Time = time
+            };
+            db.Elike.Add(like);
+            db.SaveChanges();
+            return db.Evaluation.Find(id).Likenum.ToString();
         }
+        //取消测评点赞
+        public string CancleAddLike(int id, string username)
+        {
+            Elike like = db.Elike.Where(x => x.UserName == username && x.Evaluationid == id).FirstOrDefault();
+            db.Elike.Remove(like);
+            db.SaveChanges();
+            return db.Evaluation.Find(id).Likenum.ToString();
+        }
+        //测评点踩
+        public string AddDislike(int id, string username, DateTime time)
+        {
+            Edislike like = new Edislike
+            {
+                UserName = username,
+                Evaluationid = id,
+                Time = time
+            };
+            db.Edislike.Add(like);
+            db.SaveChanges();
+            return db.Evaluation.Find(id).Dislikenum.ToString();
+        }
+        //取消测评点踩
+        public string CancleAddDislike(int id, string username)
+        {
+            Edislike like = db.Edislike.Where(x => x.UserName == username && x.Evaluationid == id).FirstOrDefault();
+            db.Edislike.Remove(like);
+            db.SaveChanges();
+            return db.Evaluation.Find(id).Dislikenum.ToString();
+        }
+
         //添加测评
         public bool AddEvaluation(PublishEvaluation evaluation)
         {

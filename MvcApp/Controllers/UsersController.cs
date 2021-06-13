@@ -60,6 +60,7 @@ namespace MvcApp.Controllers
                 }
                 else
                 {
+                    InitUpdater();
                     return View();
                 }
             }
@@ -87,6 +88,7 @@ namespace MvcApp.Controllers
                 }
                 else
                 {
+                    InitUpdater();
                     return View();
                 }
             }
@@ -488,6 +490,7 @@ namespace MvcApp.Controllers
                 }
                 else if (v == "success")
                 {
+                    Login(username, password);      //注册成功，自动登录
                     return "success";
                 }
                 else if (v == "illEmail")
@@ -626,8 +629,9 @@ namespace MvcApp.Controllers
         {
             try
             {
-                if (VerMailToken(link))
+                if (VerMailToken(link))     //token验证成功，初始化后进入页面
                 {
+                    InitUpdater();
                     JObject token = readtoken(link);
                     string email = token["email"].ToString();
                     ViewBag.username = usersManager.EmailToName(email);
@@ -655,6 +659,7 @@ namespace MvcApp.Controllers
         [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult ForgetPwd()
         {
+            InitUpdater();
             return View();
         }
 
@@ -681,7 +686,7 @@ namespace MvcApp.Controllers
                     string priKey = RedisHelper.HashGet("KeyPool", pubKey);
                     //生成验证token并将token附入邮件
                     string tokenContent = getVerToken(Mail, DateTime.Now, pubKey, priKey);
-                    if (SendMail(Mail,usersManager.EmailToName(Mail) , tokenContent))
+                    if (SendMail(Mail, usersManager.EmailToName(Mail), tokenContent))
                     {
                         //邮件成功送出，将送出的token放入redis中维护
                         RedisHelper.HashSet(tokenContent, "prikey", priKey);
@@ -738,7 +743,12 @@ namespace MvcApp.Controllers
                 {
                     string newSalt = CreateSalt(20);
                     string Value = Encryption(TrueValue, newSalt);
-                    return Content(usersManager.ResetPwd(name, Value, newSalt));
+                    string result = usersManager.ResetPwd(name, Value, newSalt);
+                    if (result == "success")    //重设成功，自动登录
+                    {
+                        Login(name, pwd);
+                    }
+                    return Content(result);
                 }
             }
             catch (Exception)

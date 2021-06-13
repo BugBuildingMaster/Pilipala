@@ -25,6 +25,7 @@ namespace MvcApp.Controllers
         {
             try
             {
+                InitUpdater();
                 if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
                 {
                     HttpCookie cookie = Request.Cookies["Login"];
@@ -62,6 +63,7 @@ namespace MvcApp.Controllers
         {
             //ViewBag.id = id;
             //return View(aManager.GetAnimation((int)id));
+            InitUpdater();
             if (id == null)
             {
                 return RedirectToAction("Index", "Animation");
@@ -204,7 +206,8 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject name = readtoken(cookie.Values["Token"]);
-                    return Content(aManager.AddCommentLike(id, name["UserName"].ToString()));
+                    //return Content(aManager.AddCommentLike(id, name["UserName"].ToString(), DateTime.Now));
+                    return Content(ToLike(id, name["UserName"].ToString(), "ShortComment", DateTime.Now, false));
                 }
                 else
                 {

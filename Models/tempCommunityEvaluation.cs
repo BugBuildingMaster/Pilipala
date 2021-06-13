@@ -25,5 +25,7 @@ namespace Models
         public Nullable<int> Likenum { get; set; }
         public Nullable<int> Dislikenum { get; set; }
         public Nullable<double> Score { get; set; }
+        public Nullable<int> isLike { get; set; }
+        public Nullable<int> isDisLike { get; set; }
     }
 }

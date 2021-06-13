@@ -60,7 +60,17 @@
         </div>
         <div class="post-state">
             <div class="post-state-btns" onclick="ShortCommentAddlike(@item.Scommentid)">
-                <i class="uil-thumbs-up"></i>
+                @*<i class="uil-thumbs-up"></i>*@
+                @{
+                    if (item.isLike == 0)
+                    {
+                        <i id="@("SCicon"+item.Scommentid)" class="bi bi-hand-thumbs-up"></i>
+                    }
+                    else
+                    {
+                        <i id="@("SCicon"+item.Scommentid)" class="bi bi-hand-thumbs-up-fill"></i>
+                    }
+                }
                 <font id="@("short"+item.Scommentid)"> @item.Likenum</font><span> 赞 </span>
             </div>
         </div>

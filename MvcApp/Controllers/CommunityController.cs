@@ -34,6 +34,7 @@ namespace MvcApp.Controllers
                 }
                 else
                 {
+                    InitUpdater();
                     //获取token中的名字
                     JObject name = readtoken(cookie.Values["Token"]);
                     ViewBag.userid = name["UserId"].ToString();
@@ -458,8 +459,9 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject name = readtoken(cookie.Values["Token"]);
-                    string i = cManager.AddLike(id, name["UserName"].ToString());
-                    return Content(i);
+                    //string i = cManager.AddLike(id, name["UserName"].ToString(), DateTime.Now);
+                    //return Content(i);
+                    return Content(ToLike(id, name["UserName"].ToString(), "Dongtai", DateTime.Now, false));
                 }
                 else
                 {
@@ -489,8 +491,9 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject name = readtoken(cookie.Values["Token"]);
-                    string i = cManager.ShortCommentAddLike(id, name["UserName"].ToString());
-                    return Content(i);
+                    //string i = cManager.ShortCommentAddLike(id, name["UserName"].ToString(), DateTime.Now);
+                    //return Content(i);
+                    return Content(ToLike(id, name["UserName"].ToString(), "ShortComment", DateTime.Now, false));
                 }
                 else
                 {
@@ -520,8 +523,9 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject name = readtoken(cookie.Values["Token"]);
-                    string i = cManager.DongtaiCommentAddLike(id, name["UserName"].ToString());
-                    return Content(i);
+                    //string i = cManager.DongtaiCommentAddLike(id, name["UserName"].ToString(), DateTime.Now);
+                    //return Content(i);
+                    return Content(ToLike(id, name["UserName"].ToString(), "DongtaiComment", DateTime.Now, false));
                 }
                 else
                 {

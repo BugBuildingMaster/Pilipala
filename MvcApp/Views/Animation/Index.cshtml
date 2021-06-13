@@ -40,6 +40,8 @@
             $(".mainbody").show();
         }
         document.onreadystatechange = function () {
+            document.title = "Pilipala动漫网";
+
             if (sessionStorage.getItem('introViewed') == 'true') {
                 setTimeout('loading()', 1500);
             } else {

@@ -108,9 +108,23 @@ namespace SqlDAL
         #endregion
 
         #region 短评点赞
-        public string AddCommentLike(int id, string name)
+        public string AddCommentLike(int id, string name, DateTime time)
         {
-            db.LikeOrDislike(1, id, name, DateTime.Now);
+            SLike like = new SLike
+            {
+                SuserName = name,
+                Scommentid = id,
+                Time = time
+            };
+            db.SLike.Add(like);
+            db.SaveChanges();
+            return db.ShortComment.Find(id).Likenum.ToString();
+        }
+        public string CancleAddCommentLike(int id, string name)
+        {
+            SLike like = db.SLike.Where(x => x.SuserName == name && x.Scommentid == id).FirstOrDefault();
+            db.SLike.Remove(like);
+            db.SaveChanges();
             return db.ShortComment.Find(id).Likenum.ToString();
         }
         #endregion

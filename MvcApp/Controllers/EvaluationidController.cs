@@ -31,6 +31,7 @@ namespace MvcApp.Controllers
             }
             else
             {
+                InitUpdater();
                 AddWatch("Evaluation", (int)id);
                 var eva = eManager.GetEvaluation((int)id);
                 return View(eva);
@@ -92,6 +93,7 @@ namespace MvcApp.Controllers
                 }
             }
         }
+
         //测评点赞
         [EnableThrottling(PerSecond = 7, PerMinute = 400, PerHour = 3000, PerDay = 10000)]
         public ActionResult Addlike(int id)
@@ -108,7 +110,8 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject name = readtoken(cookie.Values["Token"]);
-                    return Content(eManager.AddLikeOrDislike(2, id, name["UserName"].ToString()));
+                    //return Content(eManager.AddLikeOrDislike(2, id, name["UserName"].ToString(), DateTime.Now));
+                    return Content(ToLike(id, name["UserName"].ToString(), "EvaluationLike", DateTime.Now, false));
                 }
                 else
                 {
@@ -132,7 +135,8 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject name = readtoken(cookie.Values["Token"]);
-                    return Content(eManager.AddLikeOrDislike(3, id, name["UserName"].ToString()));
+                    //return Content(eManager.AddLikeOrDislike(3, id, name["UserName"].ToString(), DateTime.Now));
+                    return Content(ToLike(id, name["UserName"].ToString(), "EvaluationDisLike", DateTime.Now, false));
                 }
                 else
                 {

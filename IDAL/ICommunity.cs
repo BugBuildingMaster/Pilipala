@@ -28,9 +28,14 @@ namespace IDAL
         bool DeleteComment(int dtid);       //删除评论
         bool DeleteReply(int dtid);         //删除评论回复
 
-        string AddLike(int id,string name);                 //动态点赞
-        string ShortCommentAddLike(int id, string name);     //短评点赞
-        string DongtaiCommentAddLike(int id, string name);   //动态评论点赞
+        string AddLike(int id,string name, DateTime time);                 //动态点赞
+        string CancleAddLike(int id,string name);                 //动态取消点赞
+        string ShortCommentAddLike(int id, string name, DateTime time);     //短评点赞
+        string CancleShortCommentAddLike(int id, string name);     //短评取消点赞
+        string DongtaiCommentAddLike(int id, string name, DateTime time);   //动态评论点赞
+        string CancleDongtaiCommentAddLike(int id, string name);   //动态评论取消点赞
         string ShortCommentNum(int id);         //动态评论数返回
+        bool LikeExist(int id, string name, string type);   //判断是否点赞
+        string GetNumber(int id, string type);      //获取对应数据点赞数
     }
 }

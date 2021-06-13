@@ -332,7 +332,7 @@
     <div class="top-user">
         <div class="inner">
             <a class="logo" href="../.." style="border-right:1px solid #e0e0e0"><img id="logoimg" src="~/public/static/uploads/openinggif/smalllogo1.gif" alt="pilipala网" class="cover logo" style="border-radius:0px;"></a>
-            <div class="title" style="border:hidden;margin-top:15px;">个人中心</div>
+            <div class="title" style="border:hidden;margin-top:15px;">@(ViewBag.username)的空间</div>
             <div class="pull-right d-flex flex-row align-items-center justify-content-around" style="margin-top:20px;">
                 @{
                     if (ViewBag.username == null)
@@ -743,6 +743,7 @@
 </div>
 @*修改信息的脚本*@
 <script>
+    document.title = "@ViewBag.username"+"的空间";
     //转换格式
     function toTime(obj) {
         var date = new Date(obj);

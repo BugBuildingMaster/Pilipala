@@ -13,6 +13,7 @@ namespace BLL
     public class EvaluationManager
     {
         readonly IEvaluation evaluation = DataAccess.CreateEvaluation();
+        readonly ICommunity community = DataAccess.CreateCommunity();
         /// <summary>
         /// 获取某一篇测评
         /// </summary>
@@ -56,9 +57,24 @@ namespace BLL
         /// <param name="id"></param>
         /// <param name="username"></param>
         /// <returns></returns>
-        public string AddLikeOrDislike(int num, int id, string username)
+        public string AddLikeOrDislike(int num, int id, string username, DateTime time)
         {
-            return evaluation.AddLikeOrDislike(num, id, username);
+            if (num == 2)
+            {
+                if (community.LikeExist(id, username, "EvaluationLike"))
+                    return evaluation.CancleAddLike(id, username);
+                else
+                    return evaluation.AddLike(id, username,time);
+            }
+            else
+            {
+                if (community.LikeExist(id, username, "EvaluationDisLike"))
+                    return evaluation.CancleAddDislike(id, username);
+                else
+                    return evaluation.AddDislike(id, username,time);
+            }
+
+
         }
         /// <summary>
         /// 发布测评 先审核

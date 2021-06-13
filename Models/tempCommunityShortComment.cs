@@ -24,5 +24,6 @@ namespace Models
         public System.DateTime Time { get; set; }
         public Nullable<double> Score { get; set; }
         public Nullable<int> Likenum { get; set; }
+        public Nullable<int> isLike { get; set; }
     }
 }

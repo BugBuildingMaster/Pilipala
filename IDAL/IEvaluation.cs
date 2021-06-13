@@ -19,8 +19,14 @@ namespace IDAL
         IEnumerable<EComment> GetEComments(int eid);
         //添加测评评论
         bool AddEComment(EComment ect);
-        //测评点赞or点踩
-        string AddLikeOrDislike(int num, int id, string username);
+        //测评点赞
+        string AddLike(int id, string username, DateTime time);
+        //取消测评点赞
+        string CancleAddLike(int id, string username);
+        //测评点踩
+        string AddDislike(int id, string username, DateTime time);
+        //取消测评点踩
+        string CancleAddDislike(int id, string username);
         //添加测评 是否添加成功
         bool AddEvaluation(PublishEvaluation evaluation);
         //删除测评

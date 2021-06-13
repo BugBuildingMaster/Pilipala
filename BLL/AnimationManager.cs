@@ -9,9 +9,10 @@ using Factory;
 
 namespace BLL
 {
-    public class AnimationManager 
+    public class AnimationManager
     {
         readonly IAnimation animation = DataAccess.CreateAnimations();
+        readonly ICommunity icommunity = DataAccess.CreateCommunity();
 
         #region 根据个数获取日本动漫
         public IEnumerable<Animation> GetJanpanAniamtion(int pages)
@@ -26,7 +27,7 @@ namespace BLL
             return animation.GetAnimations("中国大陆", pages);
         }
         #endregion
- 
+
         #region 分页获取动漫
         public IEnumerable<Animation> GetAnimationByPages(string name, int num, int currentPage)
         {
@@ -60,9 +61,9 @@ namespace BLL
         /// <param name="id"></param>
         /// <param name="control"></param>
         /// <returns></returns>
-        public IEnumerable<ShortComment> GetShortComments(int id,int control)
+        public IEnumerable<ShortComment> GetShortComments(int id, int control)
         {
-            return control==1?animation.GetShortCommentsByTime(id):animation.GetShortCommentsByHot(id);
+            return control == 1 ? animation.GetShortCommentsByTime(id) : animation.GetShortCommentsByHot(id);
         }
 
         //获取简介
@@ -80,9 +81,13 @@ namespace BLL
             return animation.AddComment(sc);
         }
 
-        public string AddCommentLike(int id, string name)
+        public string AddCommentLike(int id, string name, DateTime time)
         {
-            return animation.AddCommentLike(id, name);
+            if (icommunity.LikeExist(id, name, "ShortComment"))
+                return animation.CancleAddCommentLike(id, name);
+            else
+                return animation.AddCommentLike(id, name,time);
+
         }
     }
 }

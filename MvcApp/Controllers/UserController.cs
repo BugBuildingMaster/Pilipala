@@ -42,6 +42,7 @@ namespace MvcApp.Controllers
                     var visitor = username["UserName"].ToString();
                     if (visitor == user.UserName)
                     {
+                        InitUpdater();
                         ViewBag.username = name;
                         ViewBag.userid = id;
                         //db.PersonalSpace(name, visitor);

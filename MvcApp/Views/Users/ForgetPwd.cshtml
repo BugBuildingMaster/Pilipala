@@ -80,8 +80,8 @@
                                 FloatTip(0, '邮箱不存在！');
                                 $('.tips').html('邮箱不存在！');
                             } else if (data =='repeat') {
-                                FloatTip(0, '已经发送验证码，请不要重复提交！');
-                                $('.tips').html('已经发送验证码，请不要重复提交！');
+                                FloatTip(0, '已经发送验证码，请在邮箱检查邮件，不要重复提交！');
+                                $('.tips').html('已经发送验证码，请在邮箱检查邮件，不要重复提交！');
                             }
                             else {
                                 FloatTip(2, '错误！');
@@ -112,7 +112,7 @@
                 keynum = e.which
             }
             if (keynum == 13) {  //等于13代表 回车键
-                register();
+                SentMail();
             }
         })
 

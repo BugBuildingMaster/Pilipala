@@ -80,23 +80,23 @@ namespace BLL
 
 
         #region 添加动态
-        public bool AddDynamic(string content,string name)
+        public bool AddDynamic(string content, string name)
         {
-            return icommunity.AddDynamic(content,name);
+            return icommunity.AddDynamic(content, name);
         }
         #endregion
 
         #region 添加评论
-        public bool AddComment(int dtid, string content,string name)    //参数为动态id，评论文本，评论者名
+        public bool AddComment(int dtid, string content, string name)    //参数为动态id，评论文本，评论者名
         {
-            return icommunity.AddComment(dtid,content, name);
+            return icommunity.AddComment(dtid, content, name);
         }
         #endregion
 
         #region 动态评论回复添加
-        public bool AddCommentReply(int id, string content, int dtid,string name)
+        public bool AddCommentReply(int id, string content, int dtid, string name)
         {
-            return icommunity.AddCommentReply(id, content,dtid, name);
+            return icommunity.AddCommentReply(id, content, dtid, name);
         }
         #endregion
 
@@ -126,26 +126,34 @@ namespace BLL
 
         #region 动态点赞
 
-        public string AddLike(int id, string name)
+        public string AddLike(int id, string name, DateTime time)
         {
-            string num = icommunity.AddLike(id,name);
-            return num;
+            if (icommunity.LikeExist(id, name, "Dongtai"))
+                return icommunity.CancleAddLike(id, name);
+            else
+                return icommunity.AddLike(id, name,time);
         }
         #endregion
 
         #region 短评点赞
-        public string ShortCommentAddLike(int id, string name)
+        public string ShortCommentAddLike(int id, string name, DateTime time)
         {
-            string num = icommunity.ShortCommentAddLike (id,name);
-            return num;
+            if (icommunity.LikeExist(id, name, "ShortComment"))
+                return icommunity.CancleShortCommentAddLike(id, name);
+            else
+                return icommunity.ShortCommentAddLike(id, name,time);
+
         }
         #endregion
 
         #region 动态评论点赞
-        public string DongtaiCommentAddLike(int id, string name)
+        public string DongtaiCommentAddLike(int id, string name, DateTime time)
         {
-            string num = icommunity.DongtaiCommentAddLike(id,name);
-            return num;
+            if (icommunity.LikeExist(id, name, "DongtaiComment"))
+                return icommunity.CancleDongtaiCommentAddLike(id, name);
+            else
+                return icommunity.DongtaiCommentAddLike(id, name,time);
+
         }
         #endregion
 
@@ -154,6 +162,20 @@ namespace BLL
         {
             string num = icommunity.ShortCommentNum(id);
             return num;
+        }
+        #endregion
+
+        #region 判断点赞还是取消
+        public bool LikeExist(int id, string name, string type)
+        {
+            return icommunity.LikeExist(id, name, type);
+        }
+        #endregion
+
+        #region 获取对应数据点赞数
+        public string GetNumber(int id, string type)
+        {
+            return icommunity.GetNumber(id, type);
         }
         #endregion
     }

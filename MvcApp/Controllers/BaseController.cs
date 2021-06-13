@@ -26,11 +26,15 @@ using System.Threading.Tasks;
 
 using RedisHelp;
 using MvcThrottle;
+using System.Threading;
 
 public class BaseController : Controller
 {
     public static RedisHelper RedisHelper = new RedisHelper(0, "127.0.0.1:6379,password=123456,DefaultDatabase=0");
     readonly RecommendManager rManager = new RecommendManager();
+    readonly CommunityManager cManager = new CommunityManager();
+    readonly EvaluationManager eManager = new EvaluationManager();
+    private static LikeNumUpdating rUpdating = new LikeNumUpdating(180000);    //初始化更新监督类
 
     #region token类
     protected class TokenInfo
@@ -42,8 +46,6 @@ public class BaseController : Controller
         public DateTime time { get; set; }
         public string pubkey { get; set; }
         public string email { get; set; }
-        public string psw { get; set; }
-        public string salt { get; set; }
     }
 
     protected class TokenHelper
@@ -151,7 +153,7 @@ public class BaseController : Controller
             else
             {
                 Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
-                Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+                //Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
                 RedirectToAction("Index", "Animation");
                 return null;
             }
@@ -159,7 +161,7 @@ public class BaseController : Controller
         catch (Exception)
         {
             Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
-            Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+            //Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
             RedirectToAction("Index", "Animation");
             return null;
         }
@@ -213,8 +215,8 @@ public class BaseController : Controller
                             //将新token放入令牌池，作为有效令牌，登录时设置有效期为1小时，键名为用户名，值为签名
                             RedisHelper.HashSet(newToken, "prikey", priKey);
                             RedisHelper.HashSet(newToken, "name", redisName);
-                            RedisHelper.KeyExpire(newToken, TimeSpan.FromDays(1));
-                            RedisHelper.StringSet(redisName, newToken, TimeSpan.FromDays(1));
+                            RedisHelper.KeyExpire(newToken, TimeSpan.FromHours(1));
+                            RedisHelper.StringSet(redisName, newToken, TimeSpan.FromHours(1));
                             return true;
                         }
                         else
@@ -382,4 +384,278 @@ public class BaseController : Controller
     }
     #endregion
 
+    #region Redis点赞缓存池
+    private class LikeNumUpdating       //更新监督类
+    {
+        private static int num = 0;     //设定的更新界限
+        private static int count = 0;   //计数属性
+        private static int timespan;    //更新间隔
+        System.Threading.Timer timer;   //更新计时器
+
+        public delegate string update(object sender, EventArgs e);  //声明委托
+        public event update onupdate;       //声明委托的事件
+
+        public LikeNumUpdating(int? interval)   //初始化监督类，根据输入时间初始化计时器
+        {
+            interval = interval ?? 1800000;
+            timespan = (int)interval;
+            timer = new System.Threading.Timer(new TimerCallback(timerChange), null, timespan, timespan);
+        }
+        private void timerChange(object sender)   //计时器所触发的更新
+        {
+            onupdate(this, null);
+        }
+        private void change()       //计数属性所触发的更新
+        {
+            if (onupdate != null)
+            {
+                onupdate(this, null);
+                timer.Change(timespan, timespan);
+            }
+        }
+
+        public bool isInit { get; set; }    //指示初始化状态
+        public bool IsUpdating { get; set; }    //指示更新状态
+        public int state        //通过state修改内部更新界限
+        {
+            get { return num; }
+            set { num = value; }
+        }
+
+        public int Count        //通过Count修改内部计数
+        {
+            get { return count; }
+            set
+            {
+                count = value;
+                if (count > num)
+                {
+                    change();   //当计数达到设定界限时，触发更新并将计数置零
+                    count = 0;
+                }
+            }
+        }
+    }
+
+    private class HandleList        //操作字典
+    {
+        public string name { get; set; }    //操作用户的姓名
+        public int id { get; set; }         //操作对象的id
+        public DateTime time { get; set; }  //操作时间
+        public string type { get; set; }    //记录所需要操作的类型
+    }
+
+    private string update(object sender, EventArgs e)       //redis向数据库同步数据
+    {
+        try
+        {
+            if (rUpdating.IsUpdating)     //保证更新时函数不会重复激活
+                return "updating";
+            rUpdating.IsUpdating = true;
+            //设置所有更新前缀
+            string[] updatelist = new string[]
+            {"ShortComment","Dongtai","DongtaiComment","EvaluationLike","EvaluationDisLike"};
+            foreach (var name in updatelist)    //历遍需要同步的类别
+            {
+                List<string> list = new List<string>();
+                List<string> keylist = new List<string>();
+                string[] value = RedisHelper.ToGet(name + "*_mid_[0-9]*end");   //操作名
+                string[] key = RedisHelper.ToGet(name + "[0-9]*end");       //数据名
+                List<HandleList> dealList = new List<HandleList>();
+                foreach (var item in key)
+                {
+                    keylist.Add(item);  //创建数据名删除列表
+                }
+                foreach (var item in value)
+                {
+                    list.Add(item); //创建删除列表
+                    string[] attr = item.Split(new string[] { "_mid_" }, StringSplitOptions.None);    //将获得的键值进行过滤
+                    HandleList temp = new HandleList   //过滤字符串形成操作字典
+                    {
+                        name = attr[0].Remove(0, name.Length),
+                        id = Convert.ToInt32(attr[1].Substring(0, attr[1].Length - 3)),
+                        time = Convert.ToDateTime(RedisHelper.StringGet(item))
+                    };
+                    dealList.Add(temp);
+                }
+                switch (name)
+                {
+                    case "ShortComment":
+                        {
+                            foreach (var item in dealList)
+                            {
+                                cManager.ShortCommentAddLike(item.id, item.name, item.time); //短评修改
+                            }
+                            break;
+                        }
+                    case "Dongtai":
+                        {
+                            foreach (var item in dealList)
+                            {
+                                cManager.AddLike(item.id, item.name, item.time); //动态修改
+                            }
+                            break;
+                        }
+                    case "DongtaiComment":
+                        {
+                            foreach (var item in dealList)
+                            {
+                                cManager.DongtaiCommentAddLike(item.id, item.name, item.time); //动态评论修改
+                            }
+                            break;
+                        }
+                    case "EvaluationLike":
+                        {
+                            foreach (var item in dealList)
+                            {
+                                eManager.AddLikeOrDislike(2, item.id, item.name, item.time); //测评点赞修改
+                            }
+                            break;
+                        }
+                    case "EvaluationDisLike":
+                        {
+                            foreach (var item in dealList)
+                            {
+                                eManager.AddLikeOrDislike(3, item.id, item.name, item.time); //测评点踩修改
+                            }
+                            break;
+                        }
+                }
+                RedisHelper.KeyDelete(list);    //清空更新完成的操作记录
+                RedisHelper.KeyDelete(keylist); //清空缓存的对象点赞数记录(防止脏读)
+            }
+            rUpdating.IsUpdating = false;
+            return "success";
+        }
+        catch (Exception)
+        {
+            return "error";
+        }
+    }
+
+    private List<HandleList> tempHandle = new List<HandleList>();
+    private int tempCount = 0;
+
+    public void InitUpdater()
+    {
+        if (rUpdating.isInit != true)
+        {
+            rUpdating.state = 300;           //设置更新限度
+            rUpdating.Count = 0;            //初始化计数
+            rUpdating.onupdate += update;   //附加委托函数
+            rUpdating.IsUpdating = false;   //初始化更新状态
+            rUpdating.isInit = true;        //将初始化标记置真
+        }
+    }
+
+    protected string ToLike(int id, string name, string type, DateTime time, bool isLoop)       //缓存更新函数
+    {
+        if (rUpdating.isInit != true)
+        {
+            InitUpdater();
+        }
+        bool exists = cManager.LikeExist(id, name, type);   //判断数据库是否存在记录
+        string pattern;     //操作名
+        string value = type + id + "end";       //数据名
+        pattern = type + name + "_mid_" + id.ToString() + "end";        //拼接key
+        if (isLoop)     //判断是否正在进行补充操作，如果是则不进行计数相关操作
+        {
+            if (rUpdating.Count >= 30)
+            {
+                string flag = update(this, null);
+                if (flag == "updating")  //正在更新，将需要插入的数据存入临时对象，等待更新完成继续存入
+                {
+                    HandleList temp = new HandleList
+                    {
+                        id = id,
+                        name = name,
+                        time = DateTime.Now,
+                        type = type
+                    };
+                    tempHandle.Add(temp);
+                    tempCount += 1;
+                    if (RedisHelper.KeyExists(value))
+                        return RedisHelper.StringGet(value);
+                    else
+                        return cManager.GetNumber(id, type).ToString();
+                }
+                else if (flag == "success")     //更新完成
+                {
+                    if (tempCount != 0)     //更新期间仍有操作，将临时存储的数据输入进行操作
+                    {
+                        foreach (var item in tempHandle)
+                        {
+                            ToLike(item.id, item.name, item.type, item.time, true);
+                        }
+                        tempCount = 0;      //操作完成，将临时存储对象清空初始化
+                        tempHandle.Clear();
+                    }
+                    rUpdating.Count = 0;
+                }
+                else
+                    return "error";
+            }
+        }
+        //确定在当前数据库中对应的操作
+        if (exists)
+        {
+            if (RedisHelper.KeyExists(pattern))       //判断缓存池是否存在对应记录
+            {
+                RedisHelper.KeyDelete(pattern);       //缓存池中存在该操作记录，所以删除该操作
+                if (!RedisHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
+                {
+                    //不存在对应数据的点赞数，进行建立
+                    int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
+                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                }
+                RedisHelper.StringIncrement(value); //为当前操作点赞数加一
+            }
+            else
+            {
+                RedisHelper.StringSet(pattern, time.ToString());       //缓存池中不存在该操作记录，所以添加该操作
+                if (!RedisHelper.KeyExists(value))            //判断池中是否存有对应数据的点赞数
+                {
+                    int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
+                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                }
+                RedisHelper.StringDecrement(value); //为当前操作点赞数减一
+            }
+        }
+        else
+        {
+            if (RedisHelper.KeyExists(pattern))       //判断缓存池是否存在对应记录
+            {
+                RedisHelper.KeyDelete(pattern);       //缓存池中存在该操作记录，所以删除该操作
+                if (!RedisHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
+                {
+                    //不存在对应数据的点赞数，进行建立
+                    int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
+                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                }
+                RedisHelper.StringDecrement(value); //为当前操作点赞数减一
+            }
+            else
+            {
+                RedisHelper.StringSet(pattern, time.ToString());       //缓存池中不存在该操作记录，所以添加该操作
+                if (!RedisHelper.KeyExists(value))            //判断池中是否存有对应数据的点赞数
+                {
+                    int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
+                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                }
+                RedisHelper.StringIncrement(value); //为当前操作点赞数加一
+            }
+        }
+        if (!isLoop)
+        {
+            rUpdating.Count += 1;
+            if (!RedisHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
+            {
+                //不存在对应数据的点赞数，进行建立
+                int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
+                RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+            }
+        }
+        return RedisHelper.StringGet(value);
+    }
+    #endregion
 }

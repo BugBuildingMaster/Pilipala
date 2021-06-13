@@ -108,27 +108,6 @@ namespace Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("FollowOrCancelFollow", followerParameter, userNameParameter, timeParameter);
         }
     
-        public virtual int LikeOrDislike(Nullable<int> num, Nullable<int> id, string userName, Nullable<System.DateTime> time)
-        {
-            var numParameter = num.HasValue ?
-                new ObjectParameter("num", num) :
-                new ObjectParameter("num", typeof(int));
-    
-            var idParameter = id.HasValue ?
-                new ObjectParameter("id", id) :
-                new ObjectParameter("id", typeof(int));
-    
-            var userNameParameter = userName != null ?
-                new ObjectParameter("UserName", userName) :
-                new ObjectParameter("UserName", typeof(string));
-    
-            var timeParameter = time.HasValue ?
-                new ObjectParameter("Time", time) :
-                new ObjectParameter("Time", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("LikeOrDislike", numParameter, idParameter, userNameParameter, timeParameter);
-        }
-    
         public virtual int PersonalSpace(string personName, string visitor)
         {
             var personNameParameter = personName != null ?
@@ -162,19 +141,6 @@ namespace Models
                 new ObjectParameter("PersonName", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("RecommendSet", personNameParameter);
-        }
-    
-        public virtual int SearchSet(string keyWord, string personName)
-        {
-            var keyWordParameter = keyWord != null ?
-                new ObjectParameter("KeyWord", keyWord) :
-                new ObjectParameter("KeyWord", typeof(string));
-    
-            var personNameParameter = personName != null ?
-                new ObjectParameter("PersonName", personName) :
-                new ObjectParameter("PersonName", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SearchSet", keyWordParameter, personNameParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
@@ -390,6 +356,19 @@ namespace Models
                 new ObjectParameter("PersonName", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("GetShortComment", personNameParameter);
+        }
+    
+        public virtual int SearchSet(string keyWord, string personName)
+        {
+            var keyWordParameter = keyWord != null ?
+                new ObjectParameter("KeyWord", keyWord) :
+                new ObjectParameter("KeyWord", typeof(string));
+    
+            var personNameParameter = personName != null ?
+                new ObjectParameter("PersonName", personName) :
+                new ObjectParameter("PersonName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SearchSet", keyWordParameter, personNameParameter);
         }
     }
 }

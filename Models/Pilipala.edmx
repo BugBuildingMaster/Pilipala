@@ -387,6 +387,7 @@
           <Property Name="Time" Type="datetime" Nullable="false" />
           <Property Name="Commentnum" Type="int" />
           <Property Name="Likenum" Type="int" />
+          <Property Name="isLike" Type="int" />
         </EntityType>
         <!--生成过程中发现错误:
 警告 6002: 表/视图“PiliPala.dbo.tempCommunityEvaluation”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
@@ -412,6 +413,8 @@
           <Property Name="Likenum" Type="int" />
           <Property Name="Dislikenum" Type="int" />
           <Property Name="Score" Type="float" />
+          <Property Name="isLike" Type="int" />
+          <Property Name="isDisLike" Type="int" />
         </EntityType>
         <!--生成过程中发现错误:
 警告 6002: 表/视图“PiliPala.dbo.tempCommunityShortComment”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
@@ -434,6 +437,7 @@
           <Property Name="Time" Type="datetime" Nullable="false" />
           <Property Name="Score" Type="float" />
           <Property Name="Likenum" Type="int" />
+          <Property Name="isLike" Type="int" />
         </EntityType>
         <!--生成过程中发现错误:
 警告 6002: 表/视图“PiliPala.dbo.tempDongtai”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
@@ -1261,11 +1265,10 @@
           <Parameter Name="username" Type="nvarchar" Mode="In" />
           <Parameter Name="followername" Type="nvarchar" Mode="In" />
         </Function>
-        <Function Name="LikeOrDislike" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="num" Type="int" Mode="In" />
+        <Function Name="judgeLike" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="typename" Type="nvarchar" Mode="In" />
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
           <Parameter Name="id" Type="int" Mode="In" />
-          <Parameter Name="UserName" Type="nvarchar" Mode="In" />
-          <Parameter Name="Time" Type="datetime" Mode="In" />
         </Function>
         <Function Name="RankingListSet" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
@@ -1379,7 +1382,8 @@
     [tempCommunityDongtai].[Content] AS [Content], 
     [tempCommunityDongtai].[Time] AS [Time], 
     [tempCommunityDongtai].[Commentnum] AS [Commentnum], 
-    [tempCommunityDongtai].[Likenum] AS [Likenum]
+    [tempCommunityDongtai].[Likenum] AS [Likenum], 
+    [tempCommunityDongtai].[isLike] AS [isLike]
     FROM [dbo].[tempCommunityDongtai] AS [tempCommunityDongtai]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="tempCommunityEvaluation" EntityType="Self.tempCommunityEvaluation" store:Type="Views" store:Schema="dbo">
@@ -1394,7 +1398,9 @@
     [tempCommunityEvaluation].[Time] AS [Time], 
     [tempCommunityEvaluation].[Likenum] AS [Likenum], 
     [tempCommunityEvaluation].[Dislikenum] AS [Dislikenum], 
-    [tempCommunityEvaluation].[Score] AS [Score]
+    [tempCommunityEvaluation].[Score] AS [Score], 
+    [tempCommunityEvaluation].[isLike] AS [isLike], 
+    [tempCommunityEvaluation].[isDisLike] AS [isDisLike]
     FROM [dbo].[tempCommunityEvaluation] AS [tempCommunityEvaluation]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="tempCommunityShortComment" EntityType="Self.tempCommunityShortComment" store:Type="Views" store:Schema="dbo">
@@ -1408,7 +1414,8 @@
     [tempCommunityShortComment].[content] AS [content], 
     [tempCommunityShortComment].[Time] AS [Time], 
     [tempCommunityShortComment].[Score] AS [Score], 
-    [tempCommunityShortComment].[Likenum] AS [Likenum]
+    [tempCommunityShortComment].[Likenum] AS [Likenum], 
+    [tempCommunityShortComment].[isLike] AS [isLike]
     FROM [dbo].[tempCommunityShortComment] AS [tempCommunityShortComment]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="tempDongtai" EntityType="Self.tempDongtai" store:Type="Views" store:Schema="dbo">
@@ -2199,6 +2206,7 @@
           <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Commentnum" Type="Int32" />
           <Property Name="Likenum" Type="Int32" />
+          <Property Name="isLike" Type="Int32" />
         </EntityType>
         <EntityType Name="tempCommunityEvaluation">
           <Key>
@@ -2222,6 +2230,8 @@
           <Property Name="Likenum" Type="Int32" />
           <Property Name="Dislikenum" Type="Int32" />
           <Property Name="Score" Type="Double" />
+          <Property Name="isLike" Type="Int32" />
+          <Property Name="isDisLike" Type="Int32" />
         </EntityType>
         <EntityType Name="tempCommunityShortComment">
           <Key>
@@ -2242,6 +2252,7 @@
           <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Score" Type="Double" />
           <Property Name="Likenum" Type="Int32" />
+          <Property Name="isLike" Type="Int32" />
         </EntityType>
         <EntityType Name="tempEvaluationList">
           <Key>
@@ -3153,12 +3164,6 @@
             <Parameter Name="UserName" Mode="In" Type="String" />
             <Parameter Name="Time" Mode="In" Type="DateTime" />
           </FunctionImport>
-          <FunctionImport Name="LikeOrDislike">
-            <Parameter Name="num" Mode="In" Type="Int32" />
-            <Parameter Name="id" Mode="In" Type="Int32" />
-            <Parameter Name="UserName" Mode="In" Type="String" />
-            <Parameter Name="Time" Mode="In" Type="DateTime" />
-          </FunctionImport>
           <FunctionImport Name="PersonalSpace">
             <Parameter Name="PersonName" Mode="In" Type="String" />
             <Parameter Name="Visitor" Mode="In" Type="String" />
@@ -3169,10 +3174,6 @@
           </FunctionImport>
           <FunctionImport Name="RecommendSet">
           <Parameter Name="PersonName" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="SearchSet">
-            <Parameter Name="KeyWord" Mode="In" Type="String" />
-            <Parameter Name="PersonName" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -3249,6 +3250,10 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="BanSpeech" EntitySet="BanSpeech" />
           </AssociationSet>
+          <FunctionImport Name="SearchSet">
+            <Parameter Name="KeyWord" Mode="In" Type="String" />
+            <Parameter Name="PersonName" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="tempDongtai">
           <Key>
@@ -3758,6 +3763,7 @@
           <EntitySetMapping Name="tempCommunityDongtai">
             <EntityTypeMapping TypeName="PiliPalaModel.tempCommunityDongtai">
               <MappingFragment StoreEntitySet="tempCommunityDongtai">
+                <ScalarProperty Name="isLike" ColumnName="isLike" />
                 <ScalarProperty Name="dongtaiid" ColumnName="dongtaiid" />
                 <ScalarProperty Name="Userid" ColumnName="Userid" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
@@ -3772,6 +3778,8 @@
           <EntitySetMapping Name="tempCommunityEvaluation">
             <EntityTypeMapping TypeName="PiliPalaModel.tempCommunityEvaluation">
               <MappingFragment StoreEntitySet="tempCommunityEvaluation">
+                <ScalarProperty Name="isDisLike" ColumnName="isDisLike" />
+                <ScalarProperty Name="isLike" ColumnName="isLike" />
                 <ScalarProperty Name="Evaluationid" ColumnName="Evaluationid" />
                 <ScalarProperty Name="Userid" ColumnName="Userid" />
                 <ScalarProperty Name="Aname" ColumnName="Aname" />
@@ -3789,6 +3797,7 @@
           <EntitySetMapping Name="tempCommunityShortComment">
             <EntityTypeMapping TypeName="PiliPalaModel.tempCommunityShortComment">
               <MappingFragment StoreEntitySet="tempCommunityShortComment">
+                <ScalarProperty Name="isLike" ColumnName="isLike" />
                 <ScalarProperty Name="Scommentid" ColumnName="Scommentid" />
                 <ScalarProperty Name="Animationid" ColumnName="Animationid" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
@@ -3856,10 +3865,8 @@
           <FunctionImportMapping FunctionImportName="CommunitySet" FunctionName="PiliPalaModel.Store.CommunitySet" />
           <FunctionImportMapping FunctionImportName="EvaluationListSet" FunctionName="PiliPalaModel.Store.EvaluationListSet" />
           <FunctionImportMapping FunctionImportName="FollowOrCancelFollow" FunctionName="PiliPalaModel.Store.FollowOrCancelFollow" />
-          <FunctionImportMapping FunctionImportName="LikeOrDislike" FunctionName="PiliPalaModel.Store.LikeOrDislike" />
           <FunctionImportMapping FunctionImportName="RankingListSet" FunctionName="PiliPalaModel.Store.RankingListSet" />
           <FunctionImportMapping FunctionImportName="RecommendSet" FunctionName="PiliPalaModel.Store.RecommendSet" />
-          <FunctionImportMapping FunctionImportName="SearchSet" FunctionName="PiliPalaModel.Store.SearchSet" />
           <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="PiliPalaModel.Store.sp_alterdiagram" />
           <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="PiliPalaModel.Store.sp_creatediagram" />
           <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="PiliPalaModel.Store.sp_dropdiagram" />
@@ -3960,6 +3967,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SearchSet" FunctionName="PiliPalaModel.Store.SearchSet" />
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

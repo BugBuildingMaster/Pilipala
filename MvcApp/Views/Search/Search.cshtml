@@ -319,7 +319,7 @@
         }
 
         .sugPar {
-            border: 2px solid grey !important;
+            border: 2px solid #0094ff !important;
             border-top: 2px solid #ffffff00 !important;
         }
 
@@ -398,12 +398,12 @@
             <div class="mainForm">
                 <form id="form1" name="form1" method="post" action="" target="iframe" @*target="_blank"*@ onsubmit="addSearch()">
                     <div id="theSearch">
-                        <input class="search_input" type="text" placeholder="" name="keyword" autocomplete="off" id="input_text" v-on:input="setSug()" v-on:porpertychange="setSug()" v-on:blur="changeSug(0)" v-on:focus="changeSug(1);setSug();">
+                        <input class="search_input" type="text" placeholder="" name="keyword" autocomplete="off" id="input_text" v-on:input="setSug()" v-on:porpertychange="setSug()" v-on:focus="changeSug()" onmouseover="changecolor(1)" onmouseout="changecolor(0)">
                         <input type="hidden" name="sid" value="">
                         <input class="inp_sub" type="submit" value="搜索" id="sub">
                         <div id="suggestion" class="suggest" style="display:none;position: absolute;z-index: 100;">
                             <ul class="list-group sugPar">
-                                <li id="listabc" class="list-group-item sugChi" v-for="(single,i) in suggestions" v-on:mouseover="light($event)" v-on:mouseout="dark($event)" onmousedown="addSearch();">{{single}}</li>
+                                <li class="list-group-item sugChi" v-for="(single,i) in suggestions" v-on:mouseover="light($event)" v-on:mouseout="dark($event)" onclick="addSearch();">{{single}}</li>
                             </ul>
                         </div>
                     </div>
@@ -411,6 +411,33 @@
                 <iframe id="iframe" name="iframe" style="display:none;"></iframe>
             </div>
             <script>
+                $("body").click(function (e) {
+                    if ($.contains($("#input_text")[0], e.target) || $("#input_text")[0] == e.target || $.contains($("#suggestion")[0], e.target) || $("#suggestion")[0] == e.target) {
+                    } else {
+                        var input = document.getElementById("input_text");
+                        var suggestion = document.getElementById("suggestion");
+                        suggestion.style.display = "none";
+                        input.style.borderBottomColor = "grey";
+                        input.style.borderRadius = "10px";
+                        changecolor(0);
+                    }
+                });
+
+                function changecolor(num) {
+                    var input = document.getElementById("input_text");
+                    var suggestion = document.getElementById("suggestion");
+                    if (num == 1)
+                        if (suggestion.style.display == "block")
+                            return null;
+                        else
+                            input.style.border = "#0094ff 2px solid";
+                    else
+                        if (document.activeElement.id == "input_text")
+                            return null;
+                        else
+                            input.style.border = "grey 2px solid";
+                }
+
                 var sug = null;
                 const searching = new Vue({
                     el: "#theSearch",
@@ -418,7 +445,10 @@
                         suggestions: []
                     },
                     created() {
-                        this.changeSug(0)
+                        this.changeSug(0);
+                        document.title = "想知道什么搜搜看吧 (ゝ∀･)";
+                        var input = document.getElementById("input_text");
+                        input.style.borderBottomColor = "grey";
                     },
                     mouted() {
 
@@ -441,25 +471,18 @@
                             sug = setTimeout(this.suggest, 150);
                         },
                         //提示框样式改变
-                        async changeSug(num) {
+                        async changeSug() {
                             var input = document.getElementById("input_text");
                             var suggestion = document.getElementById("suggestion");
-                            if (num == 0) {
-                                suggestion.style.display = "none";
-                                input.style.borderBottomColor = "grey";
-                                input.style.borderRadius = "10px";
+                            if (this.suggestions.length != 0) {
+                                suggestion.style.display = "block";
+                                input.style.borderBottomColor = "#d6d6d6";
+                                input.style.borderRadius = "10px 10px 0px 0px";
                             }
                             else {
-                                if (this.suggestions.length != 0) {
-                                    suggestion.style.display = "block";
-                                    input.style.borderBottomColor = "#d6d6d6";
-                                    input.style.borderRadius = "10px 10px 0px 0px";
-                                }
-                                else {
-                                    suggestion.style.display = "none";
-                                    input.style.borderBottomColor = "grey";
-                                    input.style.borderRadius = "10px";
-                                }
+                                suggestion.style.display = "none";
+                                input.style.borderBottomColor = "#0094ff";
+                                input.style.borderRadius = "10px";
                             }
                         },
                         //鼠标悬浮选项样式改变

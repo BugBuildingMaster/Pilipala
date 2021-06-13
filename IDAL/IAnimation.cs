@@ -30,6 +30,8 @@ namespace IDAL
         //添加评论
         bool AddComment(ShortComment sc);
         //评论点赞
-        string AddCommentLike(int id, string name);
+        string AddCommentLike(int id, string name, DateTime time);
+        //取消评论点赞
+        string CancleAddCommentLike(int id, string name);
     }
 }

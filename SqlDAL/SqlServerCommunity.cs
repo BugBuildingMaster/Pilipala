@@ -128,7 +128,7 @@ namespace SqlDAL
         {
             dongtaiCommentReply dtc = new dongtaiCommentReply
             {
-                UserName =name,
+                UserName = name,
                 dtCommentid = id,
                 Time = DateTime.Now,
                 Content = content
@@ -197,27 +197,72 @@ namespace SqlDAL
 
 
         #region 动态点赞
-        public string AddLike(int id, string name)
+        public string AddLike(int id, string name, DateTime time)
         {
-            db.LikeOrDislike(4, id, name, DateTime.Now);
+            dongtailike like = new dongtailike
+            {
+                UserName = name,
+                dongtaiid = id,
+                Time = time
+            };
+            db.dongtailike.Add(like);
+            db.SaveChanges();
+            var i = db.dongtai.Find(id).Likenum.ToString();
+            return i;
+        }
+        public string CancleAddLike(int id, string name)
+        {
+            dongtailike like = db.dongtailike.Where(x => x.UserName == name && x.dongtaiid == id).FirstOrDefault();
+            db.dongtailike.Remove(like);
+            db.SaveChanges();
             var i = db.dongtai.Find(id).Likenum.ToString();
             return i;
         }
         #endregion
 
         #region 短评点赞
-        public string ShortCommentAddLike(int id, string name)
+        public string ShortCommentAddLike(int id, string name, DateTime time)
         {
-            db.LikeOrDislike(1, id, name, DateTime.Now);
+            SLike like = new SLike
+            {
+                SuserName = name,
+                Scommentid = id,
+                Time = time
+            };
+            db.SLike.Add(like);
+            db.SaveChanges();
+            var i = db.ShortComment.Find(id).Likenum.ToString();
+            return i;
+        }
+        public string CancleShortCommentAddLike(int id, string name)
+        {
+            SLike like = db.SLike.Where(x => x.SuserName == name && x.Scommentid == id).FirstOrDefault();
+            db.SLike.Remove(like);
+            db.SaveChanges();
             var i = db.ShortComment.Find(id).Likenum.ToString();
             return i;
         }
         #endregion
 
         #region 动态评论点赞
-        public string DongtaiCommentAddLike(int id, string name)
+        public string DongtaiCommentAddLike(int id, string name,DateTime time)
         {
-            db.LikeOrDislike(5, id, name, DateTime.Now);
+            dongtaiCommentlike like = new dongtaiCommentlike
+            {
+                UserName = name,
+                dongtaiCommentid = id,
+                Time = time
+            };
+            db.dongtaiCommentlike.Add(like);
+            db.SaveChanges();
+            var i = db.dongtaiComment.Find(id).Likenum.ToString();
+            return i;
+        }
+        public string CancleDongtaiCommentAddLike(int id, string name)
+        {
+            dongtaiCommentlike like = db.dongtaiCommentlike.Where(x => x.UserName == name && x.dongtaiCommentid == id).FirstOrDefault();
+            db.dongtaiCommentlike.Remove(like);
+            db.SaveChanges();
             var i = db.dongtaiComment.Find(id).Likenum.ToString();
             return i;
         }
@@ -228,6 +273,74 @@ namespace SqlDAL
         {
             var i = db.dongtai.Find(id).Commentnum.ToString();
             return i;
+        }
+        #endregion
+
+        #region 判断是否有点赞记录
+        public bool LikeExist(int id, string name, string type)
+        {
+            bool exists;
+            switch (type)
+            {
+                case "ShortComment":
+                    exists = db.SLike.Any(x => x.Scommentid == id && x.SuserName == name);
+                    return exists;
+                case "Dongtai":
+                    exists = db.dongtailike.Any(x => x.dongtaiid == id && x.UserName == name);
+                    return exists;
+                case "DongtaiComment":
+                    exists = db.dongtaiCommentlike.Any(x => x.dongtaiCommentid == id && x.UserName == name);
+                    return exists;
+                case "EvaluationLike":
+                    exists = db.Elike.Any(x => x.Evaluationid == id && x.UserName == name);
+                    return exists;
+                case "EvaluationDisLike":
+                    exists = db.Edislike.Any(x => x.Evaluationid == id && x.UserName == name);
+                    return exists;
+                case "Message":
+                    exists = db.Mlike.Any(x => x.Messageid == id && x.UserName == name);
+                    return exists;
+                case "EvaluationCoLike":
+                    exists = db.EClike.Any(x => x.ECcommentid == id && x.UserName == name);
+                    return exists;
+                case "BuzzwordLike":
+                    exists = db.BWlike.Any(x => x.Buzzwordid == id && x.UserName == name);
+                    return exists;
+                case "BuzzwordDisLike":
+                    exists = db.BWdislike.Any(x => x.Buzzwordid == id && x.UserName == name);
+                    return exists;
+                default:
+                    return false;
+            }
+        }
+        #endregion
+
+        #region 获取点赞数
+        public string GetNumber(int id,string type)
+        {
+            switch (type)
+            {
+                case "ShortComment":
+                    return db.ShortComment.Find(id).Likenum.ToString();
+                case "Dongtai":
+                    return db.dongtai.Find(id).Likenum.ToString();
+                case "DongtaiComment":
+                    return db.dongtaiComment.Find(id).Likenum.ToString();
+                case "EvaluationLike":
+                    return db.Evaluation.Find(id).Likenum.ToString();
+                case "EvaluationDisLike":
+                    return db.Evaluation.Find(id).Dislikenum.ToString();
+                case "Message":
+                    return db.Message.Find(id).Likenum.ToString();
+                case "EvaluationCoLike":
+                    return db.EComment.Find(id).Likenum.ToString();
+                case "BuzzwordLike":
+                    return db.Buzzword.Find(id).Likenum.ToString();
+                case "BuzzwordDisLike":
+                    return db.Buzzword.Find(id).Dislike.ToString();
+                default:
+                    return null;
+            }
         }
         #endregion
     }

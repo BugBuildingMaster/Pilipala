@@ -20,6 +20,7 @@ namespace MvcApp.Controllers
         // 初始搜索界面
         public ActionResult OriginSearch()
         {
+            InitUpdater();
             return View();
         }
 
@@ -46,6 +47,7 @@ namespace MvcApp.Controllers
                     string pubKey = Request.Cookies["Key"].Value;
                     if (VerToken(tokenContent, pubKey))
                     {
+                        InitUpdater();
                         JObject username = readtoken(cookie.Values["Token"]);
                         name = username["UserName"].ToString();
                         ViewBag.username = name;
@@ -236,7 +238,6 @@ namespace MvcApp.Controllers
 
         #region 搜索建议
         [HttpGet]
-        [EnableThrottling(PerSecond = 8)]
         public ActionResult getSuggest(string keyWord)
         {
             var setting = new ConnectionSettings(new Uri(@"http://127.0.0.1:9200")).DefaultIndex("evaluation");
