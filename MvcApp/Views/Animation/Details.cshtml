@@ -78,6 +78,9 @@
 </head>
 <body class="container-fluid">
     @Html.Action("Recommend", "Animation", new { name = ViewBag.username })
+    <div style=" height: 5rem;">
+        <a href="Index" style=" text-decoration: none; font-size: 20px; margin-left: 3rem;">< 回到主页</a>
+    </div>
     <div class="container">
         <div class="head_channel">
             <div class="indent clearfix">
@@ -162,7 +165,7 @@
                                     <a class="hot-comments-tab on" href="comments" data-id="hot">热门</a>&nbsp;/&nbsp;
                                     <a class="new-comments-tab" href="comments?sort=time" data-id="new">最新</a>
                                     <div id="addEvaluation" class="comment_btn j a_show_login2">
-                                        <img src="img/笔1.png" />
+                                        <img src="~/public/static/uploads/img/笔1.png" />
                                         <span>我要写测评</span><br />
                                     </div>
                                 </div>
@@ -223,6 +226,7 @@
 
     </div>
     <script>
+        document.title = '@Model.Aname';
         $("#hideEva").hide()
         //获取url参数
         function getQueryVariable(variable) {

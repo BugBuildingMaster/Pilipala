@@ -114,8 +114,10 @@
                                 FloatTip(0, '用户名或密码错误！');
                                 $('.tips').html('用户名或密码错误！');
                             } else {
-                                FloatTip(2, '出现错误！');
-                                $('.tips').html('出现错误！');
+                                FloatTip(2, '出现错误！将刷新重试！');
+                                $('.tips').html('出现错误！将刷新重试！');
+                                window.location.reload();
+                                //window.location.replace(window.location.href);
                             }
                         }
                     });

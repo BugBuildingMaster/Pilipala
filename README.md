@@ -1,7 +1,9 @@
+# Pilipala动漫网项目
 
-# Pilipala# Pilipala# Pilipala动漫网项目
+# Pilipala
+
 ## Pilipala Comic Web Project
-- 噼里啪啦动漫网项目是一个工作室项目，由 **bugbuildingmaster**   **zkysnow** 以及  **无限权益合伙人 **编写，项目仅供参考学习，不得用于正规用途，任何其他用途需要至少得到三位作者中的任何一位同意
+- 噼里啪啦动漫网项目是一个工作室项目，由 **bugbuildingmaster**   **zkysnow** 以及  **无限权益合伙人**编写，项目仅供参考学习，不得用于正规用途，任何其他用途需要至少得到三位作者中的任何两位同意
   联系方式：
   - **bugbuildingmaster**   ：332512139@qq.com
   - **zkysnow** ：1012469751@qq.com
@@ -71,3 +73,7 @@
   ### 2021/6/13日志
 
   - 添加了redis点赞缓存机制，将操作记录，定时或达到次数限制时写入数据库
+
+  ### 2021/6/27日志
+
+  - 全面修改优化

@@ -49,7 +49,7 @@ namespace IDAL
         Evaluation GetUserHistoryEvaluation(int id);    //获取用户浏览记录中的测评
         IEnumerable<tempFollow> GetUserFollow(int start, string name, string visitor);    //获取用户关注信息
         IEnumerable<tempFans> GetUserFans(int start, string name, string visitor);    //获取用户粉丝信息
-        bool Following(int id, string name);      //关注或取消关注
+        string Following(int id, string name);      //关注或取消关注
         IEnumerable<tempEvaluation> GetTouristEvaluations(string name);  //获取游客发布的测评
         IEnumerable<tempShortComment> GetTouristShortComment(string name);      //获取游客发布短评
         IEnumerable<tempDongtai> GetTouristDongtai(string name);        //获取游客发布动态

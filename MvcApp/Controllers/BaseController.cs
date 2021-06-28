@@ -30,11 +30,14 @@ using System.Threading;
 
 public class BaseController : Controller
 {
-    public static RedisHelper RedisHelper = new RedisHelper(0, "127.0.0.1:6379,password=123456,DefaultDatabase=0");
+    public static RedisHelper RedisHelper = new RedisHelper(0, "127.0.0.1:6379,password=123456,DefaultDatabase=0");      //负责密钥管理的redis数据库
+    public static RedisHelper LoginHelper = new RedisHelper(1, "127.0.0.1:6379,password=123456,DefaultDatabase=0");      //负责登录管理的redis数据库
+    private static RedisHelper LikeHelper = new RedisHelper(2, "127.0.0.1:6379,password=123456,DefaultDatabase=0");      //负责缓存管理的redis数据库
+    public static RedisHelper MailHelper = new RedisHelper(3, "127.0.0.1:6379,password=123456,DefaultDatabase=0");       //负责忘记密码管理的redis数据库
     readonly RecommendManager rManager = new RecommendManager();
     readonly CommunityManager cManager = new CommunityManager();
     readonly EvaluationManager eManager = new EvaluationManager();
-    private static LikeNumUpdating rUpdating = new LikeNumUpdating(180000);    //初始化更新监督类
+    private static LikeNumUpdating rUpdating = new LikeNumUpdating(18000);    //初始化更新监督类
 
     #region token类
     protected class TokenInfo
@@ -141,10 +144,48 @@ public class BaseController : Controller
         {
             string priKey;
             //检查令牌池中是否含有对应token，没有则删除cookie返回null
-            if (RedisHelper.KeyExists(tokenContent))
+            if (LoginHelper.KeyExists(tokenContent))
             {
                 //令牌池存在token，根据token获取对应解密私钥进行令牌解密
-                priKey = RedisHelper.HashGet(tokenContent, "prikey").ToString();
+                priKey = LoginHelper.HashGet(tokenContent, "prikey").ToString();
+                var json = decoder.Decode(tokenContent, priKey, true);
+                JObject jo = (JObject)JsonConvert.DeserializeObject(json);
+                //校验通过，返回解密后token转为的json对象
+                return jo;
+            }
+            else
+            {
+                Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
+                //Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+                RedirectToAction("Index", "Animation");
+                return null;
+            }
+        }
+        catch (Exception)
+        {
+            Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
+            //Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+            RedirectToAction("Index", "Animation");
+            return null;
+        }
+    }
+
+    protected JObject readtoken(string tokenContent, bool flag)
+    {
+        IJsonSerializer serializer = new JsonNetSerializer();
+        IDateTimeProvider provider = new UtcDateTimeProvider();
+        IJwtValidator validator = new JwtValidator(serializer, provider);
+        IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+        IJwtAlgorithm alg = new HMACSHA256Algorithm();
+        IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, alg);
+        try
+        {
+            string priKey;
+            //检查令牌池中是否含有对应token，没有则删除cookie返回null
+            if (MailHelper.KeyExists(tokenContent))
+            {
+                //令牌池存在token，根据token获取对应解密私钥进行令牌解密
+                priKey = MailHelper.HashGet(tokenContent, "prikey").ToString();
                 var json = decoder.Decode(tokenContent, priKey, true);
                 JObject jo = (JObject)JsonConvert.DeserializeObject(json);
                 //校验通过，返回解密后token转为的json对象
@@ -179,7 +220,7 @@ public class BaseController : Controller
             string sign = list["sign"].ToString();
             string name = list["UserName"].ToString();
             string redisName = Encryption(name, "");
-            if (RedisHelper.KeyExists(redisName) && RedisHelper.KeyExists(tokenContent))    //检查token是否存在于令牌池，不存在则说明该token已被注销
+            if (LoginHelper.KeyExists(redisName) && LoginHelper.KeyExists(tokenContent))    //检查token是否存在于令牌池，不存在则说明该token已被注销
             {
                 pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
                 //比较token有效时间
@@ -201,8 +242,8 @@ public class BaseController : Controller
                         if (mineutes < 30)
                         {
                             //从令牌池中移除对应token
-                            RedisHelper.KeyDelete(redisName);
-                            RedisHelper.KeyDelete(tokenContent);
+                            LoginHelper.KeyDelete(redisName);
+                            LoginHelper.KeyDelete(tokenContent);
                             //根据公钥获取对应私钥
                             string priKey = RedisHelper.HashGet("KeyPool", pubKey);
                             // 更新token并进行发放
@@ -213,10 +254,10 @@ public class BaseController : Controller
                             cookie.Expires = DateTime.Now.AddHours(1);
                             Response.AppendCookie(cookie);
                             //将新token放入令牌池，作为有效令牌，登录时设置有效期为1小时，键名为用户名，值为签名
-                            RedisHelper.HashSet(newToken, "prikey", priKey);
-                            RedisHelper.HashSet(newToken, "name", redisName);
-                            RedisHelper.KeyExpire(newToken, TimeSpan.FromHours(1));
-                            RedisHelper.StringSet(redisName, newToken, TimeSpan.FromHours(1));
+                            LoginHelper.HashSet(newToken, "prikey", priKey);
+                            LoginHelper.HashSet(newToken, "name", redisName);
+                            LoginHelper.KeyExpire(newToken, TimeSpan.FromHours(1));
+                            LoginHelper.StringSet(redisName, newToken, TimeSpan.FromHours(1));
                             return true;
                         }
                         else
@@ -236,8 +277,8 @@ public class BaseController : Controller
             }
             else
             {
-                RedisHelper.KeyDelete(redisName);
-                RedisHelper.KeyDelete(tokenContent);
+                LoginHelper.KeyDelete(redisName);
+                LoginHelper.KeyDelete(tokenContent);
                 //token已被注销，验证失败
                 return false;
             }
@@ -253,11 +294,11 @@ public class BaseController : Controller
         try
         {
             //读取token内容，返回json对象
-            JObject list = readtoken(tokenContent);
+            JObject list = readtoken(tokenContent, true);
             //获取签名
             string sign = list["sign"].ToString();
             string pubKey = list["pubkey"].ToString();
-            if (RedisHelper.KeyExists(tokenContent))    //检查token是否存在于令牌池，不存在则说明当前token无效
+            if (MailHelper.KeyExists(tokenContent))    //检查token是否存在于令牌池，不存在则说明当前token无效
             {
                 //比较token有效时间
                 DateTime dateTime = DateTime.Now;
@@ -282,7 +323,7 @@ public class BaseController : Controller
             }
             else
             {
-                RedisHelper.KeyDelete(tokenContent);
+                MailHelper.KeyDelete(tokenContent);
                 //token已被注销，验证失败
                 return false;
             }
@@ -385,6 +426,8 @@ public class BaseController : Controller
     #endregion
 
     #region Redis点赞缓存池
+
+    #region 更新监督类
     private class LikeNumUpdating       //更新监督类
     {
         private static int num = 0;     //设定的更新界限
@@ -437,6 +480,9 @@ public class BaseController : Controller
         }
     }
 
+    #endregion
+
+    #region 操作字典
     private class HandleList        //操作字典
     {
         public string name { get; set; }    //操作用户的姓名
@@ -445,6 +491,9 @@ public class BaseController : Controller
         public string type { get; set; }    //记录所需要操作的类型
     }
 
+    #endregion
+
+    #region 数据库同步
     private string update(object sender, EventArgs e)       //redis向数据库同步数据
     {
         try
@@ -459,8 +508,8 @@ public class BaseController : Controller
             {
                 List<string> list = new List<string>();
                 List<string> keylist = new List<string>();
-                string[] value = RedisHelper.ToGet(name + "*_mid_[0-9]*end");   //操作名
-                string[] key = RedisHelper.ToGet(name + "[0-9]*end");       //数据名
+                string[] value = LikeHelper.ToGet(name + "*_mid_[0-9]*end");   //操作名
+                string[] key = LikeHelper.ToGet(name + "[0-9]*end");       //数据名
                 List<HandleList> dealList = new List<HandleList>();
                 foreach (var item in key)
                 {
@@ -474,7 +523,7 @@ public class BaseController : Controller
                     {
                         name = attr[0].Remove(0, name.Length),
                         id = Convert.ToInt32(attr[1].Substring(0, attr[1].Length - 3)),
-                        time = Convert.ToDateTime(RedisHelper.StringGet(item))
+                        time = Convert.ToDateTime(LikeHelper.StringGet(item))
                     };
                     dealList.Add(temp);
                 }
@@ -521,8 +570,8 @@ public class BaseController : Controller
                             break;
                         }
                 }
-                RedisHelper.KeyDelete(list);    //清空更新完成的操作记录
-                RedisHelper.KeyDelete(keylist); //清空缓存的对象点赞数记录(防止脏读)
+                LikeHelper.KeyDelete(list);    //清空更新完成的操作记录
+                LikeHelper.KeyDelete(keylist); //清空缓存的对象点赞数记录(防止脏读)
             }
             rUpdating.IsUpdating = false;
             return "success";
@@ -533,6 +582,9 @@ public class BaseController : Controller
         }
     }
 
+    #endregion
+
+    #region 初始化更新监督类与操作字典
     private List<HandleList> tempHandle = new List<HandleList>();
     private int tempCount = 0;
 
@@ -547,7 +599,9 @@ public class BaseController : Controller
             rUpdating.isInit = true;        //将初始化标记置真
         }
     }
+    #endregion
 
+    #region Redis点赞缓存
     protected string ToLike(int id, string name, string type, DateTime time, bool isLoop)       //缓存更新函数
     {
         if (rUpdating.isInit != true)
@@ -574,8 +628,8 @@ public class BaseController : Controller
                     };
                     tempHandle.Add(temp);
                     tempCount += 1;
-                    if (RedisHelper.KeyExists(value))
-                        return RedisHelper.StringGet(value);
+                    if (LikeHelper.KeyExists(value))
+                        return LikeHelper.StringGet(value);
                     else
                         return cManager.GetNumber(id, type).ToString();
                 }
@@ -599,63 +653,66 @@ public class BaseController : Controller
         //确定在当前数据库中对应的操作
         if (exists)
         {
-            if (RedisHelper.KeyExists(pattern))       //判断缓存池是否存在对应记录
+            if (LikeHelper.KeyExists(pattern))       //判断缓存池是否存在对应记录
             {
-                RedisHelper.KeyDelete(pattern);       //缓存池中存在该操作记录，所以删除该操作
-                if (!RedisHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
+                LikeHelper.KeyDelete(pattern);       //缓存池中存在该操作记录，所以删除该操作
+                if (!LikeHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
                 {
                     //不存在对应数据的点赞数，进行建立
                     int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
-                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                    LikeHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
                 }
-                RedisHelper.StringIncrement(value); //为当前操作点赞数加一
+                LikeHelper.StringIncrement(value); //为当前操作点赞数加一
             }
             else
             {
-                RedisHelper.StringSet(pattern, time.ToString());       //缓存池中不存在该操作记录，所以添加该操作
-                if (!RedisHelper.KeyExists(value))            //判断池中是否存有对应数据的点赞数
+                LikeHelper.StringSet(pattern, time.ToString());       //缓存池中不存在该操作记录，所以添加该操作
+                if (!LikeHelper.KeyExists(value))            //判断池中是否存有对应数据的点赞数
                 {
                     int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
-                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                    LikeHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
                 }
-                RedisHelper.StringDecrement(value); //为当前操作点赞数减一
+                LikeHelper.StringDecrement(value); //为当前操作点赞数减一
             }
         }
         else
         {
-            if (RedisHelper.KeyExists(pattern))       //判断缓存池是否存在对应记录
+            if (LikeHelper.KeyExists(pattern))       //判断缓存池是否存在对应记录
             {
-                RedisHelper.KeyDelete(pattern);       //缓存池中存在该操作记录，所以删除该操作
-                if (!RedisHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
+                LikeHelper.KeyDelete(pattern);       //缓存池中存在该操作记录，所以删除该操作
+                if (!LikeHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
                 {
                     //不存在对应数据的点赞数，进行建立
                     int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
-                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                    LikeHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
                 }
-                RedisHelper.StringDecrement(value); //为当前操作点赞数减一
+                LikeHelper.StringDecrement(value); //为当前操作点赞数减一
             }
             else
             {
-                RedisHelper.StringSet(pattern, time.ToString());       //缓存池中不存在该操作记录，所以添加该操作
-                if (!RedisHelper.KeyExists(value))            //判断池中是否存有对应数据的点赞数
+                LikeHelper.StringSet(pattern, time.ToString());       //缓存池中不存在该操作记录，所以添加该操作
+                if (!LikeHelper.KeyExists(value))            //判断池中是否存有对应数据的点赞数
                 {
                     int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
-                    RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                    LikeHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
                 }
-                RedisHelper.StringIncrement(value); //为当前操作点赞数加一
+                LikeHelper.StringIncrement(value); //为当前操作点赞数加一
             }
         }
         if (!isLoop)
         {
             rUpdating.Count += 1;
-            if (!RedisHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
+            if (!LikeHelper.KeyExists(value))    //判断池中是否存有对应数据的点赞数
             {
                 //不存在对应数据的点赞数，进行建立
                 int num = Convert.ToInt32(cManager.GetNumber(id, type).ToString());  //获取当前数据的点赞数并保存
-                RedisHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
+                LikeHelper.StringSet(value, num, TimeSpan.FromMinutes(30));  //保存点赞数
             }
         }
-        return RedisHelper.StringGet(value);
+        return LikeHelper.StringGet(value);
     }
+
+    #endregion
+
     #endregion
 }

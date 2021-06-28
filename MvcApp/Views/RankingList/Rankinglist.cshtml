@@ -220,6 +220,8 @@
             height: 2.5rem;
             border-radius: 10px;
             border: grey 2px solid;
+            line-height: 2.5rem;
+            padding-left: 1.35rem;
         }
 
         .inp_sub {
@@ -729,7 +731,8 @@
     const searching = new Vue({
         el: "#theSearch",
         data: {
-            suggestions: []
+            suggestions: [],
+            oriDate: ""
         },
         created() {
             this.changeSug(0);
@@ -743,6 +746,7 @@
         methods: {
             //搜索提示
             async suggest() {
+                this.oriDate = $('#input_text').val();
                 const { data: res } = await axios.get('/Search/getSuggest', {
                     params: {
                         keyWord: $('#input_text').val()
@@ -779,6 +783,7 @@
             },
             async dark(event) {
                 $(event.target).removeClass('active');
+                $('#input_text').val(this.oriDate);
             }
         }
     })

@@ -130,6 +130,64 @@
 <script>
     document.title = "@Model.Title";
 
+    function FloatTip(type, text) {
+        var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
+        var id = 'tip-' + random;
+        var winWidth = parseFloat(window.innerWidth) / 2 - 200;
+        var list = ['url(../../public/static/uploads/img/警告.svg)', 'url(../../public/static/uploads/img/check-active.svg)', 'url(../../public/static/uploads/img/取消.svg)'];
+        var icon = list[type];
+        var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
+            'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
+            'color': 'white',
+            'height': 'auto',
+            'min-height': '40px',
+            'position': 'fixed',
+            'top': '7%',
+            'left': winWidth + 'px',
+            'width': '400px',
+            'z-index': '3200',
+            'border': '1px solid white',
+            'padding': '10px 10px 10px 50px',
+            'box-shadow': '3px 3px 3px #999999',
+            'display': 'none',
+            'opacity': 0.2,
+        }).html(text).attr('id', id);
+        var leftDiv = $('<div>').css({ //图标
+            'position': 'fixed',
+            'width': '40px',
+            'height': '30px',
+            'margin-top': '-25px',
+            'margin-left': '-45px',
+            'border-radius': '3px',
+            'color': 'black',
+            'padding': '5px 0px',
+            'background-image': icon,
+            'background-background-repeat': 'no-repeat',
+            'background-position': 'center center',
+            'background-repeat': 'no-repeat',
+            'opacity': '0.9'
+        }).html('');
+        tip.append(leftDiv);
+        $('body').append(tip.show());
+        document.getElementById(id).animate({
+            top: '2%',
+            opacity: '1'
+        }, 500, 'easeOutQuart');
+        setTimeout(function () {
+            document.getElementById(id).style.top = '2%';
+            document.getElementById(id).style.opacity = '1';
+        }, 500)
+        setTimeout(function () {
+            document.getElementById(id).animate({
+                opacity: '0'
+            }, 400, 'easeOutQuart');
+            setTimeout(function () {
+                document.getElementById(id).remove();
+            }, 400)
+        }, 800)
+    }
+
+
     function addlike(id) {
         $.ajax({
             url: "/Evaluationid/AddLike",
@@ -143,6 +201,7 @@
                     sessionStorage.setItem('thePass', window.location.href);
                     window.location.href = "/Users/Login";
                 } else {
+                    FloatTip(1, '点赞成功~');
                     $("#TheLikeNmum").html("点赞数：" + res);
                 }
             }
@@ -163,6 +222,7 @@
                     sessionStorage.setItem('thePass', window.location.href);
                     window.location.href = "/Users/Login";
                 } else {
+                    FloatTip(1, '点踩成功~');
                     $("#TheDislikeNmum").html("点踩数：" + res);
                 }
             }

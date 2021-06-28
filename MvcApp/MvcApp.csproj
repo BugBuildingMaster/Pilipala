@@ -222,6 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\animate.min.css" />
+    <Content Include="assets\css\bootstrap-icons.css" />
     <Content Include="assets\css\bootstrap.min.css" />
     <Content Include="assets\css\boxicons.min.css" />
     <Content Include="assets\css\Com.css" />
@@ -468,6 +469,8 @@
     <Content Include="images\uploads\2021-01-0340ab5482-d100-4310-a324-191b5e7b3bbd" />
     <Content Include="images\uploads\2021-01-03458ae2f8-dd69-49d7-b40f-068fad008c92" />
     <Content Include="public\static\uploads\img\p2578181143.webp" />
+    <Content Include="assets\fonts\bootstrap-icons.woff" />
+    <Content Include="assets\fonts\bootstrap-icons.woff2" />
     <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <Content Include="Scripts\ckeditor\CHANGES.md" />
     <Content Include="Scripts\ckeditor\LICENSE.md" />
@@ -803,6 +806,7 @@
     <Content Include="Views\User\UserWatchDynamic.cshtml" />
     <Content Include="Views\Users\ResetPwd.cshtml" />
     <Content Include="Views\Users\ForgetPwd.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -318,7 +318,7 @@
 <script>
     document.onreadystatechange = function () {
         loading();
-        document.title="个人中心"
+        document.title = "个人中心"
     }
 
     function loading() {
@@ -486,7 +486,7 @@
                     <li class="list-item clearfix" v-for="(singleFollow, i) in Followers">
                         <div v-if="singleFollow.RowNum" v-bind:class="'cF'+singleFollow.RowNum" style=" display: flex; flex-direction: row; ">
                             <div>
-                                <a href=";" v-on:click="UsersUrl(singleFollow.Userid)" class="cover1">
+                                <a href="javascript:void(0);" v-on:click="UsersUrl(singleFollow.Userid)" class="cover1">
                                     <img v-bind:src="singleFollow.Portrait" v-bind:alt="singleFollow.FollowerName">
                                 </a>
                             </div>
@@ -532,7 +532,8 @@
                     tempFollowers: [],          //储存关注对象
                     FollowersMoreLoad: false,   // 标记是否还有更多数据
                     loadingFollowers: false,    // 标记是否正在加载
-                    counterF: 1                 // 加载页数
+                    counterF: 1,                // 加载页数
+                    EggCount : 0
                 },
                 created() {
                     this.buildFollowers()
@@ -551,7 +552,7 @@
                             var scr = document.body.scrollTop;                  // 滚动的高度
                             var clientHeight = document.body.clientHeight;      // 屏幕静态下的高度
                             var scrHeight = document.body.scrollHeight || document.body.scrollHeight; // 整个网页的实际高度，兼容Pc端
-                            if (scr + clientHeight + 100 >= scrHeight) {
+                            if (scr + clientHeight + 200 >= scrHeight) {
                                 if (_this.FollowersMoreLoad) {       // 如果还有更多数据的标记为true，则将正在加载的标记置为true，将页数传给数据获取函数
                                     _this.loadingFollowers = true;
                                     _this.counterF = _this.counterF + 1;
@@ -613,6 +614,21 @@
                         if (res == "fail") {
                             //console.log(this.Followers[num - 1].isFans);
                             this.Followers[num - 1].isFans = 0;
+                            FloatTip(1, '取消关注成功~');
+                        }
+                        else if (res == "same") {
+                            if (this.EggCount < 5)
+                                FloatTip(0, '不能取消关注自己哟');
+                            else
+                                FloatTip(0, '真的取消关注不了哟');
+                            this.EggCount += 1;
+                            if (this.EggCount >= 10) {
+                                this.EggCount = 0;
+                                window.open('/User/Index');
+                            }
+                        }
+                        else {
+                            FloatTip(2, '出现错误！');
                         }
                     },
                     async Follow(id, num) {
@@ -624,6 +640,21 @@
                         if (res1 == "fail") {
                             //console.log(this.Followers[num - 1].isFans);
                             this.Followers[num - 1].isFans = 1;
+                            FloatTip(1, '关注成功~');
+                        }
+                        else if (res1 == "same") {
+                            if (this.EggCount < 5)
+                                FloatTip(0, '不能关注自己哟');
+                            else
+                                FloatTip(0, '真的关注不了哟');
+                            this.EggCount += 1;
+                            if (this.EggCount >= 10) {
+                                this.EggCount = 0;
+                                window.open('/User/Index');
+                            }
+                        }
+                        else {
+                            FloatTip(2, '出现错误！');
                         }
                     }
                 }
@@ -695,7 +726,8 @@
                     Fans: [],               //储存粉丝对象
                     FansMoreLoad: false,    // 标记是否还有更多数据
                     loadingFans: false,     // 标记是否正在加载
-                    counter: 1              // 加载页数
+                    counter: 1,             // 加载页数
+                    EggCount:0
                 },
                 created() {
                     this.buildFans()
@@ -714,7 +746,7 @@
                             var scr = document.body.scrollTop; // 滚动的高度
                             var clientHeight = document.body.clientHeight; // 屏幕静态下的高度
                             var scrHeight = document.body.scrollHeight || document.body.scrollHeight; // 整个网页的实际高度，兼容Pc端
-                            if (scr + clientHeight + 100 >= scrHeight) {
+                            if (scr + clientHeight + 200 >= scrHeight) {
                                 if (_this.FansMoreLoad) {       // 如果还有更多数据的标记为true，则将正在加载的标记置为true，将页数传给数据获取函数
                                     _this.loadingFans = true;
                                     _this.counter = _this.counter + 1;
@@ -776,6 +808,21 @@
                         if (res == "fail") {
                             //console.log(this.Fans[num - 1].isFans);
                             this.Fans[num - 1].isFans = 0;
+                            FloatTip(1, '取消关注成功~');
+                        }
+                        else if (res == "same") {
+                            if (this.EggCount<5)
+                                FloatTip(0, '不能取消关注自己哟');
+                            else
+                                FloatTip(0, '真的取消关注不了哟');
+                            this.EggCount += 1;
+                            if (this.EggCount >= 10) {
+                                this.EggCount = 0;
+                                window.open('/User/Index');
+                            }
+                        }
+                        else {
+                            FloatTip(2, '出现错误！');
                         }
                     },
                     async Follow(id, num) {
@@ -787,6 +834,21 @@
                         if (res1 == "fail") {
                             //console.log(this.Fans[num - 1].isFans);
                             this.Fans[num - 1].isFans = 1;
+                            FloatTip(1, '关注成功~');
+                        }
+                        else if (res1 == "same") {
+                            if (this.EggCount < 5)
+                                FloatTip(0, '不能关注自己哟');
+                            else
+                                FloatTip(0, '真的关注不了哟');
+                            this.EggCount += 1;
+                            if (this.EggCount >= 10) {
+                                this.EggCount = 0;
+                                window.open('/User/Index');
+                            }
+                        }
+                        else {
+                            FloatTip(2, '出现错误！');
                         }
                     }
                 }
@@ -871,31 +933,6 @@
             }
         })
     }
-    //判断用户是否存在
-    //用户名框失去焦点验证
-    @*$("#username").blur(function () {
-        curValue = $("#username").val();
-        if (curValue != oldUserName) {
-            console.log("ajax")
-            $.ajax({
-                type: "post",
-                url: "/user/isUsernameUnique",
-                data: {
-                    name: curValue
-                },
-                success: function (res) {
-                    isExist = res
-                    console.log(isExist)
-                    if (!isExist)
-                    {
-                        alert('用户名已存在，请重新输入！')
-                        $('#username').val(oldUserName)
-                        isExist = true
-                    }
-                }
-            })
-        }
-    })*@
     //修改信息点击函数触发事件
     $('#editBtn').click(function () {
         if ($("#username").val != null) {
@@ -996,5 +1033,62 @@
         setTimeout(function () {
             location.reload();
         }, 1300)
+    }
+
+    function FloatTip(type, text) {
+        var random = Math.floor(Math.random() * (100000 - 10000 + 1) + 10000);
+        var id = 'tip-' + random;
+        var winWidth = parseFloat(window.innerWidth) / 2 - 200;
+        var list = ['url(../../public/static/uploads/img/警告.svg)', 'url(../../public/static/uploads/img/check-active.svg)', 'url(../../public/static/uploads/img/取消.svg)'];
+        var icon = list[type];
+        var tip = $('<div>').addClass('float-tip text-center form-control').css({ //提示内容div
+            'background-image': 'linear-gradient(to right, #a5a5a5 0%, #555555 70%, #333333 100%)',
+            'color': 'white',
+            'height': 'auto',
+            'min-height': '40px',
+            'position': 'fixed',
+            'top': '7%',
+            'left': winWidth + 'px',
+            'width': '400px',
+            'z-index': '3200',
+            'border': '1px solid white',
+            'padding': '10px 10px 10px 50px',
+            'box-shadow': '3px 3px 3px #999999',
+            'display': 'none',
+            'opacity': 0.2,
+        }).html(text).attr('id', id);
+        var leftDiv = $('<div>').css({ //图标
+            'position': 'fixed',
+            'width': '40px',
+            'height': '30px',
+            'margin-top': '-25px',
+            'margin-left': '-45px',
+            'border-radius': '3px',
+            'color': 'black',
+            'padding': '5px 0px',
+            'background-image': icon,
+            'background-background-repeat': 'no-repeat',
+            'background-position': 'center center',
+            'background-repeat': 'no-repeat',
+            'opacity': '0.9'
+        }).html('');
+        tip.append(leftDiv);
+        $('body').append(tip.show());
+        document.getElementById(id).animate({
+            top: '2%',
+            opacity: '1'
+        }, 500, 'easeOutQuart');
+        setTimeout(function () {
+            document.getElementById(id).style.top = '2%';
+            document.getElementById(id).style.opacity = '1';
+        }, 500)
+        setTimeout(function () {
+            document.getElementById(id).animate({
+                opacity: '0'
+            }, 400, 'easeOutQuart');
+            setTimeout(function () {
+                document.getElementById(id).remove();
+            }, 400)
+        }, 800)
     }
 </script>

@@ -40,7 +40,7 @@ namespace MvcApp.Controllers
                     UsersInfo user = uManager.GetUsersInfo((int)id);
                     string name = user.UserName;
                     var visitor = username["UserName"].ToString();
-                    if (visitor == user.UserName)
+                    if (visitor == name)
                     {
                         InitUpdater();
                         ViewBag.username = name;
@@ -329,15 +329,8 @@ namespace MvcApp.Controllers
                 if (VerToken(tokenContent, pubKey))
                 {
                     JObject name = readtoken(cookie.Values["Token"]);
-                    bool falg = uManager.Following(id, name["UserName"].ToString());
-                    if (falg)
-                    {
-                        return Content("Success");
-                    }
-                    else
-                    {
-                        return Content("fail");
-                    }
+                    string flag = uManager.Following(id, name["UserName"].ToString());
+                    return Content(flag);
                 }
                 else
                 {

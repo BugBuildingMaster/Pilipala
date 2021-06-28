@@ -44,6 +44,8 @@ namespace MvcApp.Controllers
                         InitUpdater();
                         ViewBag.username = name;
                         ViewBag.userid = id;
+                        ViewBag.visitor = visitor;
+                        ViewBag.visitorid = Convert.ToInt32(username["UserId"]);
                         UsersInfo user = uManager.GetUsersInfo((int)id);
                         return View(user);
                     }

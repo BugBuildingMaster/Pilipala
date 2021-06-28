@@ -1,0 +1,73 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>不能关注自己哟 (ゝ∀･)</title>
+    <script>
+        var changeMove = setInterval(changeStyle, 4000);
+        var changeCor = setInterval(changeColor, 300);
+
+        function changeStyle() {
+            var item = document.getElementById("loop");
+            var list = ['up', 'down', 'left', 'right'];
+            item.direction = list[Math.round(Math.random() * 3)];
+            document.getElementById("back").style.width = document.body.clientWidth;
+            document.getElementById("back").style.height = document.body.clientHeight;
+        }
+
+        function changeColor() {
+            var background = document.getElementById("back");
+            var font = document.getElementById("loop");
+            var backgroundList = ['#171717', '#F39189', '#39311D', '#F4ABC4', '#F7FD04', '#FAF3E0', '#FFB997',
+                '#D83A56', '#04009A', '#FFCB91', '#00EAD3', '#9AD3BC', '#5FDDE5'
+            ];
+            var fontList = ['#EDEDED', '#046582', '#FFDD93', '#060930', '#FC5404', '#1E212D', '#0B032D', '#66DE93',
+                '#C0FEFC', '#6DDCCF', '#005F99', '#EC524B', '#D92027'
+            ];
+            var randomNum = Math.round(Math.random() * (backgroundList.length - 1));
+            background.style.backgroundColor = backgroundList[randomNum];
+            font.style.color = fontList[randomNum];
+        }
+    </script>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+            user-select: none;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        p {
+            font-size: 30rem;
+        }
+
+        .canvas {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            padding: 0px;
+        }
+    </style>
+</head>
+
+<body id="back">
+    <div class="canvas">
+        <marquee behavior="scroll" direction="left" scrolldelay="60" scrollamount="150" id="loop"
+                 style="font-size: 40rem;height: 100%;width: 100%;text-align: center;">
+            不能关注自己
+        </marquee>
+    </div>
+</body>
+
+</html>

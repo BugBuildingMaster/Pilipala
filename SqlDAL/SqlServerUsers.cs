@@ -215,17 +215,19 @@ namespace SqlDAL
         #endregion
 
         #region 关注用户或取消关注用户
-        public bool Following(int id, string name)
+        public string Following(int id, string name)
         {
             var FollowName = db.Users.Where(w => w.Userid == id).Select(c => c.UserName).FirstOrDefault().ToString();
+            if (FollowName == name)
+                return "same";
             db.FollowOrCancelFollow(FollowName, name, DateTime.Now);
             if (db.SaveChanges() > 0)
             {
-                return true;
+                return "Success";
             }
             else
             {
-                return false;
+                return "fail";
             }
         }
         #endregion

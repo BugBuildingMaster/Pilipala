@@ -125,10 +125,10 @@ namespace MvcApp.Controllers
                 string name = readtoken(cookie.Values["Token"])["UserName"].ToString();
                 string redisName = Encryption(name, "");
                 string token = cookie.Values["Token"];
-                RedisHelper.KeyDelete(redisName);
-                RedisHelper.KeyDelete(token);
+                LoginHelper.KeyDelete(redisName);
+                LoginHelper.KeyDelete(token);
                 Response.Cookies["Login"].Expires = DateTime.Now.AddDays(-1);
-                Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
+                //Response.Cookies["Key"].Expires = DateTime.Now.AddDays(-1);
                 data = "已注销登录！";
                 return data;
             }
@@ -154,7 +154,7 @@ namespace MvcApp.Controllers
 
         #region 生成公钥私钥
         [HttpPost]
-        [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
+        [EnableThrottling(PerSecond = 4, PerMinute = 80, PerHour = 300, PerDay = 2000)]
         public string setRsa()      //初始化，生成PKCS1密钥对，将私钥保存在session中用于解密接收到的密码密文，将公钥传到前端用于密码加密
         {
             if (RedisHelper.KeyExists("KeyPool") == false)
@@ -538,11 +538,11 @@ namespace MvcApp.Controllers
                     //将用户名加密后作为令牌池的key
                     string redisName = Encryption(user.UserName, "");
                     //如果令牌池已存在该用户则移除token重新生成(单用户登录)
-                    if (RedisHelper.KeyExists(redisName))
+                    if (LoginHelper.KeyExists(redisName))
                     {
-                        string OldToken = RedisHelper.StringGet(redisName);
-                        RedisHelper.KeyDelete(redisName);
-                        RedisHelper.KeyDelete(OldToken);
+                        string OldToken = LoginHelper.StringGet(redisName);
+                        LoginHelper.KeyDelete(redisName);
+                        LoginHelper.KeyDelete(OldToken);
                     }
                     //生成token
                     string token = gettoken(user.Userid.ToString(), user.UserName, user.UsersInfo.Portrait, DateTime.Now, pubKey, priKey);
@@ -554,10 +554,10 @@ namespace MvcApp.Controllers
                     //将token放入令牌池，作为有效令牌，登录时设置有效期为1天
                     //添加一个hash表，名称为token，内部放入两个键值对
                     //一个键名为prikey，值为私钥；另一个键名为name，值为加密后的用户名
-                    RedisHelper.HashSet(token, "prikey", priKey);
-                    RedisHelper.HashSet(token, "name", redisName);
-                    RedisHelper.KeyExpire(token, TimeSpan.FromDays(1));
-                    RedisHelper.StringSet(redisName, token, TimeSpan.FromDays(1));
+                    LoginHelper.HashSet(token, "prikey", priKey);
+                    LoginHelper.HashSet(token, "name", redisName);
+                    LoginHelper.KeyExpire(token, TimeSpan.FromDays(1));
+                    LoginHelper.StringSet(redisName, token, TimeSpan.FromDays(1));
                     return "success";
                 }
                 else return "fail";
@@ -618,6 +618,8 @@ namespace MvcApp.Controllers
         #endregion
 
         #region 忘记密码
+
+        #region 界面
         /// <summary>
         /// 重设密码界面
         /// </summary>
@@ -629,15 +631,25 @@ namespace MvcApp.Controllers
         {
             try
             {
+                if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
+                {
+                    HttpCookie cookie = Request.Cookies["Login"];
+                    string tokenContent = cookie.Values["Token"];
+                    string pubKey = Request.Cookies["Key"].Value;
+                    if (VerToken(tokenContent, pubKey))
+                    {
+                        return RedirectToAction("Index", "Animation");
+                    }
+                }
                 if (VerMailToken(link))     //token验证成功，初始化后进入页面
                 {
                     InitUpdater();
-                    JObject token = readtoken(link);
+                    JObject token = readtoken(link,true);
                     string email = token["email"].ToString();
                     ViewBag.username = usersManager.EmailToName(email);
                     ViewBag.email = email;
-                    RedisHelper.KeyDelete(link);
-                    RedisHelper.KeyDelete(email);
+                    MailHelper.KeyDelete(link);
+                    MailHelper.KeyDelete(email);
                     return View();
                 }
                 else
@@ -659,10 +671,22 @@ namespace MvcApp.Controllers
         [EnableThrottling(PerSecond = 2, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult ForgetPwd()
         {
+            if (Request.Cookies["Login"] != null && Request.Cookies["Key"] != null)
+            {
+                HttpCookie cookie = Request.Cookies["Login"];
+                string tokenContent = cookie.Values["Token"];
+                string pubKey = Request.Cookies["Key"].Value;
+                if (VerToken(tokenContent, pubKey))
+                {
+                    return RedirectToAction("Index", "Animation");
+                }
+            }
             InitUpdater();
             return View();
         }
+        #endregion
 
+        #region 验证邮箱
         /// <summary>
         /// 验证邮箱
         /// </summary>
@@ -679,7 +703,7 @@ namespace MvcApp.Controllers
                 if (exist == "no")
                 {
                     //如果申请忘记密码的邮箱仍在维护状态，则不再发送邮件
-                    if (RedisHelper.KeyExists(Mail))
+                    if (MailHelper.KeyExists(Mail))
                         return Content("repeat");
                     string pubKey = Request.Cookies["Key"].Value;
                     pubKey = pubKey.Replace("%0d", "\r").Replace("%0a", "\n");
@@ -689,11 +713,11 @@ namespace MvcApp.Controllers
                     if (SendMail(Mail, usersManager.EmailToName(Mail), tokenContent))
                     {
                         //邮件成功送出，将送出的token放入redis中维护
-                        RedisHelper.HashSet(tokenContent, "prikey", priKey);
-                        RedisHelper.HashSet(tokenContent, "mail", Mail);
+                        MailHelper.HashSet(tokenContent, "prikey", priKey);
+                        MailHelper.HashSet(tokenContent, "mail", Mail);
                         //设置有效时间，超过期限则过期不再维护，token失效
-                        RedisHelper.KeyExpire(tokenContent, TimeSpan.FromMinutes(5));
-                        RedisHelper.StringSet(Mail, tokenContent, TimeSpan.FromMinutes(5));
+                        MailHelper.KeyExpire(tokenContent, TimeSpan.FromMinutes(5));
+                        MailHelper.StringSet(Mail, tokenContent, TimeSpan.FromMinutes(5));
                         return Content("ok");
                     }
                     else
@@ -709,7 +733,9 @@ namespace MvcApp.Controllers
                 return Content("error");
             }
         }
+        #endregion
 
+        #region 重设密码
         /// <summary>
         /// 重设密码
         /// </summary>
@@ -756,7 +782,9 @@ namespace MvcApp.Controllers
                 return Content("fail");
             }
         }
+        #endregion
 
+        #region 发送邮件
         /// <summary>
         /// 发送邮件
         /// </summary>
@@ -802,6 +830,8 @@ namespace MvcApp.Controllers
                 return false;
             }
         }
+        #endregion
+
         #endregion
 
         #region 盐加密与生成

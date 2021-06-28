@@ -17,14 +17,15 @@ namespace MvcApp.Controllers
     {
         readonly SearchManager sManager = new SearchManager();
 
-        // 初始搜索界面
+        #region 初始搜索界面
         public ActionResult OriginSearch()
         {
             InitUpdater();
             return View();
         }
+        #endregion
 
-        //搜索功能
+        #region 搜索功能
         [HttpGet]
         [EnableThrottling(PerSecond = 3, PerMinute = 40, PerHour = 300, PerDay = 2000)]
         public ActionResult Search(string KeyWord)
@@ -63,6 +64,7 @@ namespace MvcApp.Controllers
                 return View();
             }
         }
+        #endregion
 
         #region 自定义json返回类型
         public class JSONNetResult : ActionResult
@@ -291,7 +293,7 @@ namespace MvcApp.Controllers
         }
         #endregion
 
-        //获取测评信息
+        #region 获取测评信息
         [HttpGet]
         public JsonResult GetEvaluation(int id, int type)
         {
@@ -321,12 +323,14 @@ namespace MvcApp.Controllers
                 return Json(evaluation, JsonRequestBehavior.AllowGet);
             }
         }
+        #endregion
 
-        //搜索测评分布视图
+        #region 搜索测评分布视图
         public ActionResult SearchUsers()
         {
             IEnumerable<tempSearchUsers> users = sManager.SearchUsers();
             return PartialView(users);
         }
+        #endregion
     }
 }

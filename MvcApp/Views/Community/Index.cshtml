@@ -10,6 +10,7 @@
     <link href="~/assets/css/Community.css" rel="stylesheet" />
     <link href="~/assets/css/uikit.css" rel="stylesheet" />
     <link href="~/assets/css/icons.css" rel="stylesheet" />
+    <link href="~/assets/css/bootstrap-icons.css" rel="stylesheet" />
     <script src="~/assets/js/simplebar.js"></script>
     <script src="~/assets/js/uikit.js"></script>
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
@@ -17,7 +18,7 @@
     <script src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/axios.js"></script>
     <script src="~/Scripts/axioshttp.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">*@
 
 </head>
 
@@ -187,6 +188,8 @@
         height: 2.5rem;
         border-radius: 10px;
         border: grey 2px solid;
+        line-height: 2.5rem;
+        padding-left: 1.35rem;
     }
 
     .inp_sub {
@@ -396,7 +399,8 @@
         const searching = new Vue({
             el: "#theSearch",
             data: {
-                suggestions: []
+                suggestions: [],
+                oriDate: ""
             },
             created() {
                 this.changeSug(0);
@@ -410,6 +414,7 @@
             methods: {
                 //搜索提示
                 async suggest() {
+                    this.oriDate = $('#input_text').val();
                     const { data: res } = await axios.get('/Search/getSuggest', {
                         params: {
                             keyWord: $('#input_text').val()
@@ -446,6 +451,7 @@
                 },
                 async dark(event) {
                     $(event.target).removeClass('active');
+                    $('#input_text').val(this.oriDate);
                 }
             }
         })
@@ -487,12 +493,14 @@
                         window.location.href = "/Users/Login";
                     } else {
                         if ($("#theDongtai" + id).find("i").hasClass("bi-hand-thumbs-up")) {
-                            let $ok = $("#theDongtai" + id).find("i");
+                            var $oyes = $(".bi");
+                            let $ok = $("#theDongtai" + id).find($oyes);
                             $ok.removeClass("bi-hand-thumbs-up");
                             $ok.addClass("bi-hand-thumbs-up-fill");
                         }
                         else {
-                            let $ok = $("#theDongtai" + id).find("i");
+                            var $oyes = $(".bi");
+                            let $ok = $("#theDongtai" + id).find($oyes);
                             $ok.removeClass("bi-hand-thumbs-up-fill");
                             $ok.addClass("bi-hand-thumbs-up");
                         }

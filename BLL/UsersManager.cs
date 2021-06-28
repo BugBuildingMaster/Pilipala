@@ -188,7 +188,7 @@ namespace BLL
         #endregion
 
         #region 关注用户或取消关注用户
-        public bool Following(int id, string name)
+        public string Following(int id, string name)
         {
             return iuser.Following(id, name);
         }
